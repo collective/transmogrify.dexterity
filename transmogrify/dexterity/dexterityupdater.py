@@ -11,7 +11,9 @@ from zope.schema import getFieldsInOrder
 from zope.schema.interfaces import IList, IDate
 from datetime import datetime
 
+
 class DexterityUpdateSection(object):
+
     classProvides(ISectionBlueprint)
     implements(ISection)
     
@@ -97,7 +99,3 @@ class DexterityUpdateSection(object):
                     obj.at_post_edit_script()
 
             yield item
-
-
-
-        
