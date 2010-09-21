@@ -8,6 +8,8 @@ from Products.Archetypes.event import ObjectInitializedEvent
 from Products.Archetypes.event import ObjectEditedEvent
 from plone.dexterity.utils import iterSchemata
 from zope.schema import getFieldsInOrder
+from zope.schema.interfaces import IList, IDate
+from datetime import datetime
 
 class DexterityUpdateSection(object):
     classProvides(ISectionBlueprint)
@@ -34,7 +36,7 @@ class DexterityUpdateSection(object):
 
             path = item[pathkey]
 
-            obj = self.context.unrestrictedTraverse(path.lstrip('/'), None)
+            obj = self.context.unrestrictedTraverse(path.encode().lstrip('/'), None)
             if obj is None:         # path doesn't exist
                 yield item; continue
 
@@ -46,10 +48,33 @@ class DexterityUpdateSection(object):
             for k,v in item.iteritems():
                 if k.startswith('_'):
                     continue
+                if k not in fields:
+                    continue
                 field = fields[k]
-                #TODO implements different types (boolean, int, list, file ect)
-                field.set(field.interface(obj), v.decode('iso-8859-1'))
-                
+
+                #boolean field
+                if v is None or v == '':
+                    continue
+                if v.lower()=='true':
+                    field.set(field.interface(obj), True)
+                    continue
+                elif v.lower()=='false':
+                    field.set(field.interface(obj), False)
+                    continue
+                # listfield
+                if IList.providedBy(field):
+                    v = filter(lambda p:not not p,
+                               [p.strip() for p in v.split(',')])
+                    field.set(field.interface(obj), v)
+                # datefield
+                elif IDate.providedBy(field):
+                    v = datetime.strptime(v,"%d.%m.%Y")
+                    field.set(field.interface(obj), v)
+                # integer check
+                elif v.isdigit():
+                    field.set(field.interface(obj), int(v))
+                else:
+                    field.set(field.interface(obj), v)
 
             if IBaseObject.providedBy(obj):
                 changed = False
