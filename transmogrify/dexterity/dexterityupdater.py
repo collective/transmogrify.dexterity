@@ -20,7 +20,7 @@ class DexterityUpdateSection(object):
         self.name = name
 
         if 'path-key' in options:
-            pathkeys = options['paht-key'].splitlines()
+            pathkeys = options['path-key'].splitlines()
         else:
             pathkeys = defaultKeys(options['blueprint'], name, 'path')
         self.pathkey = Matcher(*pathkeys)
@@ -52,7 +52,8 @@ class DexterityUpdateSection(object):
 
                     if value:
                         if IDate.providedBy(field):
-                            v = datetime.strptime(value, "%d.%m.%Y")
+                            if isinstance(value, str):
+                                value = datetime.strptime(value, "%d.%m.%Y")
                             field.set(field.interface(obj), value)
 
                         elif IBool.providedBy(field):
