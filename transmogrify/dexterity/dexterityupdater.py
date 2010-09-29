@@ -49,7 +49,6 @@ class DexterityUpdateSection(object):
             #get all fields for this obj
             for schemata in iterSchemata(obj):
                 for name, field in getFieldsInOrder(schemata):
-
                     #setting value from the blueprint cue
                     value = item.get(name)
                     if value:
@@ -96,11 +95,11 @@ class DexterityUpdateSection(object):
                             #     value = field._type(value)
                             field.set(field.interface(obj), value)
 
-                    else:
+                    elif field.get(field.interface(obj)) == field.missing_value\
+                        or  field.get(field.interface(obj)) == None:
                         # No value is given from the pipeline,
                         # so we try to set the default value
                         # otherwise we set the missing value
-
                         default = queryMultiAdapter((
                                 obj,
                                 obj.REQUEST, # request
@@ -118,5 +117,4 @@ class DexterityUpdateSection(object):
                             except:
                                 pass
                         field.set(field.interface(obj), default)
-
             yield item
