@@ -3,6 +3,8 @@ from zope.interface import classProvides, implements
 from collective.transmogrifier.interfaces import ISectionBlueprint, ISection
 from collective.transmogrifier.utils import Matcher, defaultKeys
 from z3c.form.interfaces import IValue
+from plone.namedfile.interfaces import INamedFileField
+from plone.namedfile.file import NamedFile
 from plone.dexterity.utils import iterSchemata
 from zope.schema import getFieldsInOrder
 from zope.schema.interfaces import IList, IDate, IInt, IBool
@@ -29,7 +31,8 @@ class DexterityUpdateSection(object):
         for item in self.previous:
             pathkey = self.pathkey(*item.keys())[0]
 
-            if not pathkey:         # not enough info
+            # not enough info
+            if not pathkey:
                 yield item
                 continue
 
@@ -49,9 +52,26 @@ class DexterityUpdateSection(object):
 
                     #setting value from the blueprint cue
                     value = item.get(name)
-
                     if value:
-                        if IDate.providedBy(field):
+                        # TODO: implements for namedfile field
+                        if INamedFileField.providedBy(field):
+                            # need a dict with data and filename
+                            # or get the filename in a seperated
+                            # value from the pipeline
+                            if isinstance(value, dict):
+                                nfile = NamedFile(
+                                    data=value['data'],
+                                    filename=value['filename'])
+                            else:
+                                if '_filename' in item:
+                                    nfile = NamedFile(
+                                        data=value,
+                                        filename=item['_filename'])
+                                else:
+                                    nfile = NamedFile(data=value)
+                            field.set(field.interface(obj), nfile)
+
+                        elif IDate.providedBy(field):
                             if isinstance(value, str):
                                 value = datetime.strptime(value, "%d.%m.%Y")
                             field.set(field.interface(obj), value)
@@ -72,9 +92,12 @@ class DexterityUpdateSection(object):
                         elif IInt.providedBy(field):
                             field.set(field.interface(obj), int(value))
                         else:
+                            # if field._type:
+                            #     value = field._type(value)
                             field.set(field.interface(obj), value)
+
                     else:
-                        # No value is given from the blueprint cue,
+                        # No value is given from the pipeline,
                         # so we try to set the default value
                         # otherwise we set the missing value
 
@@ -95,4 +118,5 @@ class DexterityUpdateSection(object):
                             except:
                                 pass
                         field.set(field.interface(obj), default)
+
             yield item
