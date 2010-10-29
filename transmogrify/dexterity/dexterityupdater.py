@@ -8,7 +8,7 @@ from plone.namedfile.file import NamedFile
 from plone.dexterity.utils import iterSchemata
 from zope.schema import getFieldsInOrder
 from zope.schema.interfaces import IList, IDate, IInt, IBool
-from datetime import datetime
+from datetime import datetime, date
 
 
 class DexterityUpdateSection(object):
@@ -73,6 +73,7 @@ class DexterityUpdateSection(object):
                         elif IDate.providedBy(field):
                             if isinstance(value, str):
                                 value = datetime.strptime(value, "%d.%m.%Y")
+                                value = date(value.year, value.month, value.day)
                             field.set(field.interface(obj), value)
 
                         elif IBool.providedBy(field):
@@ -90,6 +91,7 @@ class DexterityUpdateSection(object):
 
                         elif IInt.providedBy(field):
                             field.set(field.interface(obj), int(value))
+
                         else:
                             # if field._type:
                             #     value = field._type(value)
