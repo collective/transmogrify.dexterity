@@ -60,12 +60,12 @@ class DexterityUpdateSection(object):
                             if isinstance(value, dict):
                                 nfile = NamedFile(
                                     data=value['data'],
-                                    filename=value['filename'])
+                                    filename=value['filename'].decode('utf-8'))
                             else:
                                 if '_filename' in item:
                                     nfile = NamedFile(
                                         data=value,
-                                        filename=item['_filename'])
+                                        filename=item['_filename'].decode('utf-8'))
                                 else:
                                     nfile = NamedFile(data=value)
                             field.set(field.interface(obj), nfile)
