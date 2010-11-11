@@ -92,6 +92,13 @@ class DexterityUpdateSection(object):
                         elif IInt.providedBy(field):
                             field.set(field.interface(obj), int(value))
 
+                        elif isinstance(value, str):
+                            try:
+                                value = value.decode('utf-8')
+                            except UnicodeDecodeError:
+                                value = value.decode('latin1')
+                            field.set(field.interface(obj), value)
+
                         else:
                             # if field._type:
                             #     value = field._type(value)
