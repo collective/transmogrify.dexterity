@@ -25,6 +25,10 @@ setup(name='transmogrify.dexterity',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
+        'z3c.form',
+        'plone.namedfile',
+        'plone.dexterity',
+        'collective.transmogrifier',
           'setuptools',
           # -*- Extra requirements: -*-
       ],
