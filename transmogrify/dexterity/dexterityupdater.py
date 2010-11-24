@@ -65,7 +65,8 @@ class DexterityUpdateSection(object):
                                 if '_filename' in item:
                                     nfile = NamedFile(
                                         data=value,
-                                        filename=item['_filename'].decode('utf-8'))
+                                        filename=item['_filename'].decode(
+                                            'utf-8'))
                                 else:
                                     nfile = NamedFile(data=value)
                             field.set(field.interface(obj), nfile)
@@ -73,7 +74,8 @@ class DexterityUpdateSection(object):
                         elif IDate.providedBy(field):
                             if isinstance(value, str):
                                 value = datetime.strptime(value, "%d.%m.%Y")
-                                value = date(value.year, value.month, value.day)
+                                value = date(
+                                    value.year, value.month, value.day)
                             field.set(field.interface(obj), value)
 
                         elif IBool.providedBy(field):
@@ -100,12 +102,12 @@ class DexterityUpdateSection(object):
                             field.set(field.interface(obj), value)
 
                         else:
-                            # if field._type:
-                            #     value = field._type(value)
                             field.set(field.interface(obj), value)
 
-                    elif field.get(field.interface(obj)) == field.missing_value\
-                        or  field.get(field.interface(obj)) == None:
+                    elif field.get(
+                            field.interface(obj)) == field.missing_value \
+                                or field.get(field.interface(obj)) == None:
+
                         # No value is given from the pipeline,
                         # so we try to set the default value
                         # otherwise we set the missing value
