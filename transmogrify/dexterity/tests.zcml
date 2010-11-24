@@ -1,0 +1,15 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:transmogrifier="http://namespaces.plone.org/transmogrifier">
+
+    <include package="collective.transmogrifier" />
+    <include package="plone.app.dexterity" />
+
+    <transmogrifier:registerConfig
+        name="transmogrify.dexterity.testconfiguration"
+        title="Example pipeline configuration"
+        description="This is an example pipeline configuration"
+        configuration="tests/tests.cfg"
+        />
+
+</configure>

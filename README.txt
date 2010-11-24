@@ -1,7 +1,7 @@
 transmogrify.dexterity
 ======================
 
-The transmogrify.dexterity package provides a dexterity schema updater pipeline section. It updates field values for dexterity content objects.
+The transmogrify.dexterity package provides a dexterity schema updater pipeline section. It updates field values for dexterity content objects. The Name of the Utility is transmogrify.dexterity.dexterityupdater.
 
 The dexterityupdater section only needs the path to object, and all fieldname-value pairs in the pipeline (Paths are allways interpreted as relative to the context).
 

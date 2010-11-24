@@ -2,6 +2,8 @@
     xmlns="http://namespaces.zope.org/zope"
     i18n_domain="transmogrify.dexterity">
 
+    <include package="collective.transmogrifier" file="meta.zcml" />
+
 <utility
     component=".dexterityupdater.DexterityUpdateSection"
     name="transmogrify.dexterity.dexterityupdater"

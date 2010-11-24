@@ -4,6 +4,10 @@ import os
 version = open('transmogrify/dexterity/version.txt').read().strip()
 maintainer = 'Philippe Gross'
 
+tests_require = [
+    'plone.app.testing',
+    'plone.app.dexterity',
+]
 setup(name='transmogrify.dexterity',
       version=version,
       description="Transmogrifier dexterity updateder section (Maintainer: %s)" % maintainer,
@@ -32,6 +36,8 @@ setup(name='transmogrify.dexterity',
           'setuptools',
           # -*- Extra requirements: -*-
       ],
+      tests_require=tests_require,
+      extras_require=dict(tests=tests_require),
       entry_points="""
       # -*- Entry points: -*-
       """,
