@@ -10,7 +10,7 @@ tests_require = [
 ]
 setup(name='transmogrify.dexterity',
       version=version,
-      description="Transmogrifier dexterity updateder section (Maintainer: %s)" % maintainer,
+      description="A transmogrifier blueprint for updating dexterity objects",
       long_description=open("README.txt").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
@@ -33,7 +33,7 @@ setup(name='transmogrify.dexterity',
         'plone.namedfile',
         'plone.dexterity',
         'collective.transmogrifier',
-          'setuptools',
+         'setuptools',
           # -*- Extra requirements: -*-
       ],
       tests_require=tests_require,
