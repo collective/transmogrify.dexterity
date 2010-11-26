@@ -1,0 +1,87 @@
+Dexterity Updater
+=================
+
+
+Globals:
+
+    >>> app = layer.get('app')
+    >>> portal = layer.get('portal')
+    >>> request = layer.get('request')
+
+Do some imports 
+
+    >>> from collective.transmogrifier.meta import registerConfig
+    >>> from collective.transmogrifier.transmogrifier import Transmogrifier
+    >>> from plone.app.dexterity.behaviors.metadata import IBasic
+    >>> from transmogrify.dexterity.testing import zptlogo
+
+Test configuration for transmogrifier (registered by tests.zcml):
+
+    >>> dexterityconfig = """
+    ... [transmogrifier]
+    ... pipeline =
+    ...     testsource
+    ...     testcreator
+    ...     schemaupdater
+    ...     
+    ... [testsource]
+    ... blueprint = transmogrify.dexterity.testsource
+    ... 
+    ... [testcreator]
+    ... blueprint = collective.transmogrifier.sections.constructor
+    ...
+    ... [schemaupdater]
+    ... blueprint = transmogrify.dexterity.schemaupdater
+    ... """
+
+Let transmorifier to his work!
+
+    >>> transmogrifier = Transmogrifier(portal)
+    >>> output = transmogrifier(u'transmogrify.dexterity.testconfiguration')
+
+check the generated and updated objects
+
+    >>> spam = portal.get('spam')
+    >>> spam
+    <Container at ...>
+    >>> two = portal.get('two')
+
+Standard schema field values:
+
+    >>> spam.foo
+    u'one value'
+
+Fields from a behavior:
+
+    >>> IBasic(spam).title
+    u'Spam'
+    >>> IBasic(spam).description
+    u'Lorem Ipsum bla bla!'
+
+NameFileFields:
+
+Values from a dict:
+    >>> spam.test_file
+    <plone.namedfile.file.NamedFile object at ...>
+    >>> spam.test_file.filename
+    u'zptlogo.gif'
+    >>> spam.test_file.data == zptlogo
+    True
+
+get the filename in a seperated value from the pipeline:
+    >>> two.test_file
+    <plone.namedfile.file.NamedFile object at ...>
+    >>> two.test_file.filename
+    u'testlogo.gif'
+    >>> two.test_file.data == zptlogo
+    True
+
+DateFields:
+
+    >>> spam.test_date
+    datetime.date(2010, 10, 12)
+
+    >>> two.test_date
+    datetime.date(2010, 1, 1)
+    
+

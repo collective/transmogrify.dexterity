@@ -5,8 +5,8 @@
     <include package="collective.transmogrifier" file="meta.zcml" />
 
 <utility
-    component=".dexterityupdater.DexterityUpdateSection"
-    name="transmogrify.dexterity.dexterityupdater"
+    component=".schemaupdater.DexterityUpdateSection"
+    name="transmogrify.dexterity.schemaupdater"
     />
 
 </configure>

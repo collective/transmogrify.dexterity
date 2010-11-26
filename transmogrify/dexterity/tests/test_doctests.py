@@ -9,7 +9,7 @@ OPTIONFLAGS = (doctest.NORMALIZE_WHITESPACE|
 
 
 TESTFILES = (
-    'dexterityupdater.txt',
+    'schemaupdater.txt',
     )
 
 

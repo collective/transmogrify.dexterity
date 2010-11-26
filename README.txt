@@ -1,23 +1,28 @@
-transmogrify.dexterity
-======================
+Introduction
+============
 
-The transmogrify.dexterity package provides a dexterity schema updater pipeline section. It updates field values for dexterity content objects. The Name of the Utility is transmogrify.dexterity.dexterityupdater.
+The transmogrify.dexterity package provides a transmogrifier pipeline section
+for updating field values of dexterity content objects. The blueprint name is ``transmogrify.dexterity.schemaupdater``. 
 
-The dexterityupdater section only needs the path to object, and all fieldname-value pairs in the pipeline (Paths are allways interpreted as relative to the context).
+The schemaupdater section needs at least the path to object to update.
+Paths to objects are always interpreted as relative to the context. Any
+writable field who's id matches a key in the current item will be updated with
+the corresponding value.
 
-The DexterityUpdateSection works on the following order 
-    1. He sets the values from the pipeline (key must be the fieldname)
-    2. For all Fields they are empty (None or Missing Value) and no value is store in the pipeline, he try to set the default value for this field.
+Fields that do not get a value from the pipeline are initialized with their
+default value or get a missing_value marker.
+This functionality will be moved into a separate constructor pipeline...
 
-The DexterityUpdateSection can also handle fields in additional behaviors.
+The schmemaupdater section can also handle fields defined in behaviors.
 
-actually tested and supported fields
+
+Actually tested and supported fields
 ------------------------------------
 - TextLine or Text
 - Bool
 - List
 - NamedFileField
-    need a dict with data and filename or get the filename in a seperated value      from the pipeline
+    need a dict with data and filename or get the filename in a seperated value from the pipeline
 - Date
     need a datetime.date object or a string in the following format "%d.%m.%Y"
 
