@@ -4,6 +4,10 @@ Changelog
 
 1.0a3
 -----
+
+* fixed dateconverting
+  [phgross]
+
 * fixed value check: so that it works correctly with an empty string
   [phgross]
 

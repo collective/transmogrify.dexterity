@@ -73,9 +73,12 @@ class DexterityUpdateSection(object):
 
                         elif IDate.providedBy(field):
                             if isinstance(value, str):
-                                value = datetime.strptime(value, "%d.%m.%Y")
-                                value = date(
-                                    value.year, value.month, value.day)
+                                try:
+                                    value = datetime.strptime(value, "%d.%m.%Y")
+                                    value = date(
+                                        value.year, value.month, value.day)
+                                except ValueError:
+                                    continue
                             field.set(field.interface(obj), value)
 
                         elif IBool.providedBy(field):
