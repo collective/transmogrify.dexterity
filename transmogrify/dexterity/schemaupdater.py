@@ -51,7 +51,7 @@ class DexterityUpdateSection(object):
                 for name, field in getFieldsInOrder(schemata):
                     #setting value from the blueprint cue
                     value = item.get(name)
-                    if value:
+                    if value is not None:
                         # TODO: implements for namedfile field
                         if INamedFileField.providedBy(field):
                             # need a dict with data and filename
@@ -79,17 +79,20 @@ class DexterityUpdateSection(object):
                             field.set(field.interface(obj), value)
 
                         elif IBool.providedBy(field):
-                            if value.lower()=='true':
+                            if isinstance(value, bool):
+                                field.set(field.interface(obj), value)
+                            elif value.lower()=='true':
                                 field.set(field.interface(obj), True)
                             else:
                                 field.set(field.interface(obj), False)
 
                         elif IList.providedBy(field):
                             if IList.providedBy(field):
-                                v = filter(
-                                    lambda p: not not p,
-                                    [p.strip() for p in value.split(';')])
-                                field.set(field.interface(obj), v)
+                                if not isinstance(value, list):
+                                    value = filter(
+                                        lambda p: not not p,
+                                        [p.strip() for p in value.split(';')])
+                                field.set(field.interface(obj), value)
 
                         elif IInt.providedBy(field):
                             field.set(field.interface(obj), int(value))

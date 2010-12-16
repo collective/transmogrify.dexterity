@@ -4,7 +4,11 @@ Changelog
 
 1.0a3
 -----
+* fixed value check: so that it works correctly with an empty string
+  [phgross]
 
+* fixed handling for list and bool fields
+  [phgross]
 
 1.0a2
 -----
