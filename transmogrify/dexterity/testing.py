@@ -1,6 +1,6 @@
 from collective.transmogrifier.interfaces import ISectionBlueprint, ISection
 from collective.transmogrifier.sections.tests import SampleSource
-from plone.app.testing import IntegrationTesting, TEST_USER_NAME, setRoles
+from plone.app.testing import IntegrationTesting, TEST_USER_ID, setRoles
 from plone.app.testing import PloneSandboxLayer
 from plone.app.testing import PLONE_FIXTURE
 from plone.dexterity.fti import DexterityFTI, register
@@ -62,7 +62,7 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
 
     def setUpPloneSite(self, portal):
         # Install into Plone site using portal_setup
-        setRoles(portal, TEST_USER_NAME, ['Member', 'Contributor', 'Manager'])
+        setRoles(portal, TEST_USER_ID, ['Member', 'Contributor', 'Manager'])
 
         # portal workaround
         self.portal = portal
