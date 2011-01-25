@@ -1,15 +1,18 @@
+from collective.transmogrifier.interfaces import ISectionBlueprint, ISection
+from collective.transmogrifier.utils import defaultMatcher
+
+from plone.dexterity.utils import iterSchemata
+from plone.uuid.interfaces import IMutableUUID
+
+from z3c.form.interfaces import IValue
+
 from zope.component import queryMultiAdapter
 from zope.interface import classProvides, implements
-from collective.transmogrifier.interfaces import ISectionBlueprint, ISection
-from collective.transmogrifier.utils import Matcher, defaultKeys
-from z3c.form.interfaces import IValue
-from plone.namedfile.interfaces import INamedFileField
-from plone.namedfile.file import NamedFile
-from plone.dexterity.utils import iterSchemata
 from zope.schema import getFieldsInOrder
-from zope.schema.interfaces import IList, IDate, IInt, IBool
-from datetime import datetime, date
 
+from interfaces import IDeserializer
+
+_marker = object()
 
 class DexterityUpdateSection(object):
 
@@ -20,23 +23,22 @@ class DexterityUpdateSection(object):
         self.previous = previous
         self.context = transmogrifier.context
         self.name = name
-
-        if 'path-key' in options:
-            pathkeys = options['path-key'].splitlines()
-        else:
-            pathkeys = defaultKeys(options['blueprint'], name, 'path')
-        self.pathkey = Matcher(*pathkeys)
+        self.pathkey = defaultMatcher(options, 'path-key', name, 'path')
+        self.fileskey = options.get('files-key', '_files').strip()
 
     def __iter__(self):
         for item in self.previous:
             pathkey = self.pathkey(*item.keys())[0]
-
             # not enough info
             if not pathkey:
                 yield item
                 continue
 
             path = item[pathkey]
+            # Skip the Plone site object itself
+            if not path:
+                yield item
+                continue
 
             obj = self.context.unrestrictedTraverse(
                 path.encode().lstrip('/'), None)
@@ -46,74 +48,18 @@ class DexterityUpdateSection(object):
                 yield item
                 continue
 
+            uuid = item.get('plone.uuid')
+            if uuid is not None:
+                IMutableUUID(obj).set(str(uuid))
+
+            files = item.setdefault(self.fileskey, {})
+
             #get all fields for this obj
             for schemata in iterSchemata(obj):
                 for name, field in getFieldsInOrder(schemata):
                     #setting value from the blueprint cue
-                    value = item.get(name)
-                    if value is not None:
-                        # TODO: implements for namedfile field
-                        if INamedFileField.providedBy(field):
-                            # need a dict with data and filename
-                            # or get the filename in a seperated
-                            # value from the pipeline
-                            if isinstance(value, dict):
-                                nfile = NamedFile(
-                                    data=value['data'],
-                                    filename=value['filename'].decode('utf-8'))
-                            else:
-                                if '_filename' in item:
-                                    nfile = NamedFile(
-                                        data=value,
-                                        filename=item['_filename'].decode(
-                                            'utf-8'))
-                                else:
-                                    nfile = NamedFile(data=value)
-                            field.set(field.interface(obj), nfile)
-
-                        elif IDate.providedBy(field):
-                            if isinstance(value, str):
-                                try:
-                                    value = datetime.strptime(value, "%d.%m.%Y")
-                                    value = date(
-                                        value.year, value.month, value.day)
-                                except ValueError:
-                                    continue
-                            field.set(field.interface(obj), value)
-
-                        elif IBool.providedBy(field):
-                            if isinstance(value, bool):
-                                field.set(field.interface(obj), value)
-                            elif value.lower()=='true':
-                                field.set(field.interface(obj), True)
-                            else:
-                                field.set(field.interface(obj), False)
-
-                        elif IList.providedBy(field):
-                            if IList.providedBy(field):
-                                if not isinstance(value, list):
-                                    value = filter(
-                                        lambda p: not not p,
-                                        [p.strip() for p in value.split(';')])
-                                field.set(field.interface(obj), value)
-
-                        elif IInt.providedBy(field):
-                            field.set(field.interface(obj), int(value))
-
-                        elif isinstance(value, str):
-                            try:
-                                value = value.decode('utf-8')
-                            except UnicodeDecodeError:
-                                value = value.decode('latin1')
-                            field.set(field.interface(obj), value)
-
-                        else:
-                            field.set(field.interface(obj), value)
-
-                    elif field.get(
-                            field.interface(obj)) == field.missing_value \
-                                or field.get(field.interface(obj)) == None:
-
+                    value = item.get(name, _marker)
+                    if value is _marker:
                         # No value is given from the pipeline,
                         # so we try to set the default value
                         # otherwise we set the missing value
@@ -124,14 +70,19 @@ class DexterityUpdateSection(object):
                                 field,
                                 None, # Widget
                                 ), IValue, name='default')
-                        if default!=None:
+                        if default is not None:
                             default = default.get()
-                        if default==None:
+                        if default is None:
                             default = getattr(field, 'default', None)
-                        if default==None:
+                        if default is None:
                             try:
                                 default = field.missing_value
-                            except:
+                            except AttributeError:
                                 pass
-                        field.set(field.interface(obj), default)
+                        value = default
+                    else:
+                        deserializer = IDeserializer(field)
+                        value = deserializer(value, files, item)
+                    field.set(field.interface(obj), value)
+
             yield item

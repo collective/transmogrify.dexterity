@@ -94,14 +94,14 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
                          test_file={
                             'data': zptlogo,
                             'filename': 'zptlogo.gif'},
-                         test_date='12.10.2010',
+                         test_date='2010-10-12',
                          fieldnotchanged='nochange',
                     ),
                     dict(_path='/two',
                          foo='Bla',
                          _type='TransmogrifyDexterityFTI',
                          title='My Second Object',
-                         description=None,
+                         #description=None, # None is not valid for this field.
                          test_file=zptlogo,
                          _filename="testlogo.gif",
                          test_date=date(2010, 01, 01, ),
