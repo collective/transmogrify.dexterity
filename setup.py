@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = open('transmogrify/dexterity/version.txt').read().strip()
+version = "1.0a4-dev"
 maintainer = 'Philippe Gross'
 
 tests_require = [
