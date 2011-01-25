@@ -84,7 +84,7 @@ class DexterityUpdateSection(object):
                         elif IBool.providedBy(field):
                             if isinstance(value, bool):
                                 field.set(field.interface(obj), value)
-                            elif value.lower()=='true':
+                            elif isinstance(value, basestring) and value.lower()=='true':
                                 field.set(field.interface(obj), True)
                             else:
                                 field.set(field.interface(obj), False)
