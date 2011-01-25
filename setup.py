@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = open('transmogrify/dexterity/version.txt').read().strip()
+version = "1.0a3"
 maintainer = 'Philippe Gross'
 
 tests_require = [
@@ -40,5 +40,7 @@ setup(name='transmogrify.dexterity',
       extras_require=dict(tests=tests_require),
       entry_points="""
       # -*- Entry points: -*-
+      [z3c.autoinclude.plugin]
+      target = plone
       """,
       )
