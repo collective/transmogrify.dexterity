@@ -65,6 +65,7 @@ class NamedFileDeserializer:
             filename=filename,
             contentType=contenttype,
             )
+        self.field.validate(instance)
         return instance
 
 
@@ -99,6 +100,8 @@ class RichTextDeserializer:
         if isinstance(value, dict):
             encoding = value.get('encoding', None)
             contenttype = value.get('contenttype', None)
+            if contenttype is not None:
+                contenttype = str(contenttype)
             file = value.get('file', None)
             if file is not None:
                 data = filestore[file]['data']
@@ -107,7 +110,7 @@ class RichTextDeserializer:
         elif isinstance(value, str):
             data = value
             encoding = None
-            contenttype = Non
+            contenttype = None
         else:
             raise ValueError('Unable to convert to named file')
         if encoding is None:
@@ -120,6 +123,7 @@ class RichTextDeserializer:
             outputMimeType=self.field.output_mime_type,
             encoding=encoding,
             )
+        self.field.validate(instance)
         return instance
 
 
@@ -156,6 +160,7 @@ class CollectionDeserializer:
             deserializer = DefaultDeserializer()
         value = [deserializer(v, filestore, item) for v in value]
         value = field._type(value)
+        self.field.validate(value)
         return value
 
 
@@ -191,4 +196,5 @@ class DefaultDeserializer:
                 value = value.decode('utf-8')
             if isinstance(value, unicode):
                 value = IFromUnicode(field).fromUnicode(value)
+            self.field.validate(value)
         return value
