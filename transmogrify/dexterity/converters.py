@@ -28,9 +28,13 @@ class NamedFileSerializer:
         else:
             extra = '_%s' % extra
         fieldname = self.field.__name__
+        if hasattr(value, 'open'):
+            data = value.open().read()
+        else:
+            data = value.data
         name = '_field_%s%s_%s' % (fieldname, extra, value.filename)
-        filestore[name] = dict(data=value.read(), name=name, contenttype=value.contenttype)
-        return dict(file=name, filename=value.filename, contenttype=value.contenttype)
+        filestore[name] = dict(data=data, name=name, contenttype=value.contentType)
+        return dict(file=name, filename=value.filename, contenttype=value.contentType)
 
 
 class BaseNamedFileDeserializer:
