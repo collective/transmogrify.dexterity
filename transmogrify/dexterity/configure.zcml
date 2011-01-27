@@ -27,12 +27,6 @@
 
 <adapter factory=".converters.NamedFileSerializer" />
 <adapter factory=".converters.NamedFileDeserializer" />
-<adapter factory=".converters.NamedImageDeserializer" />
-
-<configure zcml:condition="installed z3c.blobfile">
-  <adapter factory=".converters.NamedBlobFileDeserializer" />
-  <adapter factory=".converters.NamedBlobImageDeserializer" />
-</configure>
 
 <adapter factory=".converters.RichTextSerializer" />
 <adapter factory=".converters.RichTextDeserializer" />

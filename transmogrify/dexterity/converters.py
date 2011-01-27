@@ -4,8 +4,7 @@ from plone.app.textfield.interfaces import IRichText
 from plone.app.textfield.value import RichTextValue
 from plone.app.textfield.utils import getSiteEncoding
 
-from plone import namedfile
-from plone.namedfile import interfaces as nfi
+from plone.namedfile.interfaces import INamedField
 from plone.supermodel.interfaces import IToUnicode
 
 from zope.component import adapts
@@ -17,7 +16,7 @@ from interfaces import ISerializer, IDeserializer
 
 class NamedFileSerializer:
     implements(ISerializer)
-    adapts(nfi.INamedField)
+    adapts(INamedField)
 
     def __init__(self, field):
         self.field = field
@@ -37,9 +36,9 @@ class NamedFileSerializer:
         return dict(file=name, filename=value.filename, contenttype=value.contentType)
 
 
-class BaseNamedFileDeserializer:
+class NamedFileDeserializer:
     implements(IDeserializer)
-    _type = None
+    adapts(INamedField)
 
     def __init__(self, field):
         self.field = field
@@ -47,7 +46,7 @@ class BaseNamedFileDeserializer:
     def __call__(self, value, filestore, item):
         if isinstance(value, dict):
             filename = value.get('filename', None)
-            contenttype = value.get('contenttype', '')
+            contenttype = str(value.get('contenttype', ''))
             file = value.get('file', None)
             if file is not None:
                 data = filestore[file]['data']
@@ -61,34 +60,12 @@ class BaseNamedFileDeserializer:
             raise ValueError('Unable to convert to named file')
         if isinstance(filename, str):
             filename = filename.decode('utf-8')
-        instance = self._type(
+        instance = self.field._type(
             data=data,
             filename=filename,
             contentType=contenttype,
             )
         return instance
-
-
-class NamedFileDeserializer(BaseNamedFileDeserializer):
-    adapts(nfi.INamedFileField)
-    _type = namedfile.NamedFile
-
-
-class NamedImageDeserializer(BaseNamedFileDeserializer):
-    adapts(nfi.INamedImageField)
-    _type = namedfile.NamedImage
-
-
-if namedfile.HAVE_BLOBS:
-
-    class NamedBlobFileDeserializer(BaseNamedFileDeserializer):
-        adapts(nfi.INamedBlobFileField)
-        _type = namedfile.NamedBlobFile
-
-
-    class NamedBlobImageDeserializer(BaseNamedFileDeserializer):
-        adapts(nfi.INamedBlobImageField)
-        _type = namedfile.NamedBlobImage
 
 
 class RichTextSerializer:
