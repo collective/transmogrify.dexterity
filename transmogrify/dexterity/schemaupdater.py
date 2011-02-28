@@ -7,7 +7,9 @@ from plone.uuid.interfaces import IMutableUUID
 from z3c.form.interfaces import IValue
 
 from zope.component import queryMultiAdapter
+from zope.event import notify
 from zope.interface import classProvides, implements
+from zope.lifecycleevent import ObjectModifiedEvent
 from zope.schema import getFieldsInOrder
 
 from interfaces import IDeserializer
@@ -85,4 +87,5 @@ class DexterityUpdateSection(object):
                         value = deserializer(value, files, item)
                     field.set(field.interface(obj), value)
 
+            notify(ObjectModifiedEvent(obj))
             yield item
