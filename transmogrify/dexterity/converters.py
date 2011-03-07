@@ -96,29 +96,32 @@ class RichTextDeserializer:
     def __init__(self, field):
         self.field = field
 
+    def _convert_object(self,obj,encoding):
+        """Decode binary strings into unicode objects
+        """
+        if isinstance(obj, str): return obj.decode(encoding)
+        if isinstance(obj, unicode): return obj
+        raise ValueError('Unable to convert value to unicode string')
+    
     def __call__(self, value, filestore, item):
         if isinstance(value, dict):
-            encoding = value.get('encoding', None)
+            encoding = value.get('encoding', getSiteEncoding())
             contenttype = value.get('contenttype', None)
             if contenttype is not None:
                 contenttype = str(contenttype)
             file = value.get('file', None)
             if file is not None:
-                data = filestore[file]['data']
+                data = self._convert_object(filestore[file]['data'],encoding)
             else:
-                data = value['data']
-        elif isinstance(value, str):
-            data = value
-            encoding = None
-            contenttype = None
+                data = self._convert_object(value['data'],encoding)
         else:
-            raise ValueError('Unable to convert to named file')
-        if encoding is None:
             encoding = getSiteEncoding()
+            data = self._convert_object(value,encoding)
+            contenttype = None
         if contenttype is None:
             contenttype = self.field.default_mime_type
         instance = self._type(
-            raw=data.decode(encoding),
+            raw=data,
             mimeType=contenttype,
             outputMimeType=self.field.output_mime_type,
             encoding=encoding,
