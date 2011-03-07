@@ -116,7 +116,7 @@ class RichTextDeserializer:
         if encoding is None:
             encoding = getSiteEncoding()
         if contenttype is None:
-            conenttype = self.field.default_mime_type
+            contenttype = self.field.default_mime_type
         instance = self._type(
             raw=data.decode(encoding),
             mimeType=contenttype,
