@@ -118,7 +118,7 @@ class RichTextDeserializer:
         if contenttype is None:
             conenttype = self.field.default_mime_type
         instance = self._type(
-            raw=data,
+            raw=data.decode(encoding),
             mimeType=contenttype,
             outputMimeType=self.field.output_mime_type,
             encoding=encoding,
