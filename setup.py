@@ -7,6 +7,7 @@ maintainer = 'Philippe Gross'
 tests_require = [
     'plone.app.testing',
     'plone.app.dexterity',
+    'plone.namedfile[blobs]',
 ]
 setup(name='transmogrify.dexterity',
       version=version,
@@ -29,18 +30,19 @@ setup(name='transmogrify.dexterity',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-        'z3c.form',
-        'plone.namedfile',
-        'plone.dexterity',
+        'setuptools',
         'collective.transmogrifier',
-         'setuptools',
-          # -*- Extra requirements: -*-
-      ],
+        'plone.app.textfield',
+        'plone.dexterity',
+        'plone.namedfile',
+        'plone.supermodel',
+        'plone.uuid',
+        'z3c.form',
+        ],
       tests_require=tests_require,
       extras_require=dict(tests=tests_require),
       entry_points="""
-      # -*- Entry points: -*-
-      [z3c.autoinclude.plugin]
-      target = plone
-      """,
+        [z3c.autoinclude.plugin]
+        target = plone
+        """,
       )
