@@ -1,6 +1,6 @@
 from collective.transmogrifier.interfaces import ISectionBlueprint, ISection
 from collective.transmogrifier.sections.tests import SampleSource
-from plone.app.testing import IntegrationTesting, TEST_USER_NAME, setRoles
+from plone.app.testing import IntegrationTesting, TEST_USER_ID, setRoles
 from plone.app.testing import PloneSandboxLayer
 from plone.app.testing import PLONE_FIXTURE
 from plone.dexterity.fti import DexterityFTI, register
@@ -62,7 +62,7 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
 
     def setUpPloneSite(self, portal):
         # Install into Plone site using portal_setup
-        setRoles(portal, TEST_USER_NAME, ['Member', 'Contributor', 'Manager'])
+        setRoles(portal, TEST_USER_ID, ['Member', 'Contributor', 'Manager'])
 
         # portal workaround
         self.portal = portal
@@ -94,14 +94,14 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
                          test_file={
                             'data': zptlogo,
                             'filename': 'zptlogo.gif'},
-                         test_date='12.10.2010',
+                         test_date='2010-10-12',
                          fieldnotchanged='nochange',
                     ),
                     dict(_path='/two',
                          foo='Bla',
                          _type='TransmogrifyDexterityFTI',
                          title='My Second Object',
-                         description=None,
+                         #description=None, # None is not valid for this field.
                          test_file=zptlogo,
                          _filename="testlogo.gif",
                          test_date=date(2010, 01, 01, ),

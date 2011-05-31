@@ -5,6 +5,8 @@ Changelog
 1.0a4
 -----
 
+* Ensure RichTextValue gets a decoded unicode string, add tests
+  [lentinj]
 
 
 1.0a3
