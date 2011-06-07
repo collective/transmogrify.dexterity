@@ -2,12 +2,14 @@ Changelog
 =========
 
 
-1.0a4
------
+1.0a4 - 2011-06-07
+------------------
 
 * Ensure RichTextValue gets a decoded unicode string, add tests
   [lentinj]
 
+* Refactor to support more field types.
+  [elro]
 
 1.0a3
 -----
@@ -23,12 +25,3 @@ Changelog
 
 * fixed handling for list and bool fields
   [phgross]
-
-1.0a2
------
-
-1.0 - Unreleased
-----------------
-
-* Initial release
-
