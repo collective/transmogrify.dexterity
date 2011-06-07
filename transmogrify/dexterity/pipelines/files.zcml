@@ -1,0 +1,22 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:transmogrifier="http://namespaces.plone.org/transmogrifier"
+    i18n_domain="transmogrify.dexterity">
+
+    <include package="collective.transmogrifier" file="meta.zcml" />
+
+    <transmogrifier:registerConfig
+        name="export"
+        title="Export pipeline configuration"
+        description="This exports all dexterity content into a tree of JSON files"
+        configuration="export.cfg"
+        />
+
+    <transmogrifier:registerConfig
+        name="import"
+        title="Import pipeline configuration"
+        description="This imports all dexterity content from a tree of JSON files"
+        configuration="import.cfg"
+        />
+
+</configure>
