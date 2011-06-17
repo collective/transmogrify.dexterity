@@ -14,7 +14,7 @@ from zope.schema.interfaces import ICollection, IField, IFromUnicode
 from interfaces import ISerializer, IDeserializer
 
 
-class NamedFileSerializer:
+class NamedFileSerializer(object):
     implements(ISerializer)
     adapts(INamedField)
 
@@ -36,7 +36,7 @@ class NamedFileSerializer:
         return dict(file=name, filename=value.filename, contenttype=value.contentType)
 
 
-class NamedFileDeserializer:
+class NamedFileDeserializer(object):
     implements(IDeserializer)
     adapts(INamedField)
 
@@ -69,7 +69,7 @@ class NamedFileDeserializer:
         return instance
 
 
-class RichTextSerializer:
+class RichTextSerializer(object):
     implements(ISerializer)
     adapts(IRichText)
 
@@ -88,7 +88,7 @@ class RichTextSerializer:
         return dict(file=name, contenttype=value.mimeType, encoding=value.encoding)
 
 
-class RichTextDeserializer:
+class RichTextDeserializer(object):
     implements(IDeserializer)
     adapts(IRichText)
     _type = RichTextValue
@@ -130,7 +130,7 @@ class RichTextDeserializer:
         return instance
 
 
-class CollectionSerializer:
+class CollectionSerializer(object):
     implements(ISerializer)
     adapts(ICollection)    
 
@@ -146,7 +146,7 @@ class CollectionSerializer:
         return [serializer(v, filestore, str(i)) for i, v in enumerate(value)]
 
 
-class CollectionDeserializer:
+class CollectionDeserializer(object):
     implements(IDeserializer)
     adapts(ICollection)    
 
@@ -167,7 +167,7 @@ class CollectionDeserializer:
         return value
 
 
-class DefaultSerializer:
+class DefaultSerializer(object):
     implements(ISerializer)
     adapts(IField)
 
@@ -185,7 +185,7 @@ class DefaultSerializer:
         return value
 
 
-class DefaultDeserializer:
+class DefaultDeserializer(object):
     implements(IDeserializer)
     adapts(IField)
 

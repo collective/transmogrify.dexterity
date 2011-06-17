@@ -2,6 +2,12 @@ Changelog
 =========
 
 
+1.0a5
+------------------
+
+* Using new-style classes for [de]serializers
+  [lukasg]
+
 1.0a4 - 2011-06-07
 ------------------
 
