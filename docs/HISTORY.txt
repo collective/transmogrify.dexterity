@@ -5,8 +5,11 @@ Changelog
 1.0a5
 ------------------
 
+* Added a basic DateDeserializer
+  [lgraf]
+
 * Using new-style classes for [de]serializers
-  [lukasg]
+  [lgraf]
 
 1.0a4 - 2011-06-07
 ------------------

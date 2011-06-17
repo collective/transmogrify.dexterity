@@ -34,6 +34,8 @@
 <adapter factory=".converters.CollectionSerializer" />
 <adapter factory=".converters.CollectionDeserializer" />
 
+<adapter factory=".converters.DateDeserializer" />
+
 <adapter factory=".converters.DefaultSerializer" />
 <adapter factory=".converters.DefaultDeserializer" />
 

@@ -1,4 +1,5 @@
 import mimetypes
+from datetime import datetime
 
 from plone.app.textfield.interfaces import IRichText
 from plone.app.textfield.value import RichTextValue
@@ -9,7 +10,10 @@ from plone.supermodel.interfaces import IToUnicode
 
 from zope.component import adapts
 from zope.interface import implements
-from zope.schema.interfaces import ICollection, IField, IFromUnicode
+from zope.schema.interfaces import ICollection
+from zope.schema.interfaces import IDate
+from zope.schema.interfaces import IField
+from zope.schema.interfaces import IFromUnicode
 
 from interfaces import ISerializer, IDeserializer
 
@@ -163,6 +167,20 @@ class CollectionDeserializer(object):
             deserializer = DefaultDeserializer()
         value = [deserializer(v, filestore, item) for v in value]
         value = field._type(value)
+        self.field.validate(value)
+        return value
+
+
+class DateDeserializer(object):
+    implements(IDeserializer)
+    adapts(IDate)
+
+    def __init__(self, field):
+        self.field = field
+
+    def __call__(self, value, filestore, item):
+        if isinstance(value, datetime):
+            value = value.date()
         self.field.validate(value)
         return value
 
