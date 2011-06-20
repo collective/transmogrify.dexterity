@@ -4,8 +4,8 @@ Introduction
 The transmogrify.dexterity package provides a transmogrifier pipeline section
 for updating field values of dexterity content objects. The blueprint name is ``transmogrify.dexterity.schemaupdater``. 
 
-The schemaupdater section needs at least the path to object to update.
-Paths to objects are always interpreted as relative to the context. Any
+The schemaupdater section needs at least the path to the object to update.
+Paths to objects are always interpreted as being relative to the context. Any
 writable field who's id matches a key in the current item will be updated with
 the corresponding value.
 
@@ -22,13 +22,13 @@ Actually tested and supported fields
 - Bool
 - List
 - NamedFileField
-    need a dict with data and filename or get the filename in a seperated value from the pipeline
+    needs a dict with data and filename or get the filename in a seperated value from the pipeline
 - Date
-    need a datetime.date object or a string in the following format "%d.%m.%Y"
+    needs a datetime.date or datetime.datetime object, or a string in the following format "%Y-%m-%d"
 
 TODO
 ----
-- Generally support for all fields
+- General support for all fields
 - Tests
 
 
