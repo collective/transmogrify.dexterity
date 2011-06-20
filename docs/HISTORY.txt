@@ -5,6 +5,9 @@ Changelog
 1.0a5
 ------------------
 
+* Made CollectionDeserializer cast None and empty string to an empty list
+  [lgraf]
+
 * Added a basic DateDeserializer
   [lgraf]
 

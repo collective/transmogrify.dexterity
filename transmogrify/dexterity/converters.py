@@ -159,6 +159,8 @@ class CollectionDeserializer(object):
 
     def __call__(self, value, filestore, item):
         field = self.field
+        if value in (None, ''):
+            return []
         if isinstance(value, basestring):
             value = [v for v in (v.strip() for v in value.split(';')) if v]
         if field.value_type is not None:
