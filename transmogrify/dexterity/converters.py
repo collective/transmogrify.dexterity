@@ -185,6 +185,8 @@ class DateDeserializer(object):
         self.field = field
 
     def __call__(self, value, filestore, item, check_constraints=True):
+        if isinstance(value, basestring):
+            value = datetime.strptime(value, '%Y-%m-%d')
         if isinstance(value, datetime):
             value = value.date()
         if check_constraints:
