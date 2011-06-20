@@ -27,6 +27,7 @@ class DexterityUpdateSection(object):
         self.name = name
         self.pathkey = defaultMatcher(options, 'path-key', name, 'path')
         self.fileskey = options.get('files-key', '_files').strip()
+        self.check_constraints = eval(options.get('check-constraints', 'True'))
 
     def __iter__(self):
         for item in self.previous:
@@ -84,7 +85,7 @@ class DexterityUpdateSection(object):
                         value = default
                     else:
                         deserializer = IDeserializer(field)
-                        value = deserializer(value, files, item)
+                        value = deserializer(value, files, item, self.check_constraints)
                     field.set(field.interface(obj), value)
 
             notify(ObjectModifiedEvent(obj))

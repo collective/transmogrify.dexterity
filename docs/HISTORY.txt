@@ -5,6 +5,11 @@ Changelog
 1.0a5
 ------------------
 
+* Added check-constraints option to schemaupdater section.
+  If set to False, field values that are set in the schemaupdater section won't
+  be validated against the field's constraints.
+  [lgraf]
+
 * Made CollectionDeserializer cast None and empty string to an empty list
   [lgraf]
 

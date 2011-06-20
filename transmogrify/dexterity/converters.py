@@ -10,6 +10,7 @@ from plone.supermodel.interfaces import IToUnicode
 
 from zope.component import adapts
 from zope.interface import implements
+from zope.schema.interfaces import ConstraintNotSatisfied
 from zope.schema.interfaces import ICollection
 from zope.schema.interfaces import IDate
 from zope.schema.interfaces import IField
@@ -47,7 +48,7 @@ class NamedFileDeserializer(object):
     def __init__(self, field):
         self.field = field
 
-    def __call__(self, value, filestore, item):
+    def __call__(self, value, filestore, item, check_constraints=True):
         if isinstance(value, dict):
             filename = value.get('filename', None)
             contenttype = str(value.get('contenttype', ''))
@@ -69,7 +70,8 @@ class NamedFileDeserializer(object):
             filename=filename,
             contentType=contenttype,
             )
-        self.field.validate(instance)
+        if check_constraints:
+            self.field.validate(instance)
         return instance
 
 
@@ -107,7 +109,7 @@ class RichTextDeserializer(object):
         if isinstance(obj, unicode): return obj
         raise ValueError('Unable to convert value to unicode string')
     
-    def __call__(self, value, filestore, item):
+    def __call__(self, value, filestore, item, check_constraints=True):
         if isinstance(value, dict):
             encoding = value.get('encoding', getSiteEncoding())
             contenttype = value.get('contenttype', None)
@@ -130,7 +132,8 @@ class RichTextDeserializer(object):
             outputMimeType=self.field.output_mime_type,
             encoding=encoding,
             )
-        self.field.validate(instance)
+        if check_constraints:
+            self.field.validate(instance)
         return instance
 
 
@@ -157,7 +160,7 @@ class CollectionDeserializer(object):
     def __init__(self, field):
         self.field = field
 
-    def __call__(self, value, filestore, item):
+    def __call__(self, value, filestore, item, check_constraints=True):
         field = self.field
         if value in (None, ''):
             return []
@@ -167,9 +170,10 @@ class CollectionDeserializer(object):
             deserializer = IDeserializer(self.field.value_type)
         else:
             deserializer = DefaultDeserializer()
-        value = [deserializer(v, filestore, item) for v in value]
+        value = [deserializer(v, filestore, item, check_constraints) for v in value]
         value = field._type(value)
-        self.field.validate(value)
+        if check_constraints:
+            self.field.validate(value)
         return value
 
 
@@ -180,10 +184,11 @@ class DateDeserializer(object):
     def __init__(self, field):
         self.field = field
 
-    def __call__(self, value, filestore, item):
+    def __call__(self, value, filestore, item, check_constraints=True):
         if isinstance(value, datetime):
             value = value.date()
-        self.field.validate(value)
+        if check_constraints:
+            self.field.validate(value)
         return value
 
 
@@ -212,12 +217,17 @@ class DefaultDeserializer(object):
     def __init__(self, field):
         self.field = field
 
-    def __call__(self, value, filestore, item):
+    def __call__(self, value, filestore, item, check_constraints=True):
         field = self.field
         if field is not None:
             if isinstance(value, str):
                 value = value.decode('utf-8')
             if isinstance(value, unicode):
-                value = IFromUnicode(field).fromUnicode(value)
-            self.field.validate(value)
+                try:
+                    value = IFromUnicode(field).fromUnicode(value)
+                except ConstraintNotSatisfied:
+                    if check_constraints:
+                        raise ConstraintNotSatisfied(value)
+            if check_constraints:
+                self.field.validate(value)
         return value
