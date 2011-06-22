@@ -48,7 +48,7 @@ class NamedFileDeserializer(object):
     def __init__(self, field):
         self.field = field
 
-    def __call__(self, value, filestore, item, check_constraints=True):
+    def __call__(self, value, filestore, item, disable_constraints=False):
         if isinstance(value, dict):
             filename = value.get('filename', None)
             contenttype = str(value.get('contenttype', ''))
@@ -70,7 +70,7 @@ class NamedFileDeserializer(object):
             filename=filename,
             contentType=contenttype,
             )
-        if check_constraints:
+        if not disable_constraints:
             self.field.validate(instance)
         return instance
 
@@ -109,7 +109,7 @@ class RichTextDeserializer(object):
         if isinstance(obj, unicode): return obj
         raise ValueError('Unable to convert value to unicode string')
     
-    def __call__(self, value, filestore, item, check_constraints=True):
+    def __call__(self, value, filestore, item, disable_constraints=False):
         if isinstance(value, dict):
             encoding = value.get('encoding', getSiteEncoding())
             contenttype = value.get('contenttype', None)
@@ -132,7 +132,7 @@ class RichTextDeserializer(object):
             outputMimeType=self.field.output_mime_type,
             encoding=encoding,
             )
-        if check_constraints:
+        if not disable_constraints:
             self.field.validate(instance)
         return instance
 
@@ -160,7 +160,7 @@ class CollectionDeserializer(object):
     def __init__(self, field):
         self.field = field
 
-    def __call__(self, value, filestore, item, check_constraints=True):
+    def __call__(self, value, filestore, item, disable_constraints=False):
         field = self.field
         if value in (None, ''):
             return []
@@ -170,9 +170,9 @@ class CollectionDeserializer(object):
             deserializer = IDeserializer(self.field.value_type)
         else:
             deserializer = DefaultDeserializer()
-        value = [deserializer(v, filestore, item, check_constraints) for v in value]
+        value = [deserializer(v, filestore, item, disable_constraints) for v in value]
         value = field._type(value)
-        if check_constraints:
+        if not disable_constraints:
             self.field.validate(value)
         return value
 
@@ -184,12 +184,12 @@ class DateDeserializer(object):
     def __init__(self, field):
         self.field = field
 
-    def __call__(self, value, filestore, item, check_constraints=True):
+    def __call__(self, value, filestore, item, disable_constraints=False):
         if isinstance(value, basestring):
             value = datetime.strptime(value, '%Y-%m-%d')
         if isinstance(value, datetime):
             value = value.date()
-        if check_constraints:
+        if not disable_constraints:
             self.field.validate(value)
         return value
 
@@ -219,7 +219,7 @@ class DefaultDeserializer(object):
     def __init__(self, field):
         self.field = field
 
-    def __call__(self, value, filestore, item, check_constraints=True):
+    def __call__(self, value, filestore, item, disable_constraints=False):
         field = self.field
         if field is not None:
             if isinstance(value, str):
@@ -228,8 +228,13 @@ class DefaultDeserializer(object):
                 try:
                     value = IFromUnicode(field).fromUnicode(value)
                 except ConstraintNotSatisfied:
-                    if check_constraints:
+                    if not disable_constraints:
                         raise ConstraintNotSatisfied(value)
-            if check_constraints:
+                except TypeError, e:
+                    # TODO: This TypeError may happen because zope.schema._field.Choice._validate
+                    # tries to iterate over a vocabulary factory without calling it
+                    if not disable_constraints:
+                        raise e
+            if not disable_constraints:
                 self.field.validate(value)
         return value

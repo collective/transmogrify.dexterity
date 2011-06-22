@@ -1,5 +1,6 @@
 from collective.transmogrifier.interfaces import ISectionBlueprint, ISection
 from collective.transmogrifier.utils import defaultMatcher
+from collective.transmogrifier.utils import Expression
 
 from plone.dexterity.utils import iterSchemata
 from plone.uuid.interfaces import IMutableUUID
@@ -27,7 +28,8 @@ class DexterityUpdateSection(object):
         self.name = name
         self.pathkey = defaultMatcher(options, 'path-key', name, 'path')
         self.fileskey = options.get('files-key', '_files').strip()
-        self.check_constraints = eval(options.get('check-constraints', 'True'))
+        self.disable_constraints = Expression(options.get('disable-constraints', 'python: False'), 
+                                        transmogrifier, name, options)
 
     def __iter__(self):
         for item in self.previous:
@@ -85,7 +87,7 @@ class DexterityUpdateSection(object):
                         value = default
                     else:
                         deserializer = IDeserializer(field)
-                        value = deserializer(value, files, item, self.check_constraints)
+                        value = deserializer(value, files, item, self.disable_constraints)
                     field.set(field.interface(obj), value)
 
             notify(ObjectModifiedEvent(obj))
