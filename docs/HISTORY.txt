@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.0 (unreleased)
+1.0 (2011-11-17)
 ----------------
 
 - Updated changelog to be zest releaser compatible
