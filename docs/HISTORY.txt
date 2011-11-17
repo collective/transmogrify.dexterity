@@ -2,47 +2,52 @@ Changelog
 =========
 
 
-1.0a6
------
+1.0 (unreleased)
+----------------
+
+- Updated changelog to be zest releaser compatible
+  [lgraf]
 
 
-1.0a5
+1.0a5 (2011-07-18)
 ------------------
 
-* Added check-constraints option to schemaupdater section.
+- Added check-constraints option to schemaupdater section.
   If set to False, field values that are set in the schemaupdater section won't
   be validated against the field's constraints.
   [lgraf]
 
-* Made CollectionDeserializer cast None and empty string to an empty list
+- Made CollectionDeserializer cast None and empty string to an empty list
   [lgraf]
 
-* Added a basic DateDeserializer
+- Added a basic DateDeserializer
   [lgraf]
 
-* Using new-style classes for [de]serializers
+- Using new-style classes for [de]serializers
   [lgraf]
 
-1.0a4 - 2011-06-07
+
+1.0a4 (2011-06-07)
 ------------------
 
-* Ensure RichTextValue gets a decoded unicode string, add tests
+- Ensure RichTextValue gets a decoded unicode string, add tests
   [lentinj]
 
-* Refactor to support more field types.
+- Refactor to support more field types.
   [elro]
 
-1.0a3
------
 
-* Fixed bug in typechecking of values for Boolean fields
+1.0a3 (2010-03-12)
+------------------
+
+- Fixed bug in typechecking of values for Boolean fields
   [lgraf]
 
-* fixed dateconverting
+- fixed dateconverting
   [phgross]
 
-* fixed value check: so that it works correctly with an empty string
+- fixed value check: so that it works correctly with an empty string
   [phgross]
 
-* fixed handling for list and bool fields
+- fixed handling for list and bool fields
   [phgross]
