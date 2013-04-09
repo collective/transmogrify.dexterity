@@ -62,6 +62,8 @@ class DexterityUpdateSection(object):
             #get all fields for this obj
             for schemata in iterSchemata(obj):
                 for name, field in getFieldsInOrder(schemata):
+                    if field.readonly:
+                        continue
                     #setting value from the blueprint cue
                     value = item.get(name, _marker)
                     if value is _marker:
