@@ -26,9 +26,36 @@ Actually tested and supported fields
 - Date
     needs a datetime.date or datetime.datetime object, or a string in the following format "%Y-%m-%d"
 
+
+Default pipelines
+=================
+
+This package also registers a number of pipelines for you to use. To add them
+to a GenericSetup profile, create a ``transmogrifier.txt`` with the name of the
+pipeline you wish to use.
+
+transmogrify.dexterity.csvimport
+--------------------------------
+
+This pipeline will convert a CSV file into dexterity content. By default, the
+CSV file will be found in ``/tmp/entries.csv``.
+
+NB: Unfortunately it cannot read files out of GS profiles, this is a limitation
+in the csvsource, one I may well fix.
+
+Any column beyond the ones listed below will be presumed to be a Dexterity
+field, and will be updated. Special columns are:
+
+- _type
+    portal_type of content (optional, default is Document)
+- _path
+    Full path to content item, including content item.
+- _folder
+    Folder containing item, id will be derived from title
+- _transitions
+    Workflow transition (optional, default is "publish")
+
 TODO
 ----
 - General support for all fields
 - Tests
-
-

@@ -5,6 +5,8 @@
 
     <include package="collective.transmogrifier" />
 
+    <include package=".pipelines" />
+
 <utility
     component=".schemaupdater.DexterityUpdateSection"
     name="transmogrify.dexterity.schemaupdater"

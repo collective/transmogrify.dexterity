@@ -1,0 +1,14 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:transmogrifier="http://namespaces.plone.org/transmogrifier"
+    i18n_domain="transmogrify.dexterity">
+
+    <transmogrifier:registerConfig
+        name="transmogrify.dexterity.csvimport"
+        title="CSV import"
+        description="Import content items from a CSV file"
+        configuration="csvimport.cfg"
+        />
+
+</configure>
