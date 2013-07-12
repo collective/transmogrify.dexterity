@@ -33,6 +33,17 @@ zptlogo = (
     '\x00A\x00;')
 
 
+class FakeImportContext(object):
+    def __init__(self, filename, contents):
+        self.filename = filename
+        self.contents = contents
+
+    def readDataFile(self, filename, subdir=None):
+        if subdir == '' and filename == self.filename:
+            return self.contents
+        return None
+
+
 class ITestSchema(form.Schema):
 
     foo = schema.TextLine(

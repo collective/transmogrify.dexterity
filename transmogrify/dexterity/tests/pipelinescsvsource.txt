@@ -13,17 +13,19 @@ Do some imports
     >>> from collective.transmogrifier.meta import registerConfig
     >>> from collective.transmogrifier.transmogrifier import Transmogrifier
     >>> from plone.app.dexterity.behaviors.metadata import IBasic
-    >>> from transmogrify.dexterity.testing import zptlogo
+    >>> from transmogrify.dexterity.testing import FakeImportContext
+    >>> from collective.transmogrifier.genericsetup import IMPORT_CONTEXT
+    >>> from zope.annotation.interfaces import IAnnotations
 
 Run the pipeline, using hard coded content item IDs
 
     >>> transmogrifier = Transmogrifier(portal)
-    >>> with open('/tmp/entries.csv', 'w') as f: f.write(
+    >>> IAnnotations(transmogrifier)[IMPORT_CONTEXT] = FakeImportContext('entries.csv',
     ... """_type,_path,title,foo,test_date
     ... TransmogrifyDexterityFTI,content-1,Content Item 1,Foo!,1999-12-31
     ... TransmogrifyDexterityFTI,content-2,Content Item 2,Bar!,1999-12-31
     ... """)
-    >>> output = Transmogrifier(portal)(u'transmogrify.dexterity.csvimport')
+    >>> output = transmogrifier(u'transmogrify.dexterity.csvimport')
 
 Check that content items got made
 
@@ -44,12 +46,12 @@ Check that content items got made
 Run the pipeline, generate content item IDs from title
 
     >>> transmogrifier = Transmogrifier(portal)
-    >>> with open('/tmp/entries.csv', 'w') as f: f.write(
+    >>> IAnnotations(transmogrifier)[IMPORT_CONTEXT] = FakeImportContext('entries.csv',
     ... """_type,title,foo,test_date
     ... TransmogrifyDexterityFTI,Content Item 3,Baz!,1999-12-31
     ... TransmogrifyDexterityFTI,Content Item 4,Qux!,1999-12-31
     ... """)
-    >>> output = Transmogrifier(portal)(u'transmogrify.dexterity.csvimport')
+    >>> output = transmogrifier(u'transmogrify.dexterity.csvimport')
 
 Check that content items got made
 
@@ -63,12 +65,12 @@ Run the pipeline, generate content item IDs into folder
     >>> portal.invokeFactory(type_name="Folder", id="test-content")
     'test-content'
     >>> transmogrifier = Transmogrifier(portal)
-    >>> with open('/tmp/entries.csv', 'w') as f: f.write(
+    >>> IAnnotations(transmogrifier)[IMPORT_CONTEXT] = FakeImportContext('entries.csv',
     ... """_type,_folder,title,foo,test_date
     ... TransmogrifyDexterityFTI,test-content,Content Item 5,Quux!,1999-12-31
     ... TransmogrifyDexterityFTI,test-content,Content Item 6,Corge!,1999-12-31
     ... """)
-    >>> output = Transmogrifier(portal)(u'transmogrify.dexterity.csvimport')
+    >>> output = transmogrifier(u'transmogrify.dexterity.csvimport')
 
 Check that content items got made
 
