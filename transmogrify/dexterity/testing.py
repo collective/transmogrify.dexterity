@@ -3,6 +3,7 @@ from collective.transmogrifier.sections.tests import SampleSource
 from plone.app.testing import IntegrationTesting, TEST_USER_ID, setRoles
 from plone.app.testing import PloneSandboxLayer
 from plone.app.testing import PLONE_FIXTURE
+from plone.app.textfield import RichText
 from plone.dexterity.fti import DexterityFTI, register
 from plone.directives import form
 from plone.namedfile.field import NamedFile
@@ -56,6 +57,10 @@ class ITestSchema(form.Schema):
 
     test_date = schema.Date(
         title = u'test_date',
+    )
+
+    fancy_text = RichText(
+        title=u"Fancy text",
     )
 
 
