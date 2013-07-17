@@ -40,9 +40,11 @@ class FakeImportContext(object):
         self.contents = contents
 
     def readDataFile(self, filename, subdir=None):
-        if subdir == '' and filename == self.filename:
-            return self.contents
-        return None
+        if subdir is not None:
+            return None
+        if filename != self.filename:
+            return None
+        return self.contents
 
 
 class ITestSchema(form.Schema):
