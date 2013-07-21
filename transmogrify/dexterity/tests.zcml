@@ -1,6 +1,7 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:transmogrifier="http://namespaces.plone.org/transmogrifier">
+    xmlns:transmogrifier="http://namespaces.plone.org/transmogrifier"
+    i18n_domain="transmogrify.dexterity">
 
     <include package="collective.transmogrifier" />
     <include package="plone.app.dexterity" />

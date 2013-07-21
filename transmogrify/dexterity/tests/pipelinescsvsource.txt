@@ -1,0 +1,94 @@
+csvsource pipeline
+==================
+
+
+Globals:
+
+    >>> app = layer.get('app')
+    >>> portal = layer.get('portal')
+    >>> request = layer.get('request')
+
+Do some imports 
+
+    >>> from collective.transmogrifier.meta import registerConfig
+    >>> from collective.transmogrifier.transmogrifier import Transmogrifier
+    >>> from plone.app.dexterity.behaviors.metadata import IBasic
+    >>> from transmogrify.dexterity.testing import FakeImportContext
+    >>> from collective.transmogrifier.genericsetup import IMPORT_CONTEXT
+    >>> from zope.annotation.interfaces import IAnnotations
+
+Run the pipeline, using hard coded content item IDs
+
+    >>> transmogrifier = Transmogrifier(portal)
+    >>> IAnnotations(transmogrifier)[IMPORT_CONTEXT] = FakeImportContext('entries.csv',
+    ... """_type,_path,title,foo,test_date
+    ... TransmogrifyDexterityFTI,content-1,Content Item 1,Foo!,1999-12-31
+    ... TransmogrifyDexterityFTI,content-2,Content Item 2,Bar!,1999-12-31
+    ... """)
+    >>> output = transmogrifier(u'transmogrify.dexterity.csvimport')
+
+Check that content items got made
+
+    >>> IBasic(portal['content-1']).title
+    u'Content Item 1'
+    >>> portal['content-1'].foo
+    u'Foo!'
+    >>> portal['content-1'].test_date
+    datetime.date(1999, 12, 31)
+
+    >>> IBasic(portal['content-2']).title
+    u'Content Item 2'
+    >>> portal['content-2'].foo
+    u'Bar!'
+    >>> portal['content-2'].test_date
+    datetime.date(1999, 12, 31)
+
+Run the pipeline, generate content item IDs from title
+
+    >>> transmogrifier = Transmogrifier(portal)
+    >>> IAnnotations(transmogrifier)[IMPORT_CONTEXT] = FakeImportContext('entries.csv',
+    ... """_type,title,foo,test_date
+    ... TransmogrifyDexterityFTI,Content Item 3,Baz!,1999-12-31
+    ... TransmogrifyDexterityFTI,Content Item 4,Qux!,1999-12-31
+    ... """)
+    >>> output = transmogrifier(u'transmogrify.dexterity.csvimport')
+
+Check that content items got made
+
+    >>> portal['content-item-3'].foo
+    u'Baz!'
+    >>> portal['content-item-4'].foo
+    u'Qux!'
+
+Run the pipeline, generate content item IDs into folder
+
+    >>> portal.invokeFactory(type_name="Folder", id="test-content")
+    'test-content'
+    >>> transmogrifier = Transmogrifier(portal)
+    >>> IAnnotations(transmogrifier)[IMPORT_CONTEXT] = FakeImportContext('entries.csv',
+    ... """_type,_folder,title,foo,test_date
+    ... TransmogrifyDexterityFTI,test-content,Content Item 5,Quux!,1999-12-31
+    ... TransmogrifyDexterityFTI,test-content,Content Item 6,Corge!,1999-12-31
+    ... """)
+    >>> output = transmogrifier(u'transmogrify.dexterity.csvimport')
+
+Check that content items got made
+
+    >>> portal['test-content']['content-item-5'].foo
+    u'Quux!'
+    >>> portal['test-content']['content-item-6'].foo
+    u'Corge!'
+
+Update first items with some fancy rich text:
+
+    >>> transmogrifier = Transmogrifier(portal)
+    >>> IAnnotations(transmogrifier)[IMPORT_CONTEXT] = FakeImportContext('entries.csv',
+    ... """_type,_path,fancy_text
+    ... TransmogrifyDexterityFTI,content-1,"<b>Ooo</b>, la la!"
+    ... TransmogrifyDexterityFTI,content-2,"<em>Amazing</em>"
+    ... """)
+    >>> output = transmogrifier(u'transmogrify.dexterity.csvimport')
+    >>> portal['content-1'].fancy_text.output
+    u'<b>Ooo</b>, la la!'
+    >>> portal['content-2'].fancy_text.output
+    u'<em>Amazing</em>'

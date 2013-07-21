@@ -10,6 +10,7 @@ OPTIONFLAGS = (doctest.NORMALIZE_WHITESPACE|
 
 TESTFILES = (
     'schemaupdater.txt',
+    'pipelinescsvsource.txt',
     )
 
 

@@ -3,6 +3,7 @@ from collective.transmogrifier.sections.tests import SampleSource
 from plone.app.testing import IntegrationTesting, TEST_USER_ID, setRoles
 from plone.app.testing import PloneSandboxLayer
 from plone.app.testing import PLONE_FIXTURE
+from plone.app.textfield import RichText
 from plone.dexterity.fti import DexterityFTI, register
 from plone.directives import form
 from plone.namedfile.field import NamedFile
@@ -33,6 +34,19 @@ zptlogo = (
     '\x00A\x00;')
 
 
+class FakeImportContext(object):
+    def __init__(self, filename, contents):
+        self.filename = filename
+        self.contents = contents
+
+    def readDataFile(self, filename, subdir=None):
+        if subdir is not None:
+            return None
+        if filename != self.filename:
+            return None
+        return self.contents
+
+
 class ITestSchema(form.Schema):
 
     foo = schema.TextLine(
@@ -47,6 +61,10 @@ class ITestSchema(form.Schema):
         title = u'test_date',
     )
 
+    fancy_text = RichText(
+        title=u"Fancy text",
+    )
+
 
 class TransmogrifyDexterityLayer(PloneSandboxLayer):
 
@@ -55,6 +73,8 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
     def setUpZope(self, app, configurationContext):
         # Load ZCML
         import transmogrify.dexterity
+        xmlconfig.file('meta.zcml',
+            transmogrify.dexterity, context=configurationContext)
         xmlconfig.file('configure.zcml',
             transmogrify.dexterity, context=configurationContext)
         xmlconfig.file('tests.zcml',
