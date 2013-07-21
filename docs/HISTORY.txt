@@ -5,6 +5,9 @@ Changelog
 1.0.1 (unreleased)
 ------------------
 
+- Don't try to write readonly fields
+  [djowett]
+
 - Added in a generic CSV -> content pipeline
   [lentinj]
 
