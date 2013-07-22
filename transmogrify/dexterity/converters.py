@@ -48,7 +48,7 @@ class NamedFileDeserializer(object):
     def __init__(self, field):
         self.field = field
 
-    def __call__(self, value, filestore, item, disable_constraints=False):
+    def __call__(self, value, filestore, item, disable_constraints=False, logger=None):
         if isinstance(value, dict):
             filename = value.get('filename', None)
             contenttype = str(value.get('contenttype', ''))
@@ -70,8 +70,19 @@ class NamedFileDeserializer(object):
             filename=filename,
             contentType=contenttype,
             )
-        if not disable_constraints:
+        try:
             self.field.validate(instance)
+        except Exception, e:
+            if not disable_constraints:
+                raise e
+            else:
+                if logger:
+                    logger(
+                        "%s is invalid in %s: %s" % (
+                            self.field.__name__,
+                            item['_path'],
+                            e)
+                        )
         return instance
 
 
@@ -109,7 +120,7 @@ class RichTextDeserializer(object):
         if isinstance(obj, unicode): return obj
         raise ValueError('Unable to convert value to unicode string')
     
-    def __call__(self, value, filestore, item, disable_constraints=False):
+    def __call__(self, value, filestore, item, disable_constraints=False, logger=None):
         if isinstance(value, dict):
             encoding = value.get('encoding', getSiteEncoding())
             contenttype = value.get('contenttype', None)
@@ -132,14 +143,25 @@ class RichTextDeserializer(object):
             outputMimeType=self.field.output_mime_type,
             encoding=encoding,
             )
-        if not disable_constraints:
+        try:
             self.field.validate(instance)
+        except Exception, e:
+            if not disable_constraints:
+                raise e
+            else:
+                if logger:
+                    logger(
+                        "%s is invalid in %s: %s" % (
+                            self.field.__name__,
+                            item['_path'],
+                            e)
+                        )
         return instance
 
 
 class CollectionSerializer(object):
     implements(ISerializer)
-    adapts(ICollection)    
+    adapts(ICollection)
 
     def __init__(self, field):
         self.field = field
@@ -160,7 +182,7 @@ class CollectionDeserializer(object):
     def __init__(self, field):
         self.field = field
 
-    def __call__(self, value, filestore, item, disable_constraints=False):
+    def __call__(self, value, filestore, item, disable_constraints=False, logger=None):
         field = self.field
         if value in (None, ''):
             return []
@@ -170,10 +192,21 @@ class CollectionDeserializer(object):
             deserializer = IDeserializer(self.field.value_type)
         else:
             deserializer = DefaultDeserializer()
-        value = [deserializer(v, filestore, item, disable_constraints) for v in value]
+        value = [deserializer(v, filestore, item, disable_constraints, logger=logger) for v in value]
         value = field._type(value)
-        if not disable_constraints:
+        try:
             self.field.validate(value)
+        except Exception, e:
+            if not disable_constraints:
+                raise e
+            else:
+                if logger:
+                    logger(
+                        "%s is invalid in %s: %s" % (
+                            self.field.__name__,
+                            item['_path'],
+                            e)
+                        )
         return value
 
 
@@ -184,13 +217,24 @@ class DateDeserializer(object):
     def __init__(self, field):
         self.field = field
 
-    def __call__(self, value, filestore, item, disable_constraints=False):
+    def __call__(self, value, filestore, item, disable_constraints=False, logger=None):
         if isinstance(value, basestring):
             value = datetime.strptime(value, '%Y-%m-%d')
         if isinstance(value, datetime):
             value = value.date()
-        if not disable_constraints:
+        try:
             self.field.validate(value)
+        except Exception, e:
+            if not disable_constraints:
+                raise e
+            else:
+                if logger:
+                    logger(
+                        "%s is invalid in %s: %s" % (
+                            self.field.__name__,
+                            item['_path'],
+                            e)
+                        )
         return value
 
 
@@ -219,22 +263,24 @@ class DefaultDeserializer(object):
     def __init__(self, field):
         self.field = field
 
-    def __call__(self, value, filestore, item, disable_constraints=False):
+    def __call__(self, value, filestore, item, disable_constraints=False, logger=None):
         field = self.field
         if field is not None:
-            if isinstance(value, str):
-                value = value.decode('utf-8')
-            if isinstance(value, unicode):
-                try:
+            try:
+                if isinstance(value, str):
+                    value = value.decode('utf-8')
+                if isinstance(value, unicode):
                     value = IFromUnicode(field).fromUnicode(value)
-                except ConstraintNotSatisfied:
-                    if not disable_constraints:
-                        raise ConstraintNotSatisfied(value)
-                except TypeError, e:
-                    # TODO: This TypeError may happen because zope.schema._field.Choice._validate
-                    # tries to iterate over a vocabulary factory without calling it
-                    if not disable_constraints:
-                        raise e
-            if not disable_constraints:
                 self.field.validate(value)
+            except Exception, e:
+                if not disable_constraints:
+                    raise e
+                else:
+                    if logger:
+                        logger(
+                            "%s is invalid in %s: %s" % (
+                                self.field.__name__,
+                                item['_path'],
+                                e)
+                            )
         return value
