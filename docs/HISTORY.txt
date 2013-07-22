@@ -11,6 +11,9 @@ Changelog
 - Added in a generic CSV -> content pipeline
   [lentinj]
 
+- Add 'logger' and 'loglevel' options so invalid fields are logged when
+  disable-constraints is True [ebrehault]
+
 
 1.0 (2011-11-17)
 ----------------
