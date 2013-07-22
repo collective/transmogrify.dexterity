@@ -281,6 +281,6 @@ class DefaultDeserializer(object):
                             "%s is invalid in %s: %s" % (
                                 self.field.__name__,
                                 item['_path'],
-                                e)
+                                e.__repr__())
                             )
         return value
