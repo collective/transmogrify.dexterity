@@ -5,9 +5,9 @@ from collective.transmogrifier.utils import Expression
 from plone.dexterity.utils import iterSchemata
 from plone.uuid.interfaces import IMutableUUID
 
-from z3c.form.interfaces import IValue
+from z3c.form import interfaces
 
-from zope.component import queryMultiAdapter
+from zope.component import queryMultiAdapter, getMultiAdapter
 from zope.event import notify
 from zope.interface import classProvides, implements
 from zope.lifecycleevent import ObjectModifiedEvent
@@ -64,38 +64,53 @@ class DexterityUpdateSection(object):
 
             files = item.setdefault(self.fileskey, {})
 
-            #get all fields for this obj
+            # For all fields in the schema, update in roughly the same way
+            # z3c.form.widget.py would
             for schemata in iterSchemata(obj):
                 for name, field in getFieldsInOrder(schemata):
                     if field.readonly:
                         continue
                     #setting value from the blueprint cue
                     value = item.get(name, _marker)
-                    if value is _marker:
-                        # No value is given from the pipeline,
-                        # so we try to set the default value
-                        # otherwise we set the missing value
-                        default = queryMultiAdapter((
-                                obj,
-                                obj.REQUEST, # request
-                                None, # form
-                                field,
-                                None, # Widget
-                                ), IValue, name='default')
-                        if default is not None:
-                            default = default.get()
-                        if default is None:
-                            default = getattr(field, 'default', None)
-                        if default is None:
-                            try:
-                                default = field.missing_value
-                            except AttributeError:
-                                pass
-                        value = default
-                    else:
+                    if value is not _marker:
+                        # Value was given in pipeline, so set it
                         deserializer = IDeserializer(field)
-                        value = deserializer(value, files, item, self.disable_constraints)
-                    field.set(field.interface(obj), value)
+                        value = deserializer(
+                            value,
+                            files,
+                            item,
+                            self.disable_constraints,
+                        )
+                        field.set(field.interface(obj), value)
+                        continue
+
+                    # Get the widget's current value, if it has one then leave
+                    # it alone
+                    value = getMultiAdapter(
+                        (obj, field),
+                        interfaces.IDataManager).query()
+                    if not(value is field.missing_value
+                           or value is interfaces.NO_VALUE):
+                        continue
+
+                    # Finally, set a default value if nothing is set so far
+                    default = queryMultiAdapter((
+                        obj,
+                        obj.REQUEST,  # request
+                        None,  # form
+                        field,
+                        None,  # Widget
+                    ), interfaces.IValue, name='default')
+                    if default is not None:
+                        default = default.get()
+                    if default is None:
+                        default = getattr(field, 'default', None)
+                    if default is None:
+                        try:
+                            default = field.missing_value
+                        except AttributeError:
+                            pass
+                    field.set(field.interface(obj), default)
 
             notify(ObjectModifiedEvent(obj))
             yield item

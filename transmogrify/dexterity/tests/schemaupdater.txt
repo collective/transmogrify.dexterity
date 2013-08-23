@@ -15,26 +15,7 @@ Do some imports
     >>> from plone.app.dexterity.behaviors.metadata import IBasic
     >>> from transmogrify.dexterity.testing import zptlogo
 
-Test configuration for transmogrifier (registered by tests.zcml):
-
-    >>> dexterityconfig = """
-    ... [transmogrifier]
-    ... pipeline =
-    ...     testsource
-    ...     testcreator
-    ...     schemaupdater
-    ...     
-    ... [testsource]
-    ... blueprint = transmogrify.dexterity.testsource
-    ... 
-    ... [testcreator]
-    ... blueprint = collective.transmogrifier.sections.constructor
-    ...
-    ... [schemaupdater]
-    ... blueprint = transmogrify.dexterity.schemaupdater
-    ... """
-
-Let transmorifier to his work!
+Run transmogrifier pipeline with default settings (pipeline in tests.cfg)
 
     >>> transmogrifier = Transmogrifier(portal)
     >>> output = transmogrifier(u'transmogrify.dexterity.testconfiguration')
@@ -84,4 +65,16 @@ DateFields:
     >>> two.test_date
     datetime.date(2010, 1, 1)
     
+Won't touch already existing values
 
+    >>> transmogrifier = Transmogrifier(portal)
+    >>> output = transmogrifier(u'transmogrify.dexterity.testconfiguration')
+    >>> transmogrifier = Transmogrifier(portal)
+    >>> output = transmogrifier(u'transmogrify.dexterity.testconfiguration', definitions={
+    ...     'source-content': 'onlytitle',
+    ... })
+    >>> spam = portal.get('spam')
+    >>> IBasic(spam).title
+    u'Spammety spam'
+    >>> spam.foo
+    u'one value'
