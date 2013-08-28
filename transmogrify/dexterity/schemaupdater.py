@@ -17,6 +17,7 @@ from interfaces import IDeserializer
 
 _marker = object()
 
+
 class DexterityUpdateSection(object):
 
     classProvides(ISectionBlueprint)
@@ -28,8 +29,12 @@ class DexterityUpdateSection(object):
         self.name = name
         self.pathkey = defaultMatcher(options, 'path-key', name, 'path')
         self.fileskey = options.get('files-key', '_files').strip()
-        self.disable_constraints = Expression(options.get('disable-constraints', 'python: False'), 
-                                        transmogrifier, name, options)
+        self.disable_constraints = Expression(
+            options.get('disable-constraints', 'python: False'),
+            transmogrifier,
+            name,
+            options,
+        )
 
     def __iter__(self):
         for item in self.previous:
