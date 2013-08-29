@@ -5,7 +5,10 @@ Changelog
 1.2 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Only update with a default value if there isn't a value already set
+  on the field. (NB: before a default value would be set, regardless
+  of the current field value).
+  [lentinj]
 
 
 1.1 (2013-07-23)
