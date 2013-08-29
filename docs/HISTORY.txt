@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.2 (unreleased)
+1.2 (2013-08-29)
 ----------------
 
 - Only update with a default value if there isn't a value already set
