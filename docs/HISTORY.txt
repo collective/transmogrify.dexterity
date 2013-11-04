@@ -2,17 +2,30 @@ Changelog
 =========
 
 
-1.0.1 (unreleased)
-------------------
+1.3 (unreleased)
+----------------
+
+- Add 'logger' and 'loglevel' options so invalid fields are logged when
+  disable-constraints is True [ebrehault]
+
+
+1.2 (2013-08-29)
+----------------
+
+- Only update with a default value if there isn't a value already set
+  on the field. (NB: before a default value would be set, regardless
+  of the current field value).
+  [lentinj]
+
+
+1.1 (2013-07-23)
+----------------
 
 - Don't try to write readonly fields
   [djowett]
 
 - Added in a generic CSV -> content pipeline
   [lentinj]
-
-- Add 'logger' and 'loglevel' options so invalid fields are logged when
-  disable-constraints is True [ebrehault]
 
 
 1.0 (2011-11-17)

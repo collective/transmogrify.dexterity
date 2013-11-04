@@ -34,8 +34,6 @@ class SerializerSection(object):
                 yield item
                 continue
 
-            if None in item:
-                import pdb; pdb.set_trace()
             data = dict((key, value) for key, value in item.iteritems() if not key.startswith('_'))
             if not data:
                 yield item

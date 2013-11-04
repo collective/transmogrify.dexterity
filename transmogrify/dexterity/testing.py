@@ -103,31 +103,42 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
             classProvides(ISectionBlueprint)
             implements(ISection)
 
-            def __init__(self, *args, **kw):
-                super(SchemaSource, self).__init__(*args, **kw)
-                self.sample = (
-                    dict(_path='/spam',
-                         foo='one value',
-                         _type='TransmogrifyDexterityFTI',
-                         title='Spam',
-                         description='Lorem Ipsum bla bla!',
-                         test_file={
-                            'data': zptlogo,
-                            'filename': 'zptlogo.gif'},
-                         test_date='2010-10-12',
-                         fieldnotchanged='nochange',
-                    ),
-                    dict(_path='/two',
-                         foo='Bla',
-                         _type='TransmogrifyDexterityFTI',
-                         title='My Second Object',
-                         #description=None, # None is not valid for this field.
-                         test_file=zptlogo,
-                         _filename="testlogo.gif",
-                         test_date=date(2010, 01, 01, ),
-                         fieldnotchanged='nochange',
-                    ),
-                )
+            def __init__(self, transmogrifier, name, options, previous):
+                super(SchemaSource, self).__init__(transmogrifier, name, options, previous)
+                sourcecontent = options.get('source-content', 'full')
+                if sourcecontent == 'full':
+                    self.sample = (
+                        dict(_path='/spam',
+                             foo='one value',
+                             _type='TransmogrifyDexterityFTI',
+                             title='Spam',
+                             description='Lorem Ipsum bla bla!',
+                             test_file={
+                                'data': zptlogo,
+                                'filename': 'zptlogo.gif'},
+                             test_date='2010-10-12',
+                             fieldnotchanged='nochange',
+                        ),
+                        dict(_path='/two',
+                             foo='Bla',
+                             _type='TransmogrifyDexterityFTI',
+                             title='My Second Object',
+                             #description=None, # None is not valid for this field.
+                             test_file=zptlogo,
+                             _filename="testlogo.gif",
+                             test_date=date(2010, 01, 01, ),
+                             fieldnotchanged='nochange',
+                        ),
+                    )
+                elif sourcecontent == 'onlytitle':
+                    self.sample = (
+                        dict(_path='/spam',
+                             _type='TransmogrifyDexterityFTI',
+                             title='Spammety spam'),
+                        dict(_path='/two',
+                             _type='TransmogrifyDexterityFTI',
+                             title='My Awesome Second Object'),
+                    )
         provideUtility(SchemaSource,
             name=u'transmogrify.dexterity.testsource')
 
