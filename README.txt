@@ -37,14 +37,19 @@ pipeline you wish to use.
 transmogrify.dexterity.csvimport
 --------------------------------
 
-This pipeline will convert a CSV file into dexterity content. By default, the
-CSV file will be found in ``/tmp/entries.csv``.
+This pipeline will convert a CSV file into dexterity content. To use it:
+* Name your CSV ``entries.csv``
+* Create a file called ``transmogrifier.txt`` with the one line ``transmogrify.dexterity.csvimport``
+* Add both to a ``.tar.gz`` file
+* Visit /Plone/portal_setup/manage_importSteps
+* Select the tarball you just made
+* "Import uploaded tarball"
 
-NB: Unfortunately it cannot read files out of GS profiles, this is a limitation
-in the csvsource, one I may well fix.
+...or add it as part of another GS profile.
 
-Any column beyond the ones listed below will be presumed to be a Dexterity
-field, and will be updated. Special columns are:
+The first row of the CSV is presumed to be column headings. Unless a special
+column, the column will be presumed to be a dexterity property to update on the
+type. Special column names are:-
 
 - _type
     portal_type of content (optional, default is Document)
