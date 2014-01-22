@@ -1,3 +1,5 @@
+import logging
+
 from collective.transmogrifier.interfaces import ISectionBlueprint, ISection
 from collective.transmogrifier.utils import defaultMatcher
 from collective.transmogrifier.utils import Expression
@@ -35,6 +37,18 @@ class DexterityUpdateSection(object):
             name,
             options,
         )
+
+        # create logger
+        if options.get('logger'):
+            self.logger = logging.getLogger(options['logger'])
+            self.loglevel = getattr(logging, options['loglevel'], None)
+            if self.loglevel is None:
+                # Assume it's an integer:
+                self.loglevel = int(options['loglevel'])
+            self.logger.setLevel(self.loglevel)
+            self.log = lambda s: self.logger.log(self.loglevel, s)
+        else:
+            self.log = None
 
     def __iter__(self):
         for item in self.previous:
@@ -80,6 +94,7 @@ class DexterityUpdateSection(object):
                             files,
                             item,
                             self.disable_constraints,
+                            logger=self.log,
                         )
                         field.set(field.interface(obj), value)
                         continue

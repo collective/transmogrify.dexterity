@@ -8,6 +8,7 @@ tests_require = [
     'plone.app.testing',
     'plone.app.dexterity',
     'plone.namedfile[blobs]',
+    'plone.directives.form',
 ]
 setup(name='transmogrify.dexterity',
       version=version,
