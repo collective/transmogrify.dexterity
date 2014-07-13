@@ -215,7 +215,13 @@ class ObjectDeserializer(object):
                 deserializer = IDeserializer(self.field.schema[k])
             else:
                 deserializer = DefaultDeserializer()
-            setattr(instance, k, deserializer(v, filestore, item, disable_constraints))
+            setattr(instance, k, deserializer(
+                v,
+                filestore,
+                item,
+                disable_constraints=disable_constraints,
+                logger=logger,
+            ))
 
         if not disable_constraints:
             self.field.validate(instance)
