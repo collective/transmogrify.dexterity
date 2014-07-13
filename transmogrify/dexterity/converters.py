@@ -185,7 +185,7 @@ class ObjectDeserializer(object):
     def __init__(self, field):
         self.field = field
 
-    def __call__(self, value, filestore, item, disable_constraints=False):
+    def __call__(self, value, filestore, item, disable_constraints=False, logger=None):
         if not isinstance(value, dict):
             raise ValueError('Need a dict to convert')
         if not value.get('_class', None):
