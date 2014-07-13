@@ -1,0 +1,21 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="transmogrify.dexterity">
+
+    <adapter factory=".converters.NamedFileSerializer" />
+    <adapter factory=".converters.NamedFileDeserializer" />
+
+    <adapter factory=".converters.RichTextSerializer" />
+    <adapter factory=".converters.RichTextDeserializer" />
+
+    <adapter factory=".converters.ObjectSerializer" />
+    <adapter factory=".converters.ObjectDeserializer" />
+
+    <adapter factory=".converters.CollectionSerializer" />
+    <adapter factory=".converters.CollectionDeserializer" />
+
+    <adapter factory=".converters.DateDeserializer" />
+
+    <adapter factory=".converters.DefaultSerializer" />
+    <adapter factory=".converters.DefaultDeserializer" />
+</configure>

@@ -11,6 +11,7 @@ from plone.supermodel.interfaces import IToUnicode
 from zope.component import adapts
 from zope.interface import implements
 from zope.schema.interfaces import ConstraintNotSatisfied
+from zope.schema.interfaces import IObject
 from zope.schema.interfaces import ICollection
 from zope.schema.interfaces import IDate
 from zope.schema.interfaces import IField
@@ -156,6 +157,68 @@ class RichTextDeserializer(object):
                             item['_path'],
                             e)
                         )
+        return instance
+
+
+class ObjectSerializer(object):
+    implements(ISerializer)
+    adapts(IObject)
+
+    def __init__(self, field):
+        self.field = field
+
+    def __call__(self, value, filestore, extra=''):
+        out = {"_class" : "%s.%s" % (
+            value.__class__.__module__,
+            value.__class__.__name__,
+        )}
+        for k in self.field.schema:
+            serializer = ISerializer(self.field.schema[k])
+            out[k] = serializer(getattr(value, k), filestore, extra + k)
+        return out
+
+
+class ObjectDeserializer(object):
+    implements(IDeserializer)
+    adapts(IObject)
+
+    def __init__(self, field):
+        self.field = field
+
+    def __call__(self, value, filestore, item, disable_constraints=False):
+        if not isinstance(value, dict):
+            raise ValueError('Need a dict to convert')
+        if not value.get('_class', None):
+            raise ValueError("_class is missing")
+
+        # Import _class and create instance, if it implments what we need
+        (mod, _, c) = value['_class'].rpartition('.')
+        klass = getattr(__import__(mod, fromlist=[c]), c)
+        if not self.field.schema.implementedBy(klass):
+            raise ValueError('%s does not implemement %s' % (
+                value['_class'],
+                self.field.schema,
+            ))
+        instance = klass()
+
+        # Add each key from value to instance
+        for (k, v) in value.items():
+            if k == '_class':
+                continue
+            if not hasattr(instance, k):
+                raise ValueError("%s is not an object attribute" % k)
+            if v is None:
+                setattr(instance, k, None)
+                continue
+
+            if k in self.field.schema:
+                deserializer = IDeserializer(self.field.schema[k])
+            else:
+                deserializer = DefaultDeserializer()
+            setattr(instance, k, deserializer(v, filestore, item, disable_constraints))
+
+        if not disable_constraints:
+            self.field.validate(instance)
         return instance
 
 
