@@ -189,6 +189,23 @@ class ObjectDeserializer(object):
         if not isinstance(value, dict):
             raise ValueError('Need a dict to convert')
         if not value.get('_class', None):
+            try:
+                # NB: datagridfield creates it's own Serializer, but falls
+                # back to this Deserializer. _class will be missing in this
+                # case.
+                from collective.z3cform.datagridfield.row import DictRow
+                if isinstance(self.field, DictRow):
+                    # NB: Should be recursing into the dict and deserializing,
+                    # but that can be fixed within datagridfield
+                    return DefaultDeserializer(self.field)(
+                        value,
+                        filestore,
+                        item,
+                        disable_constraints=disable_constraints,
+                        logger=logger,
+                        )
+            except ImportError:
+                pass
             raise ValueError("_class is missing")
 
         # Import _class and create instance, if it implments what we need
