@@ -35,7 +35,6 @@ class ITestObjectB(model.Schema):
         default_mime_type='text/html',
         output_mime_type='text/html',
         allowed_mime_types=('text/html', 'scroll/dead-sea'),
-        #TODO: text/x-R
         default=u"",
         required=False)
 
