@@ -5,6 +5,8 @@ Changelog
 1.3 (unreleased)
 ----------------
 
+- Use zope.dottedname.resolve to find class [lentinj]
+
 - Serialize/Deserialize zope.schema.IObjects [lentinj]
 
 - Add 'logger' and 'loglevel' options so invalid fields are logged when

@@ -9,6 +9,7 @@ from plone.namedfile.interfaces import INamedField
 from plone.supermodel.interfaces import IToUnicode
 
 from zope.component import adapts
+from zope.dottedname.resolve import resolve
 from zope.interface import implements
 from zope.schema.interfaces import ConstraintNotSatisfied
 from zope.schema.interfaces import IObject
@@ -209,8 +210,7 @@ class ObjectDeserializer(object):
             raise ValueError("_class is missing")
 
         # Import _class and create instance, if it implments what we need
-        (mod, _, c) = value['_class'].rpartition('.')
-        klass = getattr(__import__(mod, fromlist=[c]), c)
+        klass = resolve(value['_class'])
         if not self.field.schema.implementedBy(klass):
             raise ValueError('%s does not implemement %s' % (
                 value['_class'],
