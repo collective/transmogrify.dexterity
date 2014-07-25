@@ -231,7 +231,7 @@ class ObjectDeserializer(object):
             if k in self.field.schema:
                 deserializer = IDeserializer(self.field.schema[k])
             else:
-                deserializer = DefaultDeserializer()
+                deserializer = DefaultDeserializer(None)
             setattr(instance, k, deserializer(
                 v,
                 filestore,
@@ -277,7 +277,7 @@ class CollectionDeserializer(object):
         if field.value_type is not None:
             deserializer = IDeserializer(self.field.value_type)
         else:
-            deserializer = DefaultDeserializer()
+            deserializer = DefaultDeserializer(None)
         value = [deserializer(v, filestore, item, disable_constraints, logger=logger) for v in value]
         value = field._type(value)
         try:
