@@ -39,7 +39,6 @@ class SerializerSection(object):
                 yield item
                 continue
 
-
             files = item.setdefault(fileskey, {})
             files[self.key] = dict(name='_content.json', data=self.encoder.encode(data), contenttype='application/json')
 

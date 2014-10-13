@@ -5,18 +5,22 @@ Changelog
 1.4 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Add blueprint for managing plone.app.multilingual translations
+  [rnix]
 
 
 1.3 (2014-07-25)
 ----------------
 
-- Use zope.dottedname.resolve to find class [lentinj]
+- Use zope.dottedname.resolve to find class
+  [lentinj]
 
-- Serialize/Deserialize zope.schema.IObjects [lentinj]
+- Serialize/Deserialize zope.schema.IObjects
+  [lentinj]
 
 - Add 'logger' and 'loglevel' options so invalid fields are logged when
-  disable-constraints is True [ebrehault]
+  disable-constraints is True
+  [ebrehault]
 
 
 1.2 (2013-08-29)

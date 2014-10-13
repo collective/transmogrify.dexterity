@@ -17,6 +17,10 @@
     name="transmogrify.dexterity.schemareader" />
 
   <utility
+    component=".translation.DexterityTranslationSection"
+    name="transmogrify.dexterity.translation" />
+
+  <utility
     component=".serializer.SerializerSection"
     name="transmogrify.dexterity.serializer" />
 
