@@ -1,29 +1,27 @@
 import logging
-
-from collective.transmogrifier.interfaces import ISectionBlueprint, ISection
+from collective.transmogrifier.interfaces import ISectionBlueprint
+from collective.transmogrifier.interfaces import ISection
 from collective.transmogrifier.utils import defaultMatcher
 from collective.transmogrifier.utils import Expression
-
 from plone.dexterity.utils import iterSchemata
 from plone.uuid.interfaces import IMutableUUID
-
 from z3c.form import interfaces
-
-from zope.component import queryMultiAdapter, getMultiAdapter
+from zope.component import queryMultiAdapter
+from zope.component import getMultiAdapter
 from zope.event import notify
-from zope.interface import classProvides, implements
+from zope.interface import classProvides
+from zope.interface import implementer
 from zope.lifecycleevent import ObjectModifiedEvent
 from zope.schema import getFieldsInOrder
-
 from interfaces import IDeserializer
+
 
 _marker = object()
 
 
+@implementer(ISection)
 class DexterityUpdateSection(object):
-
     classProvides(ISectionBlueprint)
-    implements(ISection)
 
     def __init__(self, transmogrifier, name, options, previous):
         self.previous = previous

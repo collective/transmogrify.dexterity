@@ -1,48 +1,44 @@
 <configure
-    xmlns="http://namespaces.zope.org/zope"
-    xmlns:zcml="http://namespaces.zope.org/zcml"
-    i18n_domain="transmogrify.dexterity">
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:zcml="http://namespaces.zope.org/zcml"
+  i18n_domain="transmogrify.dexterity">
 
-    <include package="collective.transmogrifier" />
-    <include package="plone.app.transmogrifier" />
+  <include package="collective.transmogrifier" />
+  <include package="plone.app.transmogrifier" />
 
-    <include package=".pipelines" />
+  <include package=".pipelines" />
 
-<utility
+  <utility
     component=".schemaupdater.DexterityUpdateSection"
-    name="transmogrify.dexterity.schemaupdater"
-    />
+    name="transmogrify.dexterity.schemaupdater" />
 
-<utility
+  <utility
     component=".schemareader.DexterityReaderSection"
-    name="transmogrify.dexterity.schemareader"
-    />
+    name="transmogrify.dexterity.schemareader" />
 
-<utility
+  <utility
     component=".serializer.SerializerSection"
-    name="transmogrify.dexterity.serializer"
-    />
+    name="transmogrify.dexterity.serializer" />
 
-<utility
+  <utility
     component=".serializer.DeserializerSection"
-    name="transmogrify.dexterity.deserializer"
-    />
+    name="transmogrify.dexterity.deserializer" />
 
-<adapter factory=".converters.NamedFileSerializer" />
-<adapter factory=".converters.NamedFileDeserializer" />
+  <adapter factory=".converters.NamedFileSerializer" />
+  <adapter factory=".converters.NamedFileDeserializer" />
 
-<adapter factory=".converters.RichTextSerializer" />
-<adapter factory=".converters.RichTextDeserializer" />
+  <adapter factory=".converters.RichTextSerializer" />
+  <adapter factory=".converters.RichTextDeserializer" />
 
-<adapter factory=".converters.ObjectSerializer" />
-<adapter factory=".converters.ObjectDeserializer" />
+  <adapter factory=".converters.ObjectSerializer" />
+  <adapter factory=".converters.ObjectDeserializer" />
 
-<adapter factory=".converters.CollectionSerializer" />
-<adapter factory=".converters.CollectionDeserializer" />
+  <adapter factory=".converters.CollectionSerializer" />
+  <adapter factory=".converters.CollectionDeserializer" />
 
-<adapter factory=".converters.DateDeserializer" />
+  <adapter factory=".converters.DateDeserializer" />
 
-<adapter factory=".converters.DefaultSerializer" />
-<adapter factory=".converters.DefaultDeserializer" />
+  <adapter factory=".converters.DefaultSerializer" />
+  <adapter factory=".converters.DefaultDeserializer" />
 
 </configure>

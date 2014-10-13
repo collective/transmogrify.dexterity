@@ -1,17 +1,22 @@
-from collective.transmogrifier.interfaces import ISectionBlueprint, ISection
+from collective.transmogrifier.interfaces import ISectionBlueprint
+from collective.transmogrifier.interfaces import ISection
 from collective.transmogrifier.sections.tests import SampleSource
-from plone.app.testing import IntegrationTesting, TEST_USER_ID, setRoles
+from plone.app.testing import IntegrationTesting
+from plone.app.testing import TEST_USER_ID
+from plone.app.testing import setRoles
 from plone.app.testing import PloneSandboxLayer
 from plone.app.testing import PLONE_FIXTURE
 from plone.app.textfield import RichText
-from plone.dexterity.fti import DexterityFTI, register
+from plone.dexterity.fti import DexterityFTI
+from plone.dexterity.fti import register
 from plone.directives import form
 from plone.namedfile.field import NamedFile
 from zope import schema
 from zope.component import provideUtility
 from zope.configuration import xmlconfig
 from datetime import date
-from zope.interface import classProvides, implements
+from zope.interface import classProvides
+from zope.interface import implementer
 
 
 zptlogo = (
@@ -91,17 +96,14 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
         fti = DexterityFTI('TransmogrifyDexterityFTI')
         fti.schema = 'transmogrify.dexterity.testing.ITestSchema'
         fti.klass = 'plone.dexterity.content.Container'
-        fti.behaviors = (
-                         'plone.app.dexterity.behaviors.metadata.IBasic',
-                         )
+        fti.behaviors = ('plone.app.dexterity.behaviors.metadata.IBasic',)
         self.portal.portal_types._setObject('TransmogrifyDexterityFTI', fti)
         register(fti)
 
-
         # create test schema source and provide it
+        @implementer(ISection)
         class SchemaSource(SampleSource):
             classProvides(ISectionBlueprint)
-            implements(ISection)
 
             def __init__(self, transmogrifier, name, options, previous):
                 super(SchemaSource, self).__init__(transmogrifier, name, options, previous)

@@ -1,18 +1,19 @@
-from zope.interface import classProvides, implements
-from collective.transmogrifier.interfaces import ISectionBlueprint, ISection
-from collective.transmogrifier.utils import Matcher, defaultKeys, defaultMatcher
-
+from zope.interface import classProvides
+from zope.interface import implementer
+from collective.transmogrifier.interfaces import ISectionBlueprint
+from collective.transmogrifier.interfaces import ISection
+from collective.transmogrifier.utils import Matcher
+from collective.transmogrifier.utils import defaultKeys
+from collective.transmogrifier.utils import defaultMatcher
 from plone.dexterity.utils import iterSchemata
 from plone.uuid.interfaces import IUUID
 from zope.schema import getFieldsInOrder
-
 from interfaces import ISerializer
 
 
+@implementer(ISection)
 class DexterityReaderSection(object):
-
     classProvides(ISectionBlueprint)
-    implements(ISection)
 
     def __init__(self, transmogrifier, name, options, previous):
         self.previous = previous
