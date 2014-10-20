@@ -1,29 +1,26 @@
-import mimetypes
 from datetime import datetime
-
 from plone.app.textfield.interfaces import IRichText
 from plone.app.textfield.value import RichTextValue
 from plone.app.textfield.utils import getSiteEncoding
-
 from plone.namedfile.interfaces import INamedField
 from plone.supermodel.interfaces import IToUnicode
-
-from zope.component import adapts
+from zope.component import adapter
 from zope.dottedname.resolve import resolve
-from zope.interface import implements
+from zope.interface import implementer
 from zope.schema.interfaces import ConstraintNotSatisfied
 from zope.schema.interfaces import IObject
 from zope.schema.interfaces import ICollection
 from zope.schema.interfaces import IDate
 from zope.schema.interfaces import IField
 from zope.schema.interfaces import IFromUnicode
+from interfaces import ISerializer
+from interfaces import IDeserializer
+import mimetypes
 
-from interfaces import ISerializer, IDeserializer
 
-
+@implementer(ISerializer)
+@adapter(INamedField)
 class NamedFileSerializer(object):
-    implements(ISerializer)
-    adapts(INamedField)
 
     def __init__(self, field):
         self.field = field
@@ -39,18 +36,27 @@ class NamedFileSerializer(object):
         else:
             data = value.data
         name = '_field_%s%s_%s' % (fieldname, extra, value.filename)
-        filestore[name] = dict(data=data, name=name, contenttype=value.contentType)
-        return dict(file=name, filename=value.filename, contenttype=value.contentType)
+        filestore[name] = dict(
+            data=data,
+            name=name,
+            contenttype=value.contentType
+        )
+        return dict(
+            file=name,
+            filename=value.filename,
+            contenttype=value.contentType
+        )
 
 
+@implementer(IDeserializer)
+@adapter(INamedField)
 class NamedFileDeserializer(object):
-    implements(IDeserializer)
-    adapts(INamedField)
 
     def __init__(self, field):
         self.field = field
 
-    def __call__(self, value, filestore, item, disable_constraints=False, logger=None):
+    def __call__(self, value, filestore, item,
+                 disable_constraints=False, logger=None):
         if isinstance(value, dict):
             filename = value.get('filename', None)
             contenttype = str(value.get('contenttype', ''))
@@ -71,7 +77,7 @@ class NamedFileDeserializer(object):
             data=data,
             filename=filename,
             contentType=contenttype,
-            )
+        )
         try:
             self.field.validate(instance)
         except Exception, e:
@@ -88,9 +94,9 @@ class NamedFileDeserializer(object):
         return instance
 
 
+@implementer(ISerializer)
+@adapter(IRichText)
 class RichTextSerializer(object):
-    implements(ISerializer)
-    adapts(IRichText)
 
     def __init__(self, field):
         self.field = field
@@ -103,13 +109,21 @@ class RichTextSerializer(object):
         extension = mimetypes.guess_extension(value.mimeType) or ''
         fieldname = self.field.__name__
         name = '_field_%s%s%s' % (fieldname, extra, extension)
-        filestore[name] = dict(data=value.raw_encoded, name=name, contenttype=value.mimeType)
-        return dict(file=name, contenttype=value.mimeType, encoding=value.encoding)
+        filestore[name] = dict(
+            data=value.raw_encoded,
+            name=name,
+            contenttype=value.mimeType
+        )
+        return dict(
+            file=name,
+            contenttype=value.mimeType,
+            encoding=value.encoding
+        )
 
 
+@implementer(IDeserializer)
+@adapter(IRichText)
 class RichTextDeserializer(object):
-    implements(IDeserializer)
-    adapts(IRichText)
     _type = RichTextValue
 
     def __init__(self, field):
@@ -118,11 +132,14 @@ class RichTextDeserializer(object):
     def _convert_object(self,obj,encoding):
         """Decode binary strings into unicode objects
         """
-        if isinstance(obj, str): return obj.decode(encoding)
-        if isinstance(obj, unicode): return obj
+        if isinstance(obj, str):
+            return obj.decode(encoding)
+        if isinstance(obj, unicode):
+            return obj
         raise ValueError('Unable to convert value to unicode string')
     
-    def __call__(self, value, filestore, item, disable_constraints=False, logger=None):
+    def __call__(self, value, filestore, item,
+                 disable_constraints=False, logger=None):
         if isinstance(value, dict):
             encoding = value.get('encoding', getSiteEncoding())
             contenttype = value.get('contenttype', None)
@@ -144,7 +161,7 @@ class RichTextDeserializer(object):
             mimeType=contenttype,
             outputMimeType=self.field.output_mime_type,
             encoding=encoding,
-            )
+        )
         try:
             self.field.validate(instance)
         except Exception, e:
@@ -161,9 +178,9 @@ class RichTextDeserializer(object):
         return instance
 
 
+@implementer(ISerializer)
+@adapter(IObject)
 class ObjectSerializer(object):
-    implements(ISerializer)
-    adapts(IObject)
 
     def __init__(self, field):
         self.field = field
@@ -179,14 +196,15 @@ class ObjectSerializer(object):
         return out
 
 
+@implementer(IDeserializer)
+@adapter(IObject)
 class ObjectDeserializer(object):
-    implements(IDeserializer)
-    adapts(IObject)
 
     def __init__(self, field):
         self.field = field
 
-    def __call__(self, value, filestore, item, disable_constraints=False, logger=None):
+    def __call__(self, value, filestore, item,
+                 disable_constraints=False, logger=None):
         if not isinstance(value, dict):
             raise ValueError('Need a dict to convert')
         if not value.get('_class', None):
@@ -204,7 +222,7 @@ class ObjectDeserializer(object):
                         item,
                         disable_constraints=disable_constraints,
                         logger=logger,
-                        )
+                    )
             except ImportError:
                 pass
             raise ValueError("_class is missing")
@@ -245,9 +263,9 @@ class ObjectDeserializer(object):
         return instance
 
 
+@implementer(ISerializer)
+@adapter(ICollection)
 class CollectionSerializer(object):
-    implements(ISerializer)
-    adapts(ICollection)
 
     def __init__(self, field):
         self.field = field
@@ -261,14 +279,15 @@ class CollectionSerializer(object):
         return [serializer(v, filestore, str(i)) for i, v in enumerate(value)]
 
 
+@implementer(IDeserializer)
+@adapter(ICollection)
 class CollectionDeserializer(object):
-    implements(IDeserializer)
-    adapts(ICollection)    
 
     def __init__(self, field):
         self.field = field
 
-    def __call__(self, value, filestore, item, disable_constraints=False, logger=None):
+    def __call__(self, value, filestore, item,
+                 disable_constraints=False, logger=None):
         field = self.field
         if value in (None, ''):
             return []
@@ -278,7 +297,9 @@ class CollectionDeserializer(object):
             deserializer = IDeserializer(self.field.value_type)
         else:
             deserializer = DefaultDeserializer(None)
-        value = [deserializer(v, filestore, item, disable_constraints, logger=logger) for v in value]
+        value = [deserializer(
+            v, filestore, item, disable_constraints, logger=logger) \
+                for v in value]
         value = field._type(value)
         try:
             self.field.validate(value)
@@ -296,14 +317,15 @@ class CollectionDeserializer(object):
         return value
 
 
+@implementer(IDeserializer)
+@adapter(IDate)
 class DateDeserializer(object):
-    implements(IDeserializer)
-    adapts(IDate)
 
     def __init__(self, field):
         self.field = field
 
-    def __call__(self, value, filestore, item, disable_constraints=False, logger=None):
+    def __call__(self, value, filestore, item,
+                 disable_constraints=False, logger=None):
         if isinstance(value, basestring):
             value = datetime.strptime(value, '%Y-%m-%d')
         if isinstance(value, datetime):
@@ -324,9 +346,9 @@ class DateDeserializer(object):
         return value
 
 
+@implementer(ISerializer)
+@adapter(IField)
 class DefaultSerializer(object):
-    implements(ISerializer)
-    adapts(IField)
 
     def __init__(self, field=None):
         self.field = field
@@ -342,14 +364,15 @@ class DefaultSerializer(object):
         return value
 
 
+@implementer(IDeserializer)
+@adapter(IField)
 class DefaultDeserializer(object):
-    implements(IDeserializer)
-    adapts(IField)
 
     def __init__(self, field):
         self.field = field
 
-    def __call__(self, value, filestore, item, disable_constraints=False, logger=None):
+    def __call__(self, value, filestore, item,
+                 disable_constraints=False, logger=None):
         field = self.field
         if field is not None:
             try:

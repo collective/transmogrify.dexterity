@@ -1,7 +1,7 @@
 <configure
-    xmlns="http://namespaces.zope.org/zope"
-    i18n_domain="transmogrify.dexterity">
+  xmlns="http://namespaces.zope.org/zope"
+  i18n_domain="transmogrify.dexterity">
 
-    <include package="collective.transmogrifier" file="meta.zcml" />
+  <include package="collective.transmogrifier" file="meta.zcml" />
 
 </configure>
