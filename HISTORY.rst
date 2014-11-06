@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.4 (unreleased)
+1.4 (2014-11-06)
 ----------------
 
 - Add blueprint for managing plone.app.multilingual translations
