@@ -2,7 +2,6 @@ from datetime import datetime
 from .interfaces import IDeserializer
 from .interfaces import ISerializer
 from plone.app.textfield.interfaces import IRichText
-from plone.app.textfield.utils import getSiteEncoding
 from plone.app.textfield.value import RichTextValue
 from plone.namedfile.interfaces import INamedField
 from plone.supermodel.interfaces import IToUnicode
@@ -15,6 +14,14 @@ from zope.schema.interfaces import IField
 from zope.schema.interfaces import IFromUnicode
 from zope.schema.interfaces import IObject
 import mimetypes
+
+
+def get_site_encoding():
+    # getSiteEncoding was in plone.app.textfield.utils but is not gone. Like
+    # ``Products.CMFPlone.browser.ploneview``, it always returned 'utf-8',
+    # something we can do ourselves here.
+    # TODO: use some sane getSiteEncoding from CMFPlone, once there is one.
+    return 'utf-8'
 
 
 @implementer(ISerializer)
@@ -140,7 +147,7 @@ class RichTextDeserializer(object):
     def __call__(self, value, filestore, item,
                  disable_constraints=False, logger=None):
         if isinstance(value, dict):
-            encoding = value.get('encoding', getSiteEncoding())
+            encoding = value.get('encoding', get_site_encoding())
             contenttype = value.get('contenttype', None)
             if contenttype is not None:
                 contenttype = str(contenttype)
@@ -150,7 +157,7 @@ class RichTextDeserializer(object):
             else:
                 data = self._convert_object(value['data'], encoding)
         else:
-            encoding = getSiteEncoding()
+            encoding = get_site_encoding()
             data = self._convert_object(value, encoding)
             contenttype = None
         if contenttype is None:
