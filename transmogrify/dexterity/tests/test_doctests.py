@@ -16,8 +16,14 @@ TESTFILES = (
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTests([layered(doctest.DocFileSuite(filename,
-                                                 optionflags=OPTIONFLAGS),
-                            layer=TRANSMOGRIFY_DEXTERITY_INTEGRATION_TESTING)
-                    for filename in TESTFILES])
+    suite.addTests([
+        layered(
+            doctest.DocFileSuite(
+                filename,
+                optionflags=OPTIONFLAGS
+            ),
+            layer=TRANSMOGRIFY_DEXTERITY_INTEGRATION_TESTING
+        )
+        for filename in TESTFILES
+    ])
     return suite

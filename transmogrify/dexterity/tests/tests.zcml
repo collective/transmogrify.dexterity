@@ -11,6 +11,6 @@
       name="transmogrify.dexterity.testconfiguration"
       title="Example pipeline configuration"
       description="This is an example pipeline configuration"
-      configuration="tests/tests.cfg" />
+      configuration="tests.cfg" />
 
 </configure>

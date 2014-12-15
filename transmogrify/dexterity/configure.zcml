@@ -4,7 +4,6 @@
   i18n_domain="transmogrify.dexterity">
 
   <include package="collective.transmogrifier" />
-  <include package="plone.app.transmogrifier" />
 
   <include file="converters.zcml" />
   <include package=".pipelines" />
