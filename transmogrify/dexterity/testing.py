@@ -40,6 +40,7 @@ zptlogo = (
 
 
 class FakeImportContext(object):
+
     def __init__(self, filename, contents):
         self.filename = filename
         self.contents = contents
@@ -63,7 +64,7 @@ class ITestSchema(form.Schema):
     )
 
     test_date = schema.Date(
-        title = u'test_date',
+        title=u'test_date',
     )
 
     fancy_text = RichText(
@@ -79,11 +80,11 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
         # Load ZCML
         import transmogrify.dexterity
         xmlconfig.file('meta.zcml',
-            transmogrify.dexterity, context=configurationContext)
+                       transmogrify.dexterity, context=configurationContext)
         xmlconfig.file('configure.zcml',
-            transmogrify.dexterity, context=configurationContext)
+                       transmogrify.dexterity, context=configurationContext)
         xmlconfig.file('tests.zcml',
-            transmogrify.dexterity, context=configurationContext)
+                       transmogrify.dexterity, context=configurationContext)
 
     def setUpPloneSite(self, portal):
         # Install into Plone site using portal_setup
@@ -106,7 +107,13 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
             classProvides(ISectionBlueprint)
 
             def __init__(self, transmogrifier, name, options, previous):
-                super(SchemaSource, self).__init__(transmogrifier, name, options, previous)
+                super(
+                    SchemaSource,
+                    self).__init__(
+                    transmogrifier,
+                    name,
+                    options,
+                    previous)
                 sourcecontent = options.get('source-content', 'full')
                 if sourcecontent == 'full':
                     self.sample = (
@@ -116,21 +123,22 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
                              title='Spam',
                              description='Lorem Ipsum bla bla!',
                              test_file={
-                                'data': zptlogo,
-                                'filename': 'zptlogo.gif'},
+                                 'data': zptlogo,
+                                 'filename': 'zptlogo.gif'},
                              test_date='2010-10-12',
                              fieldnotchanged='nochange',
-                        ),
+                             ),
                         dict(_path='/two',
                              foo='Bla',
                              _type='TransmogrifyDexterityFTI',
                              title='My Second Object',
-                             #description=None, # None is not valid for this field.
+                             # description=None, # None is not valid for this
+                             # field.
                              test_file=zptlogo,
                              _filename="testlogo.gif",
-                             test_date=date(2010, 01, 01, ),
+                             test_date=date(2010, 0o1, 0o1, ),
                              fieldnotchanged='nochange',
-                        ),
+                             ),
                     )
                 elif sourcecontent == 'onlytitle':
                     self.sample = (
@@ -142,7 +150,7 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
                              title='My Awesome Second Object'),
                     )
         provideUtility(SchemaSource,
-            name=u'transmogrify.dexterity.testsource')
+                       name=u'transmogrify.dexterity.testsource')
 
 
 TRANSMOGRIFY_DEXTERITY_FIXTURE = TransmogrifyDexterityLayer()

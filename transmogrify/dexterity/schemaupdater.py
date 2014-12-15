@@ -1,19 +1,19 @@
-import logging
-from collective.transmogrifier.interfaces import ISectionBlueprint
 from collective.transmogrifier.interfaces import ISection
-from collective.transmogrifier.utils import defaultMatcher
+from collective.transmogrifier.interfaces import ISectionBlueprint
 from collective.transmogrifier.utils import Expression
+from collective.transmogrifier.utils import defaultMatcher
 from plone.dexterity.utils import iterSchemata
 from plone.uuid.interfaces import IMutableUUID
+from transmogrify.dexterity.interfaces import IDeserializer
 from z3c.form import interfaces
-from zope.component import queryMultiAdapter
 from zope.component import getMultiAdapter
+from zope.component import queryMultiAdapter
 from zope.event import notify
 from zope.interface import classProvides
 from zope.interface import implementer
 from zope.lifecycleevent import ObjectModifiedEvent
 from zope.schema import getFieldsInOrder
-from interfaces import IDeserializer
+import logging
 
 
 _marker = object()
@@ -82,7 +82,7 @@ class DexterityUpdateSection(object):
                 for name, field in getFieldsInOrder(schemata):
                     if field.readonly:
                         continue
-                    #setting value from the blueprint cue
+                    # setting value from the blueprint cue
                     value = item.get(name, _marker)
                     if value is not _marker:
                         # Value was given in pipeline, so set it

@@ -1,20 +1,19 @@
 from datetime import datetime
+from .interfaces import IDeserializer
+from .interfaces import ISerializer
 from plone.app.textfield.interfaces import IRichText
-from plone.app.textfield.value import RichTextValue
 from plone.app.textfield.utils import getSiteEncoding
+from plone.app.textfield.value import RichTextValue
 from plone.namedfile.interfaces import INamedField
 from plone.supermodel.interfaces import IToUnicode
 from zope.component import adapter
 from zope.dottedname.resolve import resolve
 from zope.interface import implementer
-from zope.schema.interfaces import ConstraintNotSatisfied
-from zope.schema.interfaces import IObject
 from zope.schema.interfaces import ICollection
 from zope.schema.interfaces import IDate
 from zope.schema.interfaces import IField
 from zope.schema.interfaces import IFromUnicode
-from interfaces import ISerializer
-from interfaces import IDeserializer
+from zope.schema.interfaces import IObject
 import mimetypes
 
 
@@ -80,7 +79,7 @@ class NamedFileDeserializer(object):
         )
         try:
             self.field.validate(instance)
-        except Exception, e:
+        except Exception as e:
             if not disable_constraints:
                 raise e
             else:
@@ -90,7 +89,7 @@ class NamedFileDeserializer(object):
                             self.field.__name__,
                             item['_path'],
                             e)
-                        )
+                    )
         return instance
 
 
@@ -129,7 +128,7 @@ class RichTextDeserializer(object):
     def __init__(self, field):
         self.field = field
 
-    def _convert_object(self,obj,encoding):
+    def _convert_object(self, obj, encoding):
         """Decode binary strings into unicode objects
         """
         if isinstance(obj, str):
@@ -137,7 +136,7 @@ class RichTextDeserializer(object):
         if isinstance(obj, unicode):
             return obj
         raise ValueError('Unable to convert value to unicode string')
-    
+
     def __call__(self, value, filestore, item,
                  disable_constraints=False, logger=None):
         if isinstance(value, dict):
@@ -147,12 +146,12 @@ class RichTextDeserializer(object):
                 contenttype = str(contenttype)
             file = value.get('file', None)
             if file is not None:
-                data = self._convert_object(filestore[file]['data'],encoding)
+                data = self._convert_object(filestore[file]['data'], encoding)
             else:
-                data = self._convert_object(value['data'],encoding)
+                data = self._convert_object(value['data'], encoding)
         else:
             encoding = getSiteEncoding()
-            data = self._convert_object(value,encoding)
+            data = self._convert_object(value, encoding)
             contenttype = None
         if contenttype is None:
             contenttype = self.field.default_mime_type
@@ -164,7 +163,7 @@ class RichTextDeserializer(object):
         )
         try:
             self.field.validate(instance)
-        except Exception, e:
+        except Exception as e:
             if not disable_constraints:
                 raise e
             else:
@@ -174,7 +173,7 @@ class RichTextDeserializer(object):
                             self.field.__name__,
                             item['_path'],
                             e)
-                        )
+                    )
         return instance
 
 
@@ -186,7 +185,7 @@ class ObjectSerializer(object):
         self.field = field
 
     def __call__(self, value, filestore, extra=''):
-        out = {"_class" : "%s.%s" % (
+        out = {"_class": "%s.%s" % (
             value.__class__.__module__,
             value.__class__.__name__,
         )}
@@ -298,12 +297,12 @@ class CollectionDeserializer(object):
         else:
             deserializer = DefaultDeserializer(None)
         value = [deserializer(
-            v, filestore, item, disable_constraints, logger=logger) \
-                for v in value]
+            v, filestore, item, disable_constraints, logger=logger)
+            for v in value]
         value = field._type(value)
         try:
             self.field.validate(value)
-        except Exception, e:
+        except Exception as e:
             if not disable_constraints:
                 raise e
             else:
@@ -313,7 +312,7 @@ class CollectionDeserializer(object):
                             self.field.__name__,
                             item['_path'],
                             e)
-                        )
+                    )
         return value
 
 
@@ -332,7 +331,7 @@ class DateDeserializer(object):
             value = value.date()
         try:
             self.field.validate(value)
-        except Exception, e:
+        except Exception as e:
             if not disable_constraints:
                 raise e
             else:
@@ -342,7 +341,7 @@ class DateDeserializer(object):
                             self.field.__name__,
                             item['_path'],
                             e)
-                        )
+                    )
         return value
 
 
@@ -381,7 +380,7 @@ class DefaultDeserializer(object):
                 if isinstance(value, unicode):
                     value = IFromUnicode(field).fromUnicode(value)
                 self.field.validate(value)
-            except Exception, e:
+            except Exception as e:
                 if not disable_constraints:
                     raise e
                 else:
@@ -391,5 +390,5 @@ class DefaultDeserializer(object):
                                 self.field.__name__,
                                 item['_path'],
                                 e.__repr__())
-                            )
+                        )
         return value

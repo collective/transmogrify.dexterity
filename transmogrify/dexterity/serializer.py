@@ -34,13 +34,20 @@ class SerializerSection(object):
                 yield item
                 continue
 
-            data = dict((key, value) for key, value in item.iteritems() if not key.startswith('_'))
+            data = dict(
+                (key,
+                 value) for key,
+                value in item.iteritems() if not key.startswith('_'))
             if not data:
                 yield item
                 continue
 
             files = item.setdefault(fileskey, {})
-            files[self.key] = dict(name='_content.json', data=self.encoder.encode(data), contenttype='application/json')
+            files[
+                self.key] = dict(
+                name='_content.json',
+                data=self.encoder.encode(data),
+                contenttype='application/json')
 
             yield item
 

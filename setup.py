@@ -1,8 +1,7 @@
 from setuptools import setup
 from setuptools import find_packages
 
-
-version = open('transmogrify/dexterity/version.txt').read().strip()
+version = '1.5dev0'
 maintainer = 'Philippe Gross'
 desc = 'A transmogrifier blueprint for updating dexterity objects'
 long_desc = open('README.rst').read() + '\n\n' + open('HISTORY.rst').read()
@@ -19,7 +18,6 @@ setup(
     version=version,
     description=desc,
     long_description=long_desc,
-    # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
         "Programming Language :: Python",
         "Topic :: Software Development :: Libraries :: Python Modules",

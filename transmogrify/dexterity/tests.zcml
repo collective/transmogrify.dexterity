@@ -7,9 +7,9 @@
   <include package="plone.app.dexterity" />
 
   <transmogrifier:registerConfig
-    name="transmogrify.dexterity.testconfiguration"
-    title="Example pipeline configuration"
-    description="This is an example pipeline configuration"
-    configuration="tests/tests.cfg" />
+      name="transmogrify.dexterity.testconfiguration"
+      title="Example pipeline configuration"
+      description="This is an example pipeline configuration"
+      configuration="tests/tests.cfg" />
 
 </configure>

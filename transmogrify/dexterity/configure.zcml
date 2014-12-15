@@ -6,43 +6,27 @@
   <include package="collective.transmogrifier" />
   <include package="plone.app.transmogrifier" />
 
+  <include file="converters.zcml" />
   <include package=".pipelines" />
 
   <utility
-    component=".schemaupdater.DexterityUpdateSection"
-    name="transmogrify.dexterity.schemaupdater" />
+      component=".schemaupdater.DexterityUpdateSection"
+      name="transmogrify.dexterity.schemaupdater" />
 
   <utility
-    component=".schemareader.DexterityReaderSection"
-    name="transmogrify.dexterity.schemareader" />
+      component=".schemareader.DexterityReaderSection"
+      name="transmogrify.dexterity.schemareader" />
 
   <utility
-    component=".translation.DexterityTranslationSection"
-    name="transmogrify.dexterity.translation" />
+      component=".translation.DexterityTranslationSection"
+      name="transmogrify.dexterity.translation" />
 
   <utility
-    component=".serializer.SerializerSection"
-    name="transmogrify.dexterity.serializer" />
+      component=".serializer.SerializerSection"
+      name="transmogrify.dexterity.serializer" />
 
   <utility
-    component=".serializer.DeserializerSection"
-    name="transmogrify.dexterity.deserializer" />
-
-  <adapter factory=".converters.NamedFileSerializer" />
-  <adapter factory=".converters.NamedFileDeserializer" />
-
-  <adapter factory=".converters.RichTextSerializer" />
-  <adapter factory=".converters.RichTextDeserializer" />
-
-  <adapter factory=".converters.ObjectSerializer" />
-  <adapter factory=".converters.ObjectDeserializer" />
-
-  <adapter factory=".converters.CollectionSerializer" />
-  <adapter factory=".converters.CollectionDeserializer" />
-
-  <adapter factory=".converters.DateDeserializer" />
-
-  <adapter factory=".converters.DefaultSerializer" />
-  <adapter factory=".converters.DefaultDeserializer" />
+      component=".serializer.DeserializerSection"
+      name="transmogrify.dexterity.deserializer" />
 
 </configure>
