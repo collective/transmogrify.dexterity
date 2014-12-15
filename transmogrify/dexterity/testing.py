@@ -79,12 +79,11 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
     def setUpZope(self, app, configurationContext):
         # Load ZCML
         import transmogrify.dexterity
-        xmlconfig.file('meta.zcml',
-                       transmogrify.dexterity, context=configurationContext)
-        xmlconfig.file('configure.zcml',
-                       transmogrify.dexterity, context=configurationContext)
-        xmlconfig.file('tests.zcml',
-                       transmogrify.dexterity, context=configurationContext)
+        xmlconfig.file(
+            'tests.zcml',
+            transmogrify.dexterity.tests,
+            context=configurationContext
+        )
 
     def setUpPloneSite(self, portal):
         # Install into Plone site using portal_setup

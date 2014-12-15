@@ -5,6 +5,7 @@
 
   <include package="collective.transmogrifier" />
   <include package="plone.app.dexterity" />
+  <include package="transmogrify.dexterity" />
 
   <transmogrifier:registerConfig
       name="transmogrify.dexterity.testconfiguration"
