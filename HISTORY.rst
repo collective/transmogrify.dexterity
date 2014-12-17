@@ -5,7 +5,9 @@ Changelog
 1.5 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Let schemaupdater work with collective.jsonify generated _datafield_FIELDNAME
+  keys.
+  [thet]
 
 
 1.4 (2014-11-06)

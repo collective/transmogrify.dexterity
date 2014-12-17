@@ -36,6 +36,11 @@ class DexterityUpdateSection(object):
             options,
         )
 
+        # if importing from collective.jsonify exported json structures, there
+        # is an datafield entry for binary data, which' prefix can be
+        # configured.
+        self.datafield_prefix = options.get('datafield-prefix', '_datafield_')
+
         # create logger
         if options.get('logger'):
             self.logger = logging.getLogger(options['logger'])
@@ -84,6 +89,9 @@ class DexterityUpdateSection(object):
                         continue
                     # setting value from the blueprint cue
                     value = item.get(name, _marker)
+                    if value is _marker:
+                        # Also try _datafield_FIELDNAME structure from jsonify
+                        value = item.get('_datafield_%s' % name, _marker)
                     if value is not _marker:
                         # Value was given in pipeline, so set it
                         deserializer = IDeserializer(field)

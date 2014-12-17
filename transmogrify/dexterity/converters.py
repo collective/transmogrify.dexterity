@@ -70,6 +70,7 @@ class NamedFileDeserializer(object):
             if file is not None:
                 data = filestore[file]['data']
             else:
+                # stored in _datafield_ structure, like collective.jsonify
                 data = value['data']
         elif isinstance(value, str):
             data = value
