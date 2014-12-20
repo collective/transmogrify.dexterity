@@ -2,6 +2,7 @@ from collective.transmogrifier.interfaces import ISection
 from collective.transmogrifier.interfaces import ISectionBlueprint
 from collective.transmogrifier.utils import Expression
 from collective.transmogrifier.utils import defaultMatcher
+from plone.app.textfield.interfaces import IRichText
 from plone.dexterity.utils import iterSchemata
 from plone.uuid.interfaces import IMutableUUID
 from transmogrify.dexterity.interfaces import IDeserializer
@@ -95,12 +96,19 @@ class DexterityUpdateSection(object):
                     if value is not _marker:
                         # Value was given in pipeline, so set it
                         deserializer = IDeserializer(field)
+                        if IRichText.providedBy(field)\
+                                and '_content_type_%s' % name in item:
+                            # change jsonify structure to one we understand
+                            value = {
+                                'contenttype': item['_content_type_%s' % name],
+                                'data': value
+                            }
                         value = deserializer(
                             value,
                             files,
                             item,
                             self.disable_constraints,
-                            logger=self.log,
+                            logger=self.log
                         )
                         field.set(field.interface(obj), value)
                         continue

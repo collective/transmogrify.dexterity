@@ -5,8 +5,8 @@ Changelog
 1.5 (unreleased)
 ----------------
 
-- Let schemaupdater work with collective.jsonify generated _datafield_FIELDNAME
-  keys.
+- Handle collective.jsonify structures, specifically _datafield_FIELDNAME and
+  _content_type_FIELDNAME keys.
   [thet]
 
 
