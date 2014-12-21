@@ -66,6 +66,9 @@ class NamedFileDeserializer(object):
         if isinstance(value, dict):
             filename = value.get('filename', None)
             contenttype = str(value.get('contenttype', ''))
+            if not contenttype:
+                # like in jsonify
+                contenttype = str(value.get('content_type', ''))
             file = value.get('file', None)
             if file is not None:
                 data = filestore[file]['data']
