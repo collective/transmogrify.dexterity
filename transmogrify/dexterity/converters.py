@@ -74,11 +74,11 @@ class NamedFileDeserializer(object):
             if file is not None:
                 data = filestore[file]['data']
             else:
-                # stored in _datafield_ structure, like collective.jsonify
-                # data = value['data']
-                # decode - collective.jsonify encodes base64
-                # TODO: let collective.jsonify export a data encoding field
-                data = base64.b64decode(value['data'])
+                if value.get('encoding', None) == 'base64':
+                    # collective.jsonify encodes base64
+                    data = base64.b64decode(value['data'])
+                else:
+                    data = value['data']
 
         elif isinstance(value, str):
             data = value
