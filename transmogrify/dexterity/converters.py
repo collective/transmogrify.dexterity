@@ -13,6 +13,7 @@ from zope.schema.interfaces import IDate
 from zope.schema.interfaces import IField
 from zope.schema.interfaces import IFromUnicode
 from zope.schema.interfaces import IObject
+import base64
 import mimetypes
 
 
@@ -74,7 +75,11 @@ class NamedFileDeserializer(object):
                 data = filestore[file]['data']
             else:
                 # stored in _datafield_ structure, like collective.jsonify
-                data = value['data']
+                # data = value['data']
+                # decode - collective.jsonify encodes base64
+                # TODO: let collective.jsonify export a data encoding field
+                data = base64.b64decode(value['data'])
+
         elif isinstance(value, str):
             data = value
             filename = item.get('_filename', None)
