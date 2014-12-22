@@ -62,7 +62,7 @@ Check that content items got made
 
 Run the pipeline, generate content item IDs into folder
 
-    >>> portal.invokeFactory(type_name="Folder", id="test-content")
+    >>> portal.invokeFactory(type_name="TransmogrifyDexterityFTI", id="test-content")
     'test-content'
     >>> transmogrifier = Transmogrifier(portal)
     >>> IAnnotations(transmogrifier)[IMPORT_CONTEXT] = FakeImportContext('entries.csv',
