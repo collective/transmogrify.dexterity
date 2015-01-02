@@ -5,7 +5,12 @@ Changelog
 1.5 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Handle collective.jsonify structures, specifically _datafield_FIELDNAME and
+  _content_type_FIELDNAME keys.
+  [thet]
+
+- PEP8.
+  [thet]
 
 
 1.4 (2014-11-06)

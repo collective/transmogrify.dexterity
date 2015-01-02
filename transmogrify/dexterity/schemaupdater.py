@@ -1,19 +1,20 @@
-import logging
-from collective.transmogrifier.interfaces import ISectionBlueprint
 from collective.transmogrifier.interfaces import ISection
-from collective.transmogrifier.utils import defaultMatcher
+from collective.transmogrifier.interfaces import ISectionBlueprint
 from collective.transmogrifier.utils import Expression
+from collective.transmogrifier.utils import defaultMatcher
+from plone.app.textfield.interfaces import IRichText
 from plone.dexterity.utils import iterSchemata
 from plone.uuid.interfaces import IMutableUUID
+from transmogrify.dexterity.interfaces import IDeserializer
 from z3c.form import interfaces
-from zope.component import queryMultiAdapter
 from zope.component import getMultiAdapter
+from zope.component import queryMultiAdapter
 from zope.event import notify
 from zope.interface import classProvides
 from zope.interface import implementer
 from zope.lifecycleevent import ObjectModifiedEvent
 from zope.schema import getFieldsInOrder
-from interfaces import IDeserializer
+import logging
 
 
 _marker = object()
@@ -35,6 +36,11 @@ class DexterityUpdateSection(object):
             name,
             options,
         )
+
+        # if importing from collective.jsonify exported json structures, there
+        # is an datafield entry for binary data, which' prefix can be
+        # configured.
+        self.datafield_prefix = options.get('datafield-prefix', '_datafield_')
 
         # create logger
         if options.get('logger'):
@@ -82,17 +88,27 @@ class DexterityUpdateSection(object):
                 for name, field in getFieldsInOrder(schemata):
                     if field.readonly:
                         continue
-                    #setting value from the blueprint cue
+                    # setting value from the blueprint cue
                     value = item.get(name, _marker)
+                    if value is _marker:
+                        # Also try _datafield_FIELDNAME structure from jsonify
+                        value = item.get('_datafield_%s' % name, _marker)
                     if value is not _marker:
                         # Value was given in pipeline, so set it
                         deserializer = IDeserializer(field)
+                        if IRichText.providedBy(field)\
+                                and '_content_type_%s' % name in item:
+                            # change jsonify structure to one we understand
+                            value = {
+                                'contenttype': item['_content_type_%s' % name],
+                                'data': value
+                            }
                         value = deserializer(
                             value,
                             files,
                             item,
                             self.disable_constraints,
-                            logger=self.log,
+                            logger=self.log
                         )
                         field.set(field.interface(obj), value)
                         continue

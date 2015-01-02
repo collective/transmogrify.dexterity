@@ -1,15 +1,11 @@
 # -*- coding: utf-8 -*-
-
-import unittest
-import zope.testing
-
-from zope import schema, interface
-from z3c.form.object import registerFactoryAdapter
-
 from plone.app.textfield import RichText, RichTextValue
 from plone.supermodel import model
-
 from transmogrify.dexterity.interfaces import ISerializer, IDeserializer
+from z3c.form.object import registerFactoryAdapter
+from zope import schema, interface
+import unittest
+import zope.testing
 
 
 class ITestObjectA(model.Schema):
@@ -47,8 +43,9 @@ registerFactoryAdapter(ITestObjectB, TestObjectB)
 
 
 class TestObjectDeserializer(unittest.TestCase):
+
     def setUp(test):
-        #TODO: Should be importing ZCML
+        # TODO: Should be importing ZCML
         from transmogrify.dexterity import converters
         zope.component.provideAdapter(converters.ObjectDeserializer)
         zope.component.provideAdapter(converters.RichTextDeserializer)
@@ -56,9 +53,9 @@ class TestObjectDeserializer(unittest.TestCase):
 
     def deserialize(self, des, input):
         if des.field.schema == ITestObjectA:
-            input["_class"] = "transmogrify.dexterity.tests.testconverters_object.TestObjectA"
+            input["_class"] = "transmogrify.dexterity.tests.testconverters_object.TestObjectA"  # noqa
         elif des.field.schema == ITestObjectB:
-            input["_class"] = "transmogrify.dexterity.tests.testconverters_object.TestObjectB"
+            input["_class"] = "transmogrify.dexterity.tests.testconverters_object.TestObjectB"  # noqa
         return des(input, None, None)
 
     def test_failures(self):
@@ -74,7 +71,7 @@ class TestObjectDeserializer(unittest.TestCase):
 
         # _class needs to implement ITestObjectA
         with self.assertRaisesRegexp(ValueError, "TestObjectDeserializer"):
-            desA(dict(_class="transmogrify.dexterity.tests.testconverters_object.TestObjectDeserializer"), None, None)
+            desA(dict(_class="transmogrify.dexterity.tests.testconverters_object.TestObjectDeserializer"), None, None)  # noqa
 
         # Extra values not allowed
         with self.assertRaisesRegexp(ValueError, "fart"):
@@ -111,8 +108,9 @@ class TestObjectDeserializer(unittest.TestCase):
 
 
 class TestObjectSerializer(unittest.TestCase):
+
     def setUp(test):
-        #TODO: Should be importing ZCML
+        # TODO: Should be importing ZCML
         from transmogrify.dexterity import converters
         zope.component.provideAdapter(converters.ObjectSerializer)
         zope.component.provideAdapter(converters.RichTextSerializer)
@@ -128,24 +126,37 @@ class TestObjectSerializer(unittest.TestCase):
 
         obj = TestObjectA()
         obj.fish = u"haddock"
-        self.assertEqual(serA(obj, None), dict(
-            _class="transmogrify.dexterity.tests.testconverters_object.TestObjectA",
-            fish=u"haddock",
-        ))
+        self.assertEqual(
+            serA(
+                obj,
+                None),
+            dict(
+                _class="transmogrify.dexterity.tests.testconverters_object.TestObjectA",  # noqa
+                fish=u"haddock",
+            ))
 
         # Recurse into attributes
         filestore = {}
-        obj = desB(dict(
-            title=u'A hairy section',
-            cowtent=dict(data=u'Some nice text', contenttype='scroll/dead-sea'),
-            _class="transmogrify.dexterity.tests.testconverters_object.TestObjectB",
-        ), filestore, None)
-        self.assertEqual(serB(obj, filestore), dict(
-            _class="transmogrify.dexterity.tests.testconverters_object.TestObjectB",
-            title=u'A hairy section',
-            cowtent=dict(
-                file='_field_cowtent_cowtent',
-                encoding='utf-8',
-                contenttype='scroll/dead-sea',
+        obj = desB(
+            dict(
+                title=u'A hairy section',
+                cowtent=dict(
+                    data=u'Some nice text',
+                    contenttype='scroll/dead-sea'),
+                _class="transmogrify.dexterity.tests.testconverters_object.TestObjectB",  # noqa
             ),
-        ))
+            filestore,
+            None)
+        self.assertEqual(
+            serB(
+                obj,
+                filestore),
+            dict(
+                _class="transmogrify.dexterity.tests.testconverters_object.TestObjectB",  # noqa
+                title=u'A hairy section',
+                cowtent=dict(
+                    file='_field_cowtent_cowtent',
+                    encoding='utf-8',
+                    contenttype='scroll/dead-sea',
+                ),
+            ))

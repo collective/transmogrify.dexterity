@@ -1,14 +1,12 @@
-from zope.interface import classProvides
-from zope.interface import implementer
-from collective.transmogrifier.interfaces import ISectionBlueprint
 from collective.transmogrifier.interfaces import ISection
-from collective.transmogrifier.utils import Matcher
-from collective.transmogrifier.utils import defaultKeys
+from collective.transmogrifier.interfaces import ISectionBlueprint
 from collective.transmogrifier.utils import defaultMatcher
+from transmogrify.dexterity.interfaces import ISerializer
 from plone.dexterity.utils import iterSchemata
 from plone.uuid.interfaces import IUUID
+from zope.interface import classProvides
+from zope.interface import implementer
 from zope.schema import getFieldsInOrder
-from interfaces import ISerializer
 
 
 @implementer(ISection)
@@ -50,7 +48,7 @@ class DexterityReaderSection(object):
 
             files = item.setdefault(self.fileskey, {})
 
-            #get all fields for this obj
+            # get all fields for this obj
             for schemata in iterSchemata(obj):
                 for name, field in getFieldsInOrder(schemata):
                     try:
