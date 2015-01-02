@@ -4,7 +4,7 @@ from setuptools import find_packages
 version = '1.5dev0'
 maintainer = 'Philippe Gross'
 desc = 'A transmogrifier blueprint for updating dexterity objects'
-long_desc = open('README.rst').read() + '\n\n' + open('HISTORY.rst').read()
+long_desc = open('README.rst').read() + '\n\n' + open('CHANGES.rst').read()
 tests_require = [
     'plone.app.testing',
     'plone.app.dexterity',
