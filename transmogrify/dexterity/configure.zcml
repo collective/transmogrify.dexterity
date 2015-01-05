@@ -3,6 +3,7 @@
   xmlns:zcml="http://namespaces.zope.org/zcml"
   i18n_domain="transmogrify.dexterity">
 
+  <include package="collective.transmogrifier" file="meta.zcml" />
   <include package="collective.transmogrifier" />
 
   <include file="converters.zcml" />
