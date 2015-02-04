@@ -5,6 +5,11 @@ Changelog
 1.5 (unreleased)
 ----------------
 
+- When retrieving the object via traversal from the path, check if it provides
+  IDexterityContent. Traversal can also return attributes of objects, if no
+  object can be found but the path element is named like an attribute.
+  [thet]
+
 - Handle collective.jsonify structures, specifically _datafield_FIELDNAME and
   _content_type_FIELDNAME keys.
   [thet]

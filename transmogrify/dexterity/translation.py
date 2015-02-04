@@ -1,6 +1,7 @@
 from collective.transmogrifier.interfaces import ISection
 from collective.transmogrifier.interfaces import ISectionBlueprint
 from collective.transmogrifier.utils import defaultMatcher
+from plone.dexterity.interfaces import IDexterityContent
 from zope.interface import classProvides
 from zope.interface import implementer
 try:
@@ -42,8 +43,10 @@ class DexterityTranslationSection(object):
             obj = self.context.unrestrictedTraverse(
                 path.encode().lstrip('/'), None)
 
-            # path doesn't exist
-            if obj is None:
+            if not IDexterityContent.providedBy(obj):
+                # Path doesn't exist
+                # obj can not only be None, but also the value of an attribute,
+                # which is returned by traversal.
                 yield item
                 continue
 

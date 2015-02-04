@@ -3,6 +3,7 @@ from collective.transmogrifier.interfaces import ISectionBlueprint
 from collective.transmogrifier.utils import Expression
 from collective.transmogrifier.utils import defaultMatcher
 from plone.app.textfield.interfaces import IRichText
+from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.utils import iterSchemata
 from plone.uuid.interfaces import IMutableUUID
 from transmogrify.dexterity.interfaces import IDeserializer
@@ -71,8 +72,10 @@ class DexterityUpdateSection(object):
             obj = self.context.unrestrictedTraverse(
                 path.encode().lstrip('/'), None)
 
-            # path doesn't exist
-            if obj is None:
+            if not IDexterityContent.providedBy(obj):
+                # Path doesn't exist
+                # obj can not only be None, but also the value of an attribute,
+                # which is returned by traversal.
                 yield item
                 continue
 
