@@ -1,11 +1,15 @@
-from datetime import datetime
 from .interfaces import IDeserializer
 from .interfaces import ISerializer
+from datetime import datetime
 from plone.app.textfield.interfaces import IRichText
 from plone.app.textfield.value import RichTextValue
 from plone.namedfile.interfaces import INamedField
 from plone.supermodel.interfaces import IToUnicode
+from z3c.relationfield.interfaces import IRelation
+from z3c.relationfield.interfaces import IRelationList
+from z3c.relationfield.relation import RelationValue
 from zope.component import adapter
+from zope.component import getUtility
 from zope.dottedname.resolve import resolve
 from zope.interface import implementer
 from zope.schema.interfaces import ICollection
@@ -15,6 +19,16 @@ from zope.schema.interfaces import IFromUnicode
 from zope.schema.interfaces import IObject
 import base64
 import mimetypes
+import pkg_resources
+
+
+try:
+    pkg_resources.get_distribution('plone.app.intid')
+except pkg_resources.DistributionNotFound:
+    INTID_AVAILABLE = False
+else:
+    INTID_AVAILABLE = True
+    from zope.app.intid.interfaces import IIntIds
 
 
 def get_site_encoding():
@@ -408,3 +422,44 @@ class DefaultDeserializer(object):
                                 e.__repr__())
                         )
         return value
+
+
+if INTID_AVAILABLE:
+    @implementer(IDeserializer)
+    @adapter(IRelation)
+    class RelationDeserializer(object):
+
+        def __init__(self, field):
+            self.field = field
+
+        def __call__(self, value, filestore, item,
+                     disable_constraints=False, logger=None):
+            field = self.field
+            if field is None:
+                return
+
+            if not value:
+                return
+
+            intids = getUtility(IIntIds)
+            return RelationValue(intids.getId(value))
+
+
+    @implementer(IDeserializer)
+    @adapter(IRelationList)
+    class RelationListDeserializer(object):
+
+        def __init__(self, field):
+            self.field = field
+
+        def __call__(self, value, filestore, item,
+                     disable_constraints=False, logger=None):
+            field = self.field
+            if field is None:
+                return
+
+            if not value:
+                return []
+
+            intids = getUtility(IIntIds)
+            return [RelationValue(intids.getId(obj)) for obj in value]

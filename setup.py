@@ -6,6 +6,8 @@ maintainer = 'Philippe Gross'
 desc = 'A transmogrifier blueprint for updating dexterity objects'
 long_desc = open('README.rst').read() + '\n\n' + open('CHANGES.rst').read()
 tests_require = [
+    'ftw.builder',
+    'plone.app.intid',
     'plone.app.testing',
     'plone.app.dexterity',
     'plone.namedfile[blobs]',
