@@ -8,7 +8,7 @@ Globals:
     >>> portal = layer.get('portal')
     >>> request = layer.get('request')
 
-Do some imports 
+Do some imports
 
     >>> from collective.transmogrifier.meta import registerConfig
     >>> from collective.transmogrifier.transmogrifier import Transmogrifier
@@ -64,7 +64,7 @@ DateFields:
 
     >>> two.test_date
     datetime.date(2010, 1, 1)
-    
+
 Won't touch already existing values
 
     >>> transmogrifier = Transmogrifier(portal)
@@ -78,3 +78,4 @@ Won't touch already existing values
     u'Spammety spam'
     >>> spam.foo
     u'one value'
+
