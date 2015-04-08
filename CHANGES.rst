@@ -17,6 +17,9 @@ Changelog
 - PEP8.
   [thet]
 
+- Add value converters for z3c.relationfield relation(-lists).
+  [deiferni]
+
 
 1.4 (2014-11-06)
 ----------------

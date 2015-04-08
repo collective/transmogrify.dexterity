@@ -1,10 +1,73 @@
 # -*- coding: utf-8 -*-
+from ftw.builder import Builder
+from ftw.builder import create
 from plone.app.textfield import RichText
+from plone.formwidget.contenttree import ObjPathSourceBinder
 from transmogrify.dexterity import converters
 from transmogrify.dexterity.interfaces import IDeserializer
+from transmogrify.dexterity.testing import TRANSMOGRIFY_DEXTERITY_FUNCTIONAL_TESTING
+from z3c.relationfield.relation import RelationValue
+from z3c.relationfield.schema import RelationChoice
+from z3c.relationfield.schema import RelationList
 import pprint
 import unittest
 import zope.testing
+
+
+class TestRelationDeserializer(unittest.TestCase):
+
+    layer = TRANSMOGRIFY_DEXTERITY_FUNCTIONAL_TESTING
+
+    relation = RelationChoice(
+        title=u"Relation",
+        source=ObjPathSourceBinder(),
+        required=False,
+    )
+
+    relation_list = RelationList(
+        title=u"Relation List",
+        default=[],
+        value_type=RelationChoice(title=u"Relation",
+                                  source=ObjPathSourceBinder()),
+        required=False,
+    )
+
+    def test_deserialize_relation(self):
+        folder = create(Builder('folder'))
+        deserializer = IDeserializer(self.relation)
+        value = deserializer(folder, None, None)
+
+        self.assertTrue(isinstance(value, RelationValue))
+        self.assertEqual(folder, value.to_object)
+
+    def test_deserialize_none_relation(self):
+        deserializer = IDeserializer(self.relation)
+        value = deserializer(None, None, None)
+
+        self.assertIsNone(value)
+
+    def test_deserialize_relation_list(self):
+        folder = create(Builder('folder'))
+        deserializer = IDeserializer(self.relation_list)
+        value = deserializer([folder], None, None)
+
+        self.assertEqual(1, len(value))
+        self.assertTrue(isinstance(value[0], RelationValue))
+        self.assertEqual(folder, value[0].to_object)
+
+    def test_deserialize_empty_relation_list(self):
+        deserializer = IDeserializer(self.relation_list)
+        value = deserializer([], None, None)
+
+        self.assertEqual(0, len(value))
+        self.assertEqual([], value)
+
+    def test_deserialize_none_relation_list(self):
+        deserializer = IDeserializer(self.relation_list)
+        value = deserializer(None, None, None)
+
+        self.assertEqual(0, len(value))
+        self.assertEqual([], value)
 
 
 class TestRichTextDeserializer(unittest.TestCase):

@@ -1,11 +1,17 @@
-from collective.transmogrifier.interfaces import ISectionBlueprint
 from collective.transmogrifier.interfaces import ISection
+from collective.transmogrifier.interfaces import ISectionBlueprint
 from collective.transmogrifier.sections.tests import SampleSource
+from datetime import date
+from ftw.builder.testing import BUILDER_LAYER
+from ftw.builder.testing import functional_session_factory
+from ftw.builder.testing import set_builder_session_factory
+from plone.app.testing import applyProfile
+from plone.app.testing import FunctionalTesting
 from plone.app.testing import IntegrationTesting
-from plone.app.testing import TEST_USER_ID
-from plone.app.testing import setRoles
-from plone.app.testing import PloneSandboxLayer
 from plone.app.testing import PLONE_FIXTURE
+from plone.app.testing import PloneSandboxLayer
+from plone.app.testing import setRoles
+from plone.app.testing import TEST_USER_ID
 from plone.app.textfield import RichText
 from plone.dexterity.fti import DexterityFTI
 from plone.dexterity.fti import register
@@ -14,7 +20,6 @@ from plone.namedfile.field import NamedFile
 from zope import schema
 from zope.component import provideUtility
 from zope.configuration import xmlconfig
-from datetime import date
 from zope.interface import classProvides
 from zope.interface import implementer
 
@@ -74,7 +79,7 @@ class ITestSchema(form.Schema):
 
 class TransmogrifyDexterityLayer(PloneSandboxLayer):
 
-    defaultBases = (PLONE_FIXTURE, )
+    defaultBases = (PLONE_FIXTURE, BUILDER_LAYER)
 
     def setUpZope(self, app, configurationContext):
         # Load ZCML
@@ -86,6 +91,7 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
         )
 
     def setUpPloneSite(self, portal):
+        applyProfile(portal, 'plone.app.intid:default')
         # Install into Plone site using portal_setup
         setRoles(portal, TEST_USER_ID, ['Member', 'Contributor', 'Manager'])
 
@@ -156,3 +162,8 @@ TRANSMOGRIFY_DEXTERITY_FIXTURE = TransmogrifyDexterityLayer()
 TRANSMOGRIFY_DEXTERITY_INTEGRATION_TESTING = IntegrationTesting(
     bases=(TRANSMOGRIFY_DEXTERITY_FIXTURE, ),
     name="TransmogrifyDexterity:Integration")
+
+TRANSMOGRIFY_DEXTERITY_FUNCTIONAL_TESTING = FunctionalTesting(
+    bases=(TRANSMOGRIFY_DEXTERITY_FIXTURE,
+           set_builder_session_factory(functional_session_factory)),
+    name="TransmogrifyDexterity:Functional")
