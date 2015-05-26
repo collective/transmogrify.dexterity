@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.5 (unreleased)
+1.5 (2015-05-26)
 ----------------
 
 - When retrieving the object via traversal from the path, check if it provides
