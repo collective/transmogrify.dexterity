@@ -12,6 +12,8 @@ tests_require = [
     'plone.app.dexterity',
     'plone.namedfile[blobs]',
     'plone.directives.form',
+    'plone.formwidget.contenttree',
+    'z3c.relationfield',
 ]
 
 
