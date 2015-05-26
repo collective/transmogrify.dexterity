@@ -2,6 +2,12 @@ Changelog
 =========
 
 
+1.6 (unreleased)
+----------------
+
+- Nothing changed yet.
+
+
 1.5 (2015-05-26)
 ----------------
 
