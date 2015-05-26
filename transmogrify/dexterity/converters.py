@@ -9,7 +9,7 @@ from z3c.relationfield.interfaces import IRelation
 from z3c.relationfield.interfaces import IRelationList
 from z3c.relationfield.relation import RelationValue
 from zope.component import adapter
-from zope.component import getUtility
+from zope.component import queryUtility
 from zope.dottedname.resolve import resolve
 from zope.interface import implementer
 from zope.schema.interfaces import ICollection
@@ -429,6 +429,8 @@ if INTID_AVAILABLE:
     @adapter(IRelation)
     class RelationDeserializer(object):
 
+        default_value = None
+
         def __init__(self, field):
             self.field = field
 
@@ -436,30 +438,34 @@ if INTID_AVAILABLE:
                      disable_constraints=False, logger=None):
             field = self.field
             if field is None:
-                return
+                return None
 
             if not value:
-                return
+                return self.default_value
 
-            intids = getUtility(IIntIds)
-            return RelationValue(intids.getId(value))
+            self.intids = queryUtility(IIntIds)
+            if self.intids is None:
+                return value
+
+            return self.deserialize(value)
+
+        def deserialize(self, value):
+            int_id = self.intids.queryId(value)
+            if int_id is None:
+                return value
+
+            return RelationValue(int_id)
 
 
     @implementer(IDeserializer)
     @adapter(IRelationList)
-    class RelationListDeserializer(object):
+    class RelationListDeserializer(RelationDeserializer):
 
-        def __init__(self, field):
-            self.field = field
+        default_value = []
 
-        def __call__(self, value, filestore, item,
-                     disable_constraints=False, logger=None):
-            field = self.field
-            if field is None:
-                return
-
-            if not value:
-                return []
-
-            intids = getUtility(IIntIds)
-            return [RelationValue(intids.getId(obj)) for obj in value]
+        def deserialize(self, value):
+            result = []
+            for obj in value:
+                result.append(
+                    super(RelationListDeserializer, self).deserialize(obj))
+            return result
