@@ -5,9 +5,6 @@ from plone.app.textfield.interfaces import IRichText
 from plone.app.textfield.value import RichTextValue
 from plone.namedfile.interfaces import INamedField
 from plone.supermodel.interfaces import IToUnicode
-from z3c.relationfield.interfaces import IRelation
-from z3c.relationfield.interfaces import IRelationList
-from z3c.relationfield.relation import RelationValue
 from zope.component import adapter
 from zope.component import queryUtility
 from zope.dottedname.resolve import resolve
@@ -29,6 +26,16 @@ except pkg_resources.DistributionNotFound:
 else:
     INTID_AVAILABLE = True
     from zope.app.intid.interfaces import IIntIds
+
+try:
+    pkg_resources.get_distribution('z3c.relationfield')
+except:
+    RELATIONFIELD_AVAILABLE = False
+else:
+    RELATIONFIELD_AVAILABLE = True
+    from z3c.relationfield.interfaces import IRelation
+    from z3c.relationfield.interfaces import IRelationList
+    from z3c.relationfield.relation import RelationValue
 
 
 def get_site_encoding():
@@ -424,7 +431,7 @@ class DefaultDeserializer(object):
         return value
 
 
-if INTID_AVAILABLE:
+if INTID_AVAILABLE and RELATIONFIELD_AVAILABLE:
     @implementer(IDeserializer)
     @adapter(IRelation)
     class RelationDeserializer(object):

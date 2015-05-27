@@ -21,8 +21,10 @@
   <adapter factory=".converters.DefaultDeserializer" />
 
   <configure zcml:condition="installed plone.app.intid">
-    <adapter factory=".converters.RelationDeserializer" />
-    <adapter factory=".converters.RelationListDeserializer" />
+      <configure zcml:condition="installed z3c.relationfield">
+          <adapter factory=".converters.RelationDeserializer" />
+          <adapter factory=".converters.RelationListDeserializer" />
+      </configure>
   </configure>
 
 </configure>

@@ -5,7 +5,8 @@ Changelog
 1.6 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Make z3c.relationfield imports conditional.
+  [jone]
 
 
 1.5 (2015-05-26)
