@@ -5,7 +5,9 @@ Changelog
 1.5.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fix default container description to be unicode, not bytestring.
+  See https://github.com/plone/plone.dexterity/pull/33
+  [jone]
 
 
 1.5.1 (2015-05-27)
