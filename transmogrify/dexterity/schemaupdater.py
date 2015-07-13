@@ -121,6 +121,14 @@ class DexterityUpdateSection(object):
                     value = getMultiAdapter(
                         (obj, field),
                         interfaces.IDataManager).query()
+
+                    # Fix default description to be an empty unicode instead of
+                    # an empty bytestring because of this bug:
+                    # https://github.com/plone/plone.dexterity/pull/33
+                    if name == 'description' and value == '':
+                        field.set(field.interface(obj), u'')
+                        continue
+
                     if not(value is field.missing_value
                            or value is interfaces.NO_VALUE):
                         continue
