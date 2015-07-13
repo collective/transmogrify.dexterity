@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.5.2 (unreleased)
+1.5.2 (2015-07-13)
 ------------------
 
 - Fix default container description to be unicode, not bytestring.
