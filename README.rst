@@ -34,6 +34,11 @@ Actually tested and supported fields
     needs a datetime.date or datetime.datetime object, or a string in the
     following format "%Y-%m-%d"
 
+- Datetime
+    needs a datetime.datetime object, or a string parseable by
+    `DateTime.DateTime` e.g. "2015-12-31 17:59:59"
+    or "2004/12/30 00:20:00 GMT+1" etc.
+
 
 Default pipelines
 =================

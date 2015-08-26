@@ -5,7 +5,8 @@ Changelog
 1.5.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Implement new deserializer for datetime fields.
+  [mbaechtold]
 
 
 1.5.2 (2015-07-13)
