@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
 from ftw.builder import Builder
 from ftw.builder import create
 from plone.app.textfield import RichText
@@ -9,6 +10,7 @@ from transmogrify.dexterity.testing import TRANSMOGRIFY_DEXTERITY_FUNCTIONAL_TES
 from z3c.relationfield.relation import RelationValue
 from z3c.relationfield.schema import RelationChoice
 from z3c.relationfield.schema import RelationList
+from zope.schema import Datetime
 import pprint
 import unittest
 import zope.testing
@@ -195,3 +197,21 @@ class TestRichTextDeserializer(unittest.TestCase):
             "x-application/cow",
             "Content type from dict should override default")
         self.assertEqual(rtv.encoding, "latin-1")
+
+
+class TestDatetimeDeserializer(unittest.TestCase):
+
+    layer = TRANSMOGRIFY_DEXTERITY_FUNCTIONAL_TESTING
+
+    def setUp(test):
+        test.pp = pprint.PrettyPrinter(indent=4)
+        # TODO: This should read the zcml instead
+        zope.component.provideAdapter(converters.DatetimeDeserializer)
+
+    def test_datetime_deserializer(self):
+        deserializer = IDeserializer(Datetime())
+        value = deserializer('2015-12-31 17:59:59', None, None)
+        self.assertEqual(
+            datetime(2015, 12, 31, 17, 59, 59),
+            value
+        )

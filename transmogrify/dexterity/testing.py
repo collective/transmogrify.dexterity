@@ -2,6 +2,7 @@ from collective.transmogrifier.interfaces import ISection
 from collective.transmogrifier.interfaces import ISectionBlueprint
 from collective.transmogrifier.sections.tests import SampleSource
 from datetime import date
+from datetime import datetime
 from ftw.builder.testing import BUILDER_LAYER
 from ftw.builder.testing import functional_session_factory
 from ftw.builder.testing import set_builder_session_factory
@@ -72,6 +73,10 @@ class ITestSchema(form.Schema):
         title=u'test_date',
     )
 
+    test_datetime = schema.Datetime(
+        title=u'test_datetime',
+    )
+
     fancy_text = RichText(
         title=u"Fancy text",
     )
@@ -131,6 +136,7 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
                                  'data': zptlogo,
                                  'filename': 'zptlogo.gif'},
                              test_date='2010-10-12',
+                             test_datetime='2010-10-12 17:59:59',
                              fieldnotchanged='nochange',
                              ),
                         dict(_path='/two',
@@ -142,6 +148,7 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
                              test_file=zptlogo,
                              _filename="testlogo.gif",
                              test_date=date(2010, 0o1, 0o1, ),
+                             test_datetime=datetime(2010, 0o1, 0o1, 17, 59, 59),
                              fieldnotchanged='nochange',
                              ),
                     )

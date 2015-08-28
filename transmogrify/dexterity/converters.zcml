@@ -16,6 +16,7 @@
   <adapter factory=".converters.CollectionDeserializer" />
 
   <adapter factory=".converters.DateDeserializer" />
+  <adapter factory=".converters.DatetimeDeserializer" />
 
   <adapter factory=".converters.DefaultSerializer" />
   <adapter factory=".converters.DefaultDeserializer" />

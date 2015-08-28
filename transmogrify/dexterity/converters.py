@@ -1,5 +1,6 @@
 from .interfaces import IDeserializer
 from .interfaces import ISerializer
+from DateTime import DateTime
 from datetime import datetime
 from plone.app.textfield.interfaces import IRichText
 from plone.app.textfield.value import RichTextValue
@@ -11,6 +12,7 @@ from zope.dottedname.resolve import resolve
 from zope.interface import implementer
 from zope.schema.interfaces import ICollection
 from zope.schema.interfaces import IDate
+from zope.schema.interfaces import IDatetime
 from zope.schema.interfaces import IField
 from zope.schema.interfaces import IFromUnicode
 from zope.schema.interfaces import IObject
@@ -366,6 +368,33 @@ class DateDeserializer(object):
             value = datetime.strptime(value, '%Y-%m-%d')
         if isinstance(value, datetime):
             value = value.date()
+        try:
+            self.field.validate(value)
+        except Exception as e:
+            if not disable_constraints:
+                raise e
+            else:
+                if logger:
+                    logger(
+                        "%s is invalid in %s: %s" % (
+                            self.field.__name__,
+                            item['_path'],
+                            e)
+                    )
+        return value
+
+
+@implementer(IDeserializer)
+@adapter(IDatetime)
+class DatetimeDeserializer(object):
+
+    def __init__(self, field):
+        self.field = field
+
+    def __call__(self, value, filestore, item,
+                 disable_constraints=False, logger=None):
+        if isinstance(value, basestring):
+            value = DateTime(value).asdatetime()
         try:
             self.field.validate(value)
         except Exception as e:
