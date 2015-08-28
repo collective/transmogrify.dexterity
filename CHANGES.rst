@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.5.3 (unreleased)
+1.6.0 (2015-08-28)
 ------------------
 
 - Implement new deserializer for datetime fields.
