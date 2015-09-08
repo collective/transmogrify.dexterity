@@ -394,7 +394,10 @@ class DatetimeDeserializer(object):
     def __call__(self, value, filestore, item,
                  disable_constraints=False, logger=None):
         if isinstance(value, basestring):
-            value = DateTime(value).asdatetime()
+            if value == 'None':
+                value = None
+            else:
+                value = DateTime(value).asdatetime()
         try:
             self.field.validate(value)
         except Exception as e:
