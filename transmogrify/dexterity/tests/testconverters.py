@@ -215,3 +215,11 @@ class TestDatetimeDeserializer(unittest.TestCase):
             datetime(2015, 12, 31, 17, 59, 59),
             value
         )
+
+    def test_datetime_deserializer_for_not_required_datetime(self):
+        field = Datetime()
+        field.required = False
+        deserializer = IDeserializer(field)
+        value = deserializer('None', None, None)
+
+        self.assertEqual(None, value)
