@@ -5,7 +5,8 @@ Changelog
 1.6.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Do not import from deprecated zope.app.intd anymore, use zope.intid instead
+  [jensens]
 
 
 1.6.0 (2015-08-28)

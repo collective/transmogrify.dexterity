@@ -1,11 +1,12 @@
-from .interfaces import IDeserializer
-from .interfaces import ISerializer
+# -*- coding: utf-8 -*-
 from DateTime import DateTime
 from datetime import datetime
 from plone.app.textfield.interfaces import IRichText
 from plone.app.textfield.value import RichTextValue
 from plone.namedfile.interfaces import INamedField
 from plone.supermodel.interfaces import IToUnicode
+from transmogrify.dexterity.interfaces import IDeserializer
+from transmogrify.dexterity.interfaces import ISerializer
 from zope.component import adapter
 from zope.component import queryUtility
 from zope.dottedname.resolve import resolve
@@ -27,7 +28,7 @@ except pkg_resources.DistributionNotFound:
     INTID_AVAILABLE = False
 else:
     INTID_AVAILABLE = True
-    from zope.app.intid.interfaces import IIntIds
+    from zope.intid.interfaces import IIntIds
 
 try:
     pkg_resources.get_distribution('z3c.relationfield')
