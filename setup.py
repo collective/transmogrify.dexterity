@@ -14,6 +14,7 @@ tests_require = [
     'plone.directives.form',
     'plone.formwidget.contenttree',
     'z3c.relationfield',
+    'unittest2',
 ]
 
 
