@@ -2,7 +2,7 @@ from setuptools import setup
 from setuptools import find_packages
 
 version = '1.6.1.dev0'
-maintainer = 'Philippe Gross'
+
 desc = 'A transmogrifier blueprint for updating dexterity objects'
 long_desc = open('README.rst').read() + '\n\n' + open('CHANGES.rst').read()
 tests_require = [
@@ -28,10 +28,9 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     keywords='',
-    author='%s, 4teamwork GmbH' % maintainer,
+    author='4teamwork AG',
     author_email='mailto:info@4teamwork.ch',
-    maintainer=maintainer,
-    url='http://psc.4teamwork.ch/dist/transmogrify.dexterity',
+    url='https://github.com/collective/transmogrify.dexterity/',
     license='GPL2',
     packages=find_packages(exclude=['ez_setup']),
     namespace_packages=['transmogrify'],
