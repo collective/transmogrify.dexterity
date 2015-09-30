@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.6.1 (unreleased)
+1.6.1 (2015-09-30)
 ------------------
 
 - Do not import from deprecated zope.app.intid anymore, use zope.intid instead
