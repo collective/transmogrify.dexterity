@@ -8,6 +8,9 @@ Changelog
 - Do not import from deprecated zope.app.intd anymore, use zope.intid instead
   [jensens]
 
+- Fix deserializer if datetime is string "None".
+  [elioschmutz]
+
 
 1.6.0 (2015-08-28)
 ------------------
