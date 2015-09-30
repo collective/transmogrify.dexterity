@@ -1,7 +1,7 @@
 from setuptools import setup
 from setuptools import find_packages
 
-version = '1.6.1'
+version = '1.6.2.dev0'
 
 desc = 'A transmogrifier blueprint for updating dexterity objects'
 long_desc = open('README.rst').read() + '\n\n' + open('CHANGES.rst').read()
