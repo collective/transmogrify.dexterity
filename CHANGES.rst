@@ -5,7 +5,7 @@ Changelog
 1.6.1 (unreleased)
 ------------------
 
-- Do not import from deprecated zope.app.intd anymore, use zope.intid instead
+- Do not import from deprecated zope.app.intid anymore, use zope.intid instead
   [jensens]
 
 - Fix deserializer if datetime is string "None".
