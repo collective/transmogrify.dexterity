@@ -315,7 +315,9 @@ class CollectionSerializer(object):
             serializer = ISerializer(self.field.value_type)
         else:
             serializer = DefaultSerializer()
-        return [serializer(v, filestore, str(i)) for i, v in enumerate(value)]
+        if value:
+            return [serializer(v, filestore, str(i)) for i, v in enumerate(value)]
+        return []
 
 
 @implementer(IDeserializer)
