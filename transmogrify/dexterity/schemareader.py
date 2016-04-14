@@ -16,7 +16,7 @@ class DexterityReaderSection(object):
 
     def __init__(self, transmogrifier, name, options, previous):
         self.previous = previous
-        self.context = transmogrifier.context
+        self.context = transmogrifier.context if transmogrifier.context else getSite()  # noqa
         self.name = name
         self.pathkey = defaultMatcher(options, 'path-key', name, 'path')
         self.fileskey = options.get('files-key', '_files').strip()

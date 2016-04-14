@@ -10,6 +10,7 @@ from transmogrify.dexterity.interfaces import IDeserializer
 from z3c.form import interfaces
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
+from zope.component.hooks import getSite
 from zope.event import notify
 from zope.interface import classProvides
 from zope.interface import implementer
@@ -27,7 +28,7 @@ class DexterityUpdateSection(object):
 
     def __init__(self, transmogrifier, name, options, previous):
         self.previous = previous
-        self.context = transmogrifier.context
+        self.context = transmogrifier.context if transmogrifier.context else getSite()  # noqa
         self.name = name
         self.pathkey = defaultMatcher(options, 'path-key', name, 'path')
         self.fileskey = options.get('files-key', '_files').strip()

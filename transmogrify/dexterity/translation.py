@@ -20,7 +20,7 @@ class DexterityTranslationSection(object):
         if not PAM_AVAILABLE:
             raise RuntimeError('``plone.app.multilingual`` not installed')
         self.previous = previous
-        self.context = transmogrifier.context
+        self.context = transmogrifier.context if transmogrifier.context else getSite()  # noqa
         self.name = name
         self.pathkey = defaultMatcher(options, 'path-key', name, 'path')
         self.langkey = options.get('lang-key', '_lang').strip()

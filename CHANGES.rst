@@ -5,7 +5,8 @@ Changelog
 1.6.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fix blueprint context for support with ``transmogrifier`` package (not ``collective.transmogrifier``), which does not have dependencies to CMFPlone and thus doesn't provide a useful context.
+  [thet]
 
 
 1.6.1 (2015-09-30)
