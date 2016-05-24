@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.6.2 (unreleased)
+1.6.2 (2016-05-24)
 ------------------
 
 - Fix blueprint context for support with ``transmogrifier`` package (not ``collective.transmogrifier``), which does not have dependencies to CMFPlone and thus doesn't provide a useful context.
