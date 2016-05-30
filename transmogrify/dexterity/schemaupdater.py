@@ -153,5 +153,15 @@ class DexterityUpdateSection(object):
                             pass
                     field.set(field.interface(obj), default)
 
+            # Set default page
+            if '_defaultpage' in item:
+                if obj.aq_base.hasProperty('default_page'):
+                    obj.manage_changeProperties(
+                        default_page=item['_defaultpage'])
+                else:
+                    obj.manage_addProperty(
+                        'default_page', item['_defaultpage'],
+                        'string')
+
             notify(ObjectModifiedEvent(obj))
             yield item
