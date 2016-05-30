@@ -108,8 +108,18 @@ class NamedFileDeserializer(object):
             data = value
             filename = item.get('_filename', None)
             contenttype = ''
+
+        elif hasattr(value, 'url') and hasattr(value, 'read'):
+            # Handle files from transmogrify.webcrawler
+            data = value.read()
+            filename = value.url.split('/')[-1]
+            contenttype = ''
+            if isinstance(getattr(value, 'headers', None), dict):
+                contenttype = value.headers.get('content-type') or ''
+
         else:
             raise ValueError('Unable to convert to named file')
+
         if isinstance(filename, str):
             filename = filename.decode('utf-8')
         instance = self.field._type(
