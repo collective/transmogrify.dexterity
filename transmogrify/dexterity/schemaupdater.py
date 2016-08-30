@@ -56,6 +56,28 @@ class DexterityUpdateSection(object):
         else:
             self.log = None
 
+    def determine_default_value(self, obj, field):
+        """Determine the default to be set for a field that didn't receive
+        a value from the pipeline.
+        """
+        default = queryMultiAdapter((
+            obj,
+            obj.REQUEST,  # request
+            None,  # form
+            field,
+            None,  # Widget
+        ), interfaces.IValue, name='default')
+        if default is not None:
+            default = default.get()
+        if default is None:
+            default = getattr(field, 'default', None)
+        if default is None:
+            try:
+                default = field.missing_value
+            except AttributeError:
+                pass
+        return default
+
     def __iter__(self):
         for item in self.previous:
             pathkey = self.pathkey(*item.keys())[0]
@@ -135,22 +157,7 @@ class DexterityUpdateSection(object):
                         continue
 
                     # Finally, set a default value if nothing is set so far
-                    default = queryMultiAdapter((
-                        obj,
-                        obj.REQUEST,  # request
-                        None,  # form
-                        field,
-                        None,  # Widget
-                    ), interfaces.IValue, name='default')
-                    if default is not None:
-                        default = default.get()
-                    if default is None:
-                        default = getattr(field, 'default', None)
-                    if default is None:
-                        try:
-                            default = field.missing_value
-                        except AttributeError:
-                            pass
+                    default = self.determine_default_value(obj, field)
                     field.set(field.interface(obj), default)
 
             notify(ObjectModifiedEvent(obj))
