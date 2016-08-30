@@ -56,6 +56,33 @@ class DexterityUpdateSection(object):
         else:
             self.log = None
 
+    def get_value_from_pipeline(self, field, item):
+        name = field.getName()
+        # setting value from the blueprint cue
+        value = item.get(name, _marker)
+        if value is _marker:
+            # Also try _datafield_FIELDNAME structure from jsonify
+            value = item.get('_datafield_%s' % name, _marker)
+        if value is not _marker:
+            # Value was given in pipeline, so set it
+            deserializer = IDeserializer(field)
+            if IRichText.providedBy(field)\
+                    and '_content_type_%s' % name in item:
+                # change jsonify structure to one we understand
+                value = {
+                    'contenttype': item['_content_type_%s' % name],
+                    'data': value
+                }
+            files = item.setdefault(self.fileskey, {})
+            value = deserializer(
+                value,
+                files,
+                item,
+                self.disable_constraints,
+                logger=self.log
+            )
+        return value
+
     def determine_default_value(self, obj, field):
         """Determine the default to be set for a field that didn't receive
         a value from the pipeline.
@@ -106,36 +133,15 @@ class DexterityUpdateSection(object):
             if uuid is not None:
                 IMutableUUID(obj).set(str(uuid))
 
-            files = item.setdefault(self.fileskey, {})
-
             # For all fields in the schema, update in roughly the same way
             # z3c.form.widget.py would
             for schemata in iterSchemata(obj):
                 for name, field in getFieldsInOrder(schemata):
                     if field.readonly:
                         continue
-                    # setting value from the blueprint cue
-                    value = item.get(name, _marker)
-                    if value is _marker:
-                        # Also try _datafield_FIELDNAME structure from jsonify
-                        value = item.get('_datafield_%s' % name, _marker)
+
+                    value = self.get_value_from_pipeline(field, item)
                     if value is not _marker:
-                        # Value was given in pipeline, so set it
-                        deserializer = IDeserializer(field)
-                        if IRichText.providedBy(field)\
-                                and '_content_type_%s' % name in item:
-                            # change jsonify structure to one we understand
-                            value = {
-                                'contenttype': item['_content_type_%s' % name],
-                                'data': value
-                            }
-                        value = deserializer(
-                            value,
-                            files,
-                            item,
-                            self.disable_constraints,
-                            logger=self.log
-                        )
                         field.set(field.interface(obj), value)
                         continue
 
