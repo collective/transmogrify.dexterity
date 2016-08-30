@@ -5,7 +5,9 @@ Changelog
 1.6.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Refactor DexterityUpdateSection: Factor out determining default value,
+  getting value from pipeline and updating fields into their own methods.
+  [lgraf]
 
 
 1.6.2 (2016-05-24)
