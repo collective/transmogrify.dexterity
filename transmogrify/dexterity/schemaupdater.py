@@ -105,6 +105,35 @@ class DexterityUpdateSection(object):
                 pass
         return default
 
+    def update_field(self, obj, field, item):
+        if field.readonly:
+            return
+
+        name = field.getName()
+        value = self.get_value_from_pipeline(field, item)
+        if value is not _marker:
+            field.set(field.interface(obj), value)
+            return
+
+        # Get the field's current value, if it has one then leave it alone
+        value = getMultiAdapter(
+            (obj, field),
+            interfaces.IDataManager).query()
+
+        # Fix default description to be an empty unicode instead of
+        # an empty bytestring because of this bug:
+        # https://github.com/plone/plone.dexterity/pull/33
+        if name == 'description' and value == '':
+            field.set(field.interface(obj), u'')
+            return
+
+        if not(value is field.missing_value or value is interfaces.NO_VALUE):
+            return
+
+        # Finally, set a default value if nothing is set so far
+        default = self.determine_default_value(obj, field)
+        field.set(field.interface(obj), default)
+
     def __iter__(self):
         for item in self.previous:
             pathkey = self.pathkey(*item.keys())[0]
@@ -137,34 +166,7 @@ class DexterityUpdateSection(object):
             # z3c.form.widget.py would
             for schemata in iterSchemata(obj):
                 for name, field in getFieldsInOrder(schemata):
-                    if field.readonly:
-                        continue
-
-                    value = self.get_value_from_pipeline(field, item)
-                    if value is not _marker:
-                        field.set(field.interface(obj), value)
-                        continue
-
-                    # Get the widget's current value, if it has one then leave
-                    # it alone
-                    value = getMultiAdapter(
-                        (obj, field),
-                        interfaces.IDataManager).query()
-
-                    # Fix default description to be an empty unicode instead of
-                    # an empty bytestring because of this bug:
-                    # https://github.com/plone/plone.dexterity/pull/33
-                    if name == 'description' and value == '':
-                        field.set(field.interface(obj), u'')
-                        continue
-
-                    if not(value is field.missing_value
-                           or value is interfaces.NO_VALUE):
-                        continue
-
-                    # Finally, set a default value if nothing is set so far
-                    default = self.determine_default_value(obj, field)
-                    field.set(field.interface(obj), default)
+                    self.update_field(obj, field, item)
 
             notify(ObjectModifiedEvent(obj))
             yield item
