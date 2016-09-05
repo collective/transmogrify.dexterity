@@ -56,6 +56,84 @@ class DexterityUpdateSection(object):
         else:
             self.log = None
 
+    def get_value_from_pipeline(self, field, item):
+        name = field.getName()
+        # setting value from the blueprint cue
+        value = item.get(name, _marker)
+        if value is _marker:
+            # Also try _datafield_FIELDNAME structure from jsonify
+            value = item.get('_datafield_%s' % name, _marker)
+        if value is not _marker:
+            # Value was given in pipeline, so set it
+            deserializer = IDeserializer(field)
+            if IRichText.providedBy(field)\
+                    and '_content_type_%s' % name in item:
+                # change jsonify structure to one we understand
+                value = {
+                    'contenttype': item['_content_type_%s' % name],
+                    'data': value
+                }
+            files = item.setdefault(self.fileskey, {})
+            value = deserializer(
+                value,
+                files,
+                item,
+                self.disable_constraints,
+                logger=self.log
+            )
+        return value
+
+    def determine_default_value(self, obj, field):
+        """Determine the default to be set for a field that didn't receive
+        a value from the pipeline.
+        """
+        default = queryMultiAdapter((
+            obj,
+            obj.REQUEST,  # request
+            None,  # form
+            field,
+            None,  # Widget
+        ), interfaces.IValue, name='default')
+        if default is not None:
+            default = default.get()
+        if default is None:
+            default = getattr(field, 'default', None)
+        if default is None:
+            try:
+                default = field.missing_value
+            except AttributeError:
+                pass
+        return default
+
+    def update_field(self, obj, field, item):
+        if field.readonly:
+            return
+
+        name = field.getName()
+        value = self.get_value_from_pipeline(field, item)
+        if value is not _marker:
+            field.set(field.interface(obj), value)
+            return
+
+        # Get the field's current value, if it has one then leave it alone
+        value = getMultiAdapter(
+            (obj, field),
+            interfaces.IDataManager).query()
+
+        # Fix default description to be an empty unicode instead of
+        # an empty bytestring because of this bug:
+        # https://github.com/plone/plone.dexterity/pull/33
+        if name == 'description' and value == '':
+            field.set(field.interface(obj), u'')
+            return
+
+        if not(value is field.missing_value or value is interfaces.NO_VALUE):
+            return
+
+        # Finally, set a default value if nothing is set so far
+        default = self.determine_default_value(obj, field)
+        field.set(field.interface(obj), default)
+
     def __iter__(self):
         for item in self.previous:
             pathkey = self.pathkey(*item.keys())[0]
@@ -84,74 +162,11 @@ class DexterityUpdateSection(object):
             if uuid is not None:
                 IMutableUUID(obj).set(str(uuid))
 
-            files = item.setdefault(self.fileskey, {})
-
             # For all fields in the schema, update in roughly the same way
             # z3c.form.widget.py would
             for schemata in iterSchemata(obj):
                 for name, field in getFieldsInOrder(schemata):
-                    if field.readonly:
-                        continue
-                    # setting value from the blueprint cue
-                    value = item.get(name, _marker)
-                    if value is _marker:
-                        # Also try _datafield_FIELDNAME structure from jsonify
-                        value = item.get('_datafield_%s' % name, _marker)
-                    if value is not _marker:
-                        # Value was given in pipeline, so set it
-                        deserializer = IDeserializer(field)
-                        if IRichText.providedBy(field)\
-                                and '_content_type_%s' % name in item:
-                            # change jsonify structure to one we understand
-                            value = {
-                                'contenttype': item['_content_type_%s' % name],
-                                'data': value
-                            }
-                        value = deserializer(
-                            value,
-                            files,
-                            item,
-                            self.disable_constraints,
-                            logger=self.log
-                        )
-                        field.set(field.interface(obj), value)
-                        continue
-
-                    # Get the widget's current value, if it has one then leave
-                    # it alone
-                    value = getMultiAdapter(
-                        (obj, field),
-                        interfaces.IDataManager).query()
-
-                    # Fix default description to be an empty unicode instead of
-                    # an empty bytestring because of this bug:
-                    # https://github.com/plone/plone.dexterity/pull/33
-                    if name == 'description' and value == '':
-                        field.set(field.interface(obj), u'')
-                        continue
-
-                    if not(value is field.missing_value
-                           or value is interfaces.NO_VALUE):
-                        continue
-
-                    # Finally, set a default value if nothing is set so far
-                    default = queryMultiAdapter((
-                        obj,
-                        obj.REQUEST,  # request
-                        None,  # form
-                        field,
-                        None,  # Widget
-                    ), interfaces.IValue, name='default')
-                    if default is not None:
-                        default = default.get()
-                    if default is None:
-                        default = getattr(field, 'default', None)
-                    if default is None:
-                        try:
-                            default = field.missing_value
-                        except AttributeError:
-                            pass
-                    field.set(field.interface(obj), default)
+                    self.update_field(obj, field, item)
 
             notify(ObjectModifiedEvent(obj))
             yield item
