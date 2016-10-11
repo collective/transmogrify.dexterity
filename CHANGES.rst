@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.6.3 (unreleased)
+1.6.3 (2016-10-11)
 ------------------
 
 - Refactor DexterityUpdateSection: Factor out determining default value,
