@@ -17,13 +17,13 @@
     <include package="quintagroup.transmogrifier" />
 
     <transmogrifier:registerConfig
-        name="import"
+        name="transmogrify.dexterity-import"
         title="Import pipeline configuration"
         description="This imports all dexterity content from a tree of JSON files"
         configuration="import.cfg" />
 
     <transmogrifier:registerConfig
-        name="export"
+        name="transmogrify.dexterity-export"
         title="Export pipeline configuration"
         description="This exports all dexterity content into a tree of JSON files"
         configuration="export.cfg" />
