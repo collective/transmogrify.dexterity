@@ -395,7 +395,7 @@ class DatetimeDeserializer(object):
     def __call__(self, value, filestore, item,
                  disable_constraints=False, logger=None):
         if isinstance(value, basestring):
-            if value == 'None':
+            if value in ('', 'None'):
                 value = None
             else:
                 value = DateTime(value).asdatetime()
