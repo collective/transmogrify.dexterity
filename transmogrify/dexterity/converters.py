@@ -17,8 +17,10 @@ from zope.schema.interfaces import IDatetime
 from zope.schema.interfaces import IField
 from zope.schema.interfaces import IFromUnicode
 from zope.schema.interfaces import IObject
+
 import base64
 import mimetypes
+import OFS.Image
 import pkg_resources
 
 
@@ -108,6 +110,10 @@ class NamedFileDeserializer(object):
             data = value
             filename = item.get('_filename', None)
             contenttype = ''
+        elif isinstance(value, OFS.Image.File):
+            data = item.get('_data', None)
+            filename = item.get('title', None)
+            contenttype = item.get('_mimetype', '')
         else:
             raise ValueError('Unable to convert to named file')
         if isinstance(filename, str):
