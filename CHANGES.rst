@@ -5,7 +5,8 @@ Changelog
 1.6.4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add suport to import image file.
+  [rodfersou]
 
 
 1.6.3 (2016-10-11)
