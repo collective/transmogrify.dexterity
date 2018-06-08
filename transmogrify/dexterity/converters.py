@@ -398,7 +398,21 @@ class DatetimeDeserializer(object):
             if value in ('', 'None'):
                 value = None
             else:
-                value = DateTime(value).asdatetime()
+                if self.field.getName() in ['start', 'end']:
+                    from plone.app.event.base import localized_now
+                    from plone.api import portal
+                    now = localized_now(context=portal.get())
+                    # 2018-06-12T13:00:00
+                    date = value.split('T')[0]
+                    time = value.split('T')[1]
+                    year = int(date.split('-')[0])
+                    month = int(date.split('-')[1])
+                    day = int(date.split('-')[2])
+                    hour = int(time.split(':')[0])
+                    minute = int(time.split(':')[1])
+                    value = now.replace(year=year, month=month, day=day, hour=hour, minute=minute, second=0, microsecond=0)
+                else:
+                    value = DateTime(value).asdatetime()
         try:
             self.field.validate(value)
         except Exception as e:
