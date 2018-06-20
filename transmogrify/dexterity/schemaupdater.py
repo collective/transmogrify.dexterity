@@ -149,7 +149,7 @@ class DexterityUpdateSection(object):
                 continue
 
             obj = self.context.unrestrictedTraverse(
-                path.encode().lstrip('/'), None)
+                path.encode('ascii', 'ignore').lstrip('/'), None)
 
             if not IDexterityContent.providedBy(obj):
                 # Path doesn't exist

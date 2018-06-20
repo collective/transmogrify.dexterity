@@ -5,7 +5,8 @@ Changelog
 1.6.4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Avoid ``UnicodeEncodeError`` if a path contains invalid characters.
+  [hvelarde]
 
 
 1.6.3 (2016-10-11)
