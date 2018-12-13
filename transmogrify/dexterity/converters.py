@@ -366,7 +366,10 @@ class DateDeserializer(object):
     def __call__(self, value, filestore, item,
                  disable_constraints=False, logger=None):
         if isinstance(value, basestring):
-            value = datetime.strptime(value, '%Y-%m-%d')
+            if value in ('', 'None'):
+                value = None
+            else:
+                value = DateTime(value).asdatetime().date()
         if isinstance(value, datetime):
             value = value.date()
         try:
