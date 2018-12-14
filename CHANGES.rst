@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.6.4 (unreleased)
+1.6.4 (2018-12-14)
 ------------------
 
 - Fix date deserialization to work with any kind of separator or when it is None.
