@@ -11,6 +11,7 @@ from z3c.relationfield.relation import RelationValue
 from z3c.relationfield.schema import RelationChoice
 from z3c.relationfield.schema import RelationList
 from zope.schema import Datetime
+from zope.schema import Date
 import pprint
 import unittest
 import zope.testing
@@ -197,6 +198,37 @@ class TestRichTextDeserializer(unittest.TestCase):
             "x-application/cow",
             "Content type from dict should override default")
         self.assertEqual(rtv.encoding, "latin-1")
+
+
+class TestDateDeserializer(unittest.TestCase):
+
+    layer = TRANSMOGRIFY_DEXTERITY_FUNCTIONAL_TESTING
+
+    def setUp(test):
+        test.pp = pprint.PrettyPrinter(indent=4)
+        # TODO: This should read the zcml instead
+        zope.component.provideAdapter(converters.DateDeserializer)
+
+    def test_date_deserializer(self):
+        deserializer = IDeserializer(Date())
+        value = deserializer('2015-12-31', None, None)
+        self.assertEqual(
+            datetime.date(datetime(2015, 12, 31)),
+            value
+        )
+        value = deserializer('2015/12/31', None, None)
+        self.assertEqual(
+            datetime.date(datetime(2015, 12, 31)),
+            value
+        )
+
+    def test_date_deserializer_for_not_required_date(self):
+        field = Date()
+        field.required = False
+        deserializer = IDeserializer(field)
+        value = deserializer('None', None, None)
+
+        self.assertEqual(None, value)
 
 
 class TestDatetimeDeserializer(unittest.TestCase):

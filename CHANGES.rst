@@ -5,7 +5,8 @@ Changelog
 1.6.4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fix date deserialization to work with any kind of separator or when it is None.
+  [gbastien]
 
 
 1.6.3 (2016-10-11)
