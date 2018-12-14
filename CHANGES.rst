@@ -8,6 +8,8 @@ Changelog
 - Fix date deserialization to work with any kind of separator or when it is None.
   [gbastien]
 
+- DatetimeDeserializer: check for the case when value is an empty string.
+  [erral]
 
 1.6.3 (2016-10-11)
 ------------------
