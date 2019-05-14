@@ -1,14 +1,14 @@
 from collective.transmogrifier.interfaces import ISection
 from collective.transmogrifier.interfaces import ISectionBlueprint
 from collective.transmogrifier.utils import defaultMatcher
-from zope.interface import classProvides
+from zope.interface import provider
 from zope.interface import implementer
 import json
 
 
 @implementer(ISection)
+@provider(ISectionBlueprint)
 class SerializerSection(object):
-    classProvides(ISectionBlueprint)
 
     def __init__(self, transmogrifier, name, options, previous):
         self.previous = previous
@@ -53,8 +53,8 @@ class SerializerSection(object):
 
 
 @implementer(ISection)
+@provider(ISectionBlueprint)
 class DeserializerSection(object):
-    classProvides(ISectionBlueprint)
 
     def __init__(self, transmogrifier, name, options, previous):
         self.previous = previous

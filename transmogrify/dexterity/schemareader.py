@@ -5,14 +5,14 @@ from transmogrify.dexterity.interfaces import ISerializer
 from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.utils import iterSchemata
 from plone.uuid.interfaces import IUUID
-from zope.interface import classProvides
+from zope.interface import provider
 from zope.interface import implementer
 from zope.schema import getFieldsInOrder
 
 
 @implementer(ISection)
+@provider(ISectionBlueprint)
 class DexterityReaderSection(object):
-    classProvides(ISectionBlueprint)
 
     def __init__(self, transmogrifier, name, options, previous):
         self.previous = previous
