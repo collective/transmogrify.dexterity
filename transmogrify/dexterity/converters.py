@@ -172,7 +172,7 @@ class RichTextDeserializer(object):
         """Decode binary strings into unicode objects
         """
         if isinstance(obj, str):
-            return obj.decode(encoding)
+            return obj
         if isinstance(obj, unicode):
             return obj
         raise ValueError('Unable to convert value to unicode string')
