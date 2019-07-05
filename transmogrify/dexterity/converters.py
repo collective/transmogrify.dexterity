@@ -17,10 +17,11 @@ from zope.schema.interfaces import IDatetime
 from zope.schema.interfaces import IField
 from zope.schema.interfaces import IFromUnicode
 from zope.schema.interfaces import IObject
+
 import base64
 import mimetypes
 import pkg_resources
-
+import six
 
 try:
     pkg_resources.get_distribution('plone.app.intid')
@@ -330,7 +331,7 @@ class CollectionDeserializer(object):
         field = self.field
         if value in (None, ''):
             return []
-        if isinstance(value, basestring):
+        if isinstance(value, six.string_types):
             value = [v for v in (v.strip() for v in value.split(';')) if v]
         if field.value_type is not None:
             deserializer = IDeserializer(self.field.value_type)
@@ -365,7 +366,7 @@ class DateDeserializer(object):
 
     def __call__(self, value, filestore, item,
                  disable_constraints=False, logger=None):
-        if isinstance(value, basestring):
+        if isinstance(value, six.string_types):
             if value in ('', 'None'):
                 value = None
             else:
@@ -397,7 +398,7 @@ class DatetimeDeserializer(object):
 
     def __call__(self, value, filestore, item,
                  disable_constraints=False, logger=None):
-        if isinstance(value, basestring):
+        if isinstance(value, six.string_types):
             if value in ('', 'None'):
                 value = None
             else:
