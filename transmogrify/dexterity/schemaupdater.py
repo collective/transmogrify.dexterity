@@ -6,6 +6,7 @@ from plone.app.textfield.interfaces import IRichText
 from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.utils import iterSchemata
 from plone.uuid.interfaces import IMutableUUID
+from Products.CMFPlone.utils import safe_unicode
 from transmogrify.dexterity.interfaces import IDeserializer
 from z3c.form import interfaces
 from zope.component import getMultiAdapter
@@ -149,7 +150,7 @@ class DexterityUpdateSection(object):
                 continue
 
             obj = self.context.unrestrictedTraverse(
-                path.encode().lstrip('/'), None)
+                safe_unicode(path).lstrip('/'), None)
 
             if not IDexterityContent.providedBy(obj):
                 # Path doesn't exist
