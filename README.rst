@@ -39,6 +39,8 @@ Actually tested and supported fields
     `DateTime.DateTime` e.g. "2015-12-31 17:59:59"
     or "2004/12/30 00:20:00 GMT+1" etc.
 
+- IMasterSelectField
+
 
 Default pipelines
 =================

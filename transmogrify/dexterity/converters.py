@@ -465,6 +465,18 @@ class DefaultDeserializer(object):
         return value
 
 
+@implementer(IDeserializer)
+@adapter(IMasterSelectField)
+class MasterSelectFieldDeserializer(object):
+
+    def __init__(self, field):
+        self.field = field
+
+    def __call__(self, value, filestore, item,
+                 disable_constraints=False, logger=None):
+        return value
+
+
 if INTID_AVAILABLE and RELATIONFIELD_AVAILABLE:
     @implementer(IDeserializer)
     @adapter(IRelation)
