@@ -5,7 +5,7 @@ Changelog
 1.6.5 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- PythonIdentifier does not allow dotted names [ksuess]
 
 
 1.6.4 (2018-12-14)
