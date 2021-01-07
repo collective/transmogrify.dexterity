@@ -48,7 +48,7 @@ to a GenericSetup profile, create a ``transmogrifier.txt`` with the name of the
 pipeline you wish to use.
 
 
-transmogrify.dexterity.csvimport
+transmogrifyDexteritCcsvimport
 --------------------------------
 
 This pipeline will convert a CSV file into dexterity content. To use it:
@@ -56,7 +56,7 @@ This pipeline will convert a CSV file into dexterity content. To use it:
 * Name your CSV ``entries.csv``
 
 * Create a file called ``transmogrifier.txt`` with the one line
-  ``transmogrify.dexterity.csvimport``
+  ``transmogrifyDexteritCcsvimport``
 
 * Add both to a ``.tar.gz`` file
 

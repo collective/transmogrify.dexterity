@@ -25,7 +25,7 @@ Run the pipeline, using hard coded content item IDs
     ... TransmogrifyDexterityFTI,content-1,Content Item 1,Foo!,1999-12-31
     ... TransmogrifyDexterityFTI,content-2,Content Item 2,Bar!,1999-12-31
     ... """)
-    >>> output = transmogrifier(u'transmogrify.dexterity.csvimport')
+    >>> output = transmogrifier(u'transmogrifyDexteritCcsvimport')
 
 Check that content items got made
 
@@ -51,7 +51,7 @@ Run the pipeline, generate content item IDs from title
     ... TransmogrifyDexterityFTI,Content Item 3,Baz!,1999-12-31
     ... TransmogrifyDexterityFTI,Content Item 4,Qux!,1999-12-31
     ... """)
-    >>> output = transmogrifier(u'transmogrify.dexterity.csvimport')
+    >>> output = transmogrifier(u'transmogrifyDexteritCcsvimport')
 
 Check that content items got made
 
@@ -70,7 +70,7 @@ Run the pipeline, generate content item IDs into folder
     ... TransmogrifyDexterityFTI,test-content,Content Item 5,Quux!,1999-12-31
     ... TransmogrifyDexterityFTI,test-content,Content Item 6,Corge!,1999-12-31
     ... """)
-    >>> output = transmogrifier(u'transmogrify.dexterity.csvimport')
+    >>> output = transmogrifier(u'transmogrifyDexteritCcsvimport')
 
 Check that content items got made
 
@@ -87,7 +87,7 @@ Update first items with some fancy rich text:
     ... TransmogrifyDexterityFTI,content-1,"<b>Ooo</b>, la la!"
     ... TransmogrifyDexterityFTI,content-2,"<em>Amazing</em>"
     ... """)
-    >>> output = transmogrifier(u'transmogrify.dexterity.csvimport')
+    >>> output = transmogrifier(u'transmogrifyDexteritCcsvimport')
     >>> portal['content-1'].fancy_text.output
     u'<b>Ooo</b>, la la!'
     >>> portal['content-2'].fancy_text.output
