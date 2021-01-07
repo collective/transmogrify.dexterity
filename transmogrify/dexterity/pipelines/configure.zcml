@@ -9,7 +9,7 @@
 
 <!--
   <transmogrifier:registerConfig
-      name="transmogrifyDexteritCcsvimport"
+      name="transmogrifyDexteritCsvImport"
       title="CSV import"
       description="Import content items from a CSV file"
       configuration="csvimport.cfg" />
