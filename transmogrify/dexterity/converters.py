@@ -127,7 +127,7 @@ class NamedFileDeserializer(object):
             else:
                 if logger:
                     logger(
-                        "%s is invalid in %s: %s" % (
+                        "NamedFileDeserializer: %s is invalid in %s: %s" % (
                             self.field.__name__,
                             item['_path'],
                             e)
@@ -207,7 +207,7 @@ class RichTextDeserializer(object):
             else:
                 if logger:
                     logger(
-                        "%s is invalid in %s: %s" % (
+                        "RichTextDeserializer: %s is invalid in %s: %s" % (
                             self.field.__name__,
                             item['_path'],
                             e)
@@ -346,7 +346,7 @@ class CollectionDeserializer(object):
             else:
                 if logger:
                     logger(
-                        "%s is invalid in %s: %s" % (
+                        "CollectionDeserializer: %s is invalid in %s: %s" % (
                             self.field.__name__,
                             item['_path'],
                             e)
@@ -378,7 +378,7 @@ class DateDeserializer(object):
             else:
                 if logger:
                     logger(
-                        "%s is invalid in %s: %s" % (
+                        "DateDeserializer: %s is invalid in %s: %s" % (
                             self.field.__name__,
                             item['_path'],
                             e)
@@ -408,7 +408,7 @@ class DatetimeDeserializer(object):
             else:
                 if logger:
                     logger(
-                        "%s is invalid in %s: %s" % (
+                        "DatetimeDeserializer: %s is invalid in %s: %s" % (
                             self.field.__name__,
                             item['_path'],
                             e)
@@ -457,7 +457,7 @@ class DefaultDeserializer(object):
                 else:
                     if logger:
                         logger(
-                            "%s is invalid in %s: %s" % (
+                            "DefaultDeserializer: %s is invalid in %s: %s" % (
                                 self.field.__name__,
                                 item['_path'],
                                 e.__repr__())

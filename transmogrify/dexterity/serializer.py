@@ -37,7 +37,7 @@ class SerializerSection(object):
             data = dict(
                 (key,
                  value) for key,
-                value in item.iteritems() if not key.startswith('_'))
+                value in list(item.items()) if not key.startswith('_'))
             if not data:
                 yield item
                 continue
