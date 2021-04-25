@@ -5,7 +5,12 @@ Changelog
 1.6.5 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add support for reading defaultpage from '_defaultage' like in
+  transmogrify.siteanalyzer or transmogrify.pathsorter
+  [datakurre]
+
+- Add support for files from transmogrify.webcrawler
+  [datakurre]
 
 
 1.6.4 (2018-12-14)
