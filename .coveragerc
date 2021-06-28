@@ -1,0 +1,6 @@
+[report]
+include =
+    src/transmogrify/*
+omit =
+    */test*
+    */upgrades/*

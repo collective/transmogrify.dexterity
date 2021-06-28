@@ -1,5 +1,4 @@
-recursive-include transmogrify *
-recursive-include docs *
+graft src/transmogrify
+graft docs
 include *.rst
 global-exclude *.pyc
-global-exclude ._*
