@@ -5,8 +5,6 @@ from plone.app.textfield.interfaces import IRichText
 from plone.app.textfield.value import RichTextValue
 from plone.namedfile.interfaces import INamedField
 from plone.supermodel.interfaces import IToUnicode
-from Products.CMFPlone.utils import safe_unicode
-from six import string_types
 from transmogrify.dexterity.interfaces import IDeserializer
 from transmogrify.dexterity.interfaces import ISerializer
 from zope.component import adapter
@@ -113,7 +111,7 @@ class NamedFileDeserializer(object):
         else:
             raise ValueError('Unable to convert to named file')
         if isinstance(filename, str):
-            filename = safe_unicode(filename)
+            filename = filename.decode('utf-8')
         instance = self.field._type(
             data=data,
             filename=filename,
@@ -173,7 +171,11 @@ class RichTextDeserializer(object):
     def _convert_object(self, obj, encoding):
         """Decode binary strings into unicode objects
         """
-        return safe_unicode(obj)
+        if isinstance(obj, str):
+            return obj.decode(encoding)
+        if isinstance(obj, unicode):
+            return obj
+        raise ValueError('Unable to convert value to unicode string')
 
     def __call__(self, value, filestore, item,
                  disable_constraints=False, logger=None):
@@ -328,7 +330,7 @@ class CollectionDeserializer(object):
         field = self.field
         if value in (None, ''):
             return []
-        if isinstance(value, string_types):
+        if isinstance(value, basestring):
             value = [v for v in (v.strip() for v in value.split(';')) if v]
         if field.value_type is not None:
             deserializer = IDeserializer(self.field.value_type)
@@ -363,7 +365,7 @@ class DateDeserializer(object):
 
     def __call__(self, value, filestore, item,
                  disable_constraints=False, logger=None):
-        if isinstance(value, string_types):
+        if isinstance(value, basestring):
             if value in ('', 'None'):
                 value = None
             else:
@@ -395,7 +397,7 @@ class DatetimeDeserializer(object):
 
     def __call__(self, value, filestore, item,
                  disable_constraints=False, logger=None):
-        if isinstance(value, string_types):
+        if isinstance(value, basestring):
             if value in ('', 'None'):
                 value = None
             else:
@@ -447,8 +449,8 @@ class DefaultDeserializer(object):
         if field is not None:
             try:
                 if isinstance(value, str):
-                    value = safe_unicode(value)
-                if str(type(value)) == "<type 'unicode'>":
+                    value = value.decode('utf-8')
+                if isinstance(value, unicode):
                     value = IFromUnicode(field).fromUnicode(value)
                 self.field.validate(value)
             except Exception as e:
