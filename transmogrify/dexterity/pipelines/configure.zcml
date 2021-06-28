@@ -7,13 +7,12 @@
   <include package="plone.app.transmogrifier" />
   <include package="collective.transmogrifier" file="meta.zcml" />
 
-<!--
   <transmogrifier:registerConfig
       name="transmogrify.dexterity.csvimport"
       title="CSV import"
       description="Import content items from a CSV file"
       configuration="csvimport.cfg" />
--->
+
   <configure zcml:condition="installed quintagroup.transmogrifier">
     <include package="quintagroup.transmogrifier" />
 
