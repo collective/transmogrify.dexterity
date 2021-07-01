@@ -102,7 +102,10 @@ class TestRichTextDeserializer(unittest.TestCase):
         rtv = rtd("café culture", None, None)
 
         self.assertEqual(rtv.raw, u"café culture")
-        self.assertEqual(rtv.raw_encoded, "caf\xc3\xa9 culture")
+        if six.PY2:
+            self.assertEqual(rtv.raw_encoded, "caf\xc3\xa9 culture")
+        else:
+            self.assertEqual(rtv.raw_encoded, b"caf\xc3\xa9 culture")
         self.assertEqual(rtv.outputMimeType, "text/x-html-safe")
         self.assertEqual(rtv.mimeType, "text/html")
         self.assertEqual(rtv.encoding, "utf-8")
