@@ -56,6 +56,7 @@ setup(
         'setuptools',
         'six',
         'z3c.form',
+        'zope.component',
     ],
     extras_require={
         'test': [
