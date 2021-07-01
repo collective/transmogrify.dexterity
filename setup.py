@@ -62,7 +62,6 @@ setup(
             'plone.app.dexterity',
             'plone.app.intid',
             'plone.app.testing',
-            'plone.directives.form',
             'plone.formwidget.contenttree',
             'plone.namedfile[blobs]',
             'unittest2',

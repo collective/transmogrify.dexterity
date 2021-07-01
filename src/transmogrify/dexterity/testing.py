@@ -16,8 +16,8 @@ from plone.app.testing import TEST_USER_ID
 from plone.app.textfield import RichText
 from plone.dexterity.fti import DexterityFTI
 from plone.dexterity.fti import register
-from plone.directives import form
 from plone.namedfile.field import NamedFile
+from plone.supermodel import model
 from zope import schema
 from zope.component import provideUtility
 from zope.configuration import xmlconfig
@@ -59,7 +59,7 @@ class FakeImportContext(object):
         return self.contents
 
 
-class ITestSchema(form.Schema):
+class ITestSchema(model.Schema):
 
     foo = schema.TextLine(
         title=u'Foo',
