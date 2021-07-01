@@ -111,7 +111,7 @@ class NamedFileDeserializer(object):
             contenttype = ''
         else:
             raise ValueError('Unable to convert to named file')
-        if isinstance(filename, str):
+        if six.PY2 and isinstance(filename, str):
             filename = filename.decode('utf-8')
         instance = self.field._type(
             data=data,

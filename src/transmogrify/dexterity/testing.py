@@ -24,6 +24,8 @@ from zope.configuration import xmlconfig
 from zope.interface import implementer
 from zope.interface import provider
 
+import six
+
 
 zptlogo = (
     'GIF89a\x10\x00\x10\x00\xd5\x00\x00\xff\xff\xff\xff\xff\xfe\xfc\xfd\xfd'
@@ -43,6 +45,11 @@ zptlogo = (
     '\x006}m\x13\x16\x1a\x1f\x83\x85}6\x17\x1b $\x83\x00\x86\x19\x1d!%)\x8c'
     '\x866#\'+.\x8ca`\x1c`(,/1\x94B5\x19\x1e"&*-024\xacNq\xba\xbb\xb8h\xbeb'
     '\x00A\x00;')
+
+if six.PY2:
+    zptlogo_converted = zptlogo
+else:
+    zptlogo_converted = bytes(zptlogo, 'utf-8')
 
 
 class FakeImportContext(object):

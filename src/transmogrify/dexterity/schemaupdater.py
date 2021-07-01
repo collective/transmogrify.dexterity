@@ -16,7 +16,9 @@ from zope.interface import implementer
 from zope.interface import provider
 from zope.lifecycleevent import ObjectModifiedEvent
 from zope.schema import getFieldsInOrder
+
 import logging
+import six
 
 
 _marker = object()
@@ -148,8 +150,10 @@ class DexterityUpdateSection(object):
                 yield item
                 continue
 
-            obj = self.context.unrestrictedTraverse(
-                path.encode().lstrip('/'), None)
+            if six.PY2:
+                path = path.encode()
+
+            obj = self.context.unrestrictedTraverse(path.lstrip('/'), None)
 
             if not IDexterityContent.providedBy(obj):
                 # Path doesn't exist
