@@ -12,8 +12,8 @@ from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
 from zope.event import notify
-from zope.interface import classProvides
 from zope.interface import implementer
+from zope.interface import provider
 from zope.lifecycleevent import ObjectModifiedEvent
 from zope.schema import getFieldsInOrder
 import logging
@@ -22,9 +22,9 @@ import logging
 _marker = object()
 
 
+@provider(ISectionBlueprint)
 @implementer(ISection)
 class DexterityUpdateSection(object):
-    classProvides(ISectionBlueprint)
 
     def __init__(self, transmogrifier, name, options, previous):
         self.previous = previous

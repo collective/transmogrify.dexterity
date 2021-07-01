@@ -21,8 +21,8 @@ from plone.supermodel import model
 from zope import schema
 from zope.component import provideUtility
 from zope.configuration import xmlconfig
-from zope.interface import classProvides
 from zope.interface import implementer
+from zope.interface import provider
 
 
 zptlogo = (
@@ -112,9 +112,9 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
         register(fti)
 
         # create test schema source and provide it
+        @provider(ISectionBlueprint)
         @implementer(ISection)
         class SchemaSource(SampleSource):
-            classProvides(ISectionBlueprint)
 
             def __init__(self, transmogrifier, name, options, previous):
                 super(
