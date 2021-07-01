@@ -208,7 +208,10 @@ class TestRichTextDeserializer(unittest.TestCase):
         }, None)
 
         self.assertEqual(rtv.raw, u"greasy spoon")
-        self.assertEqual(rtv.raw_encoded, "greasy spoon")
+        if six.PY2:
+            self.assertEqual(rtv.raw_encoded, "greasy spoon")
+        else:
+            self.assertEqual(rtv.raw_encoded, b"greasy spoon")
         self.assertEqual(rtv.outputMimeType, "text/x-html-safe")
         self.assertEqual(
             rtv.mimeType,
