@@ -25,7 +25,7 @@ class SerializerSection(object):
 
     def __iter__(self):
         for item in self.previous:
-            pathkey = self.pathkey(*item.keys())[0]
+            pathkey = self.pathkey(*list(item.keys()))[0]
             fileskey = self.fileskey
 
             path = item.get(pathkey)
@@ -65,7 +65,7 @@ class DeserializerSection(object):
 
     def __iter__(self):
         for item in self.previous:
-            fileskey = self.fileskey(*item.keys())[0]
+            fileskey = self.fileskey(*list(item.keys()))[0]
 
             files = item.get(fileskey)
             if not files:

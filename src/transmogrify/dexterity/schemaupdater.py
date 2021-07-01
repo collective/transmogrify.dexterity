@@ -136,7 +136,7 @@ class DexterityUpdateSection(object):
 
     def __iter__(self):
         for item in self.previous:
-            pathkey = self.pathkey(*item.keys())[0]
+            pathkey = self.pathkey(*list(item.keys()))[0]
             # not enough info
             if not pathkey:
                 yield item

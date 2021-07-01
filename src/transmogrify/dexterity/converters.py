@@ -20,6 +20,7 @@ from zope.schema.interfaces import IObject
 import base64
 import mimetypes
 import pkg_resources
+import six
 
 
 try:
@@ -171,6 +172,8 @@ class RichTextDeserializer(object):
     def _convert_object(self, obj, encoding):
         """Decode binary strings into unicode objects
         """
+        if not six.PY2 and isinstance(obj, str):
+            return obj
         if isinstance(obj, str):
             return obj.decode(encoding)
         if isinstance(obj, unicode):
@@ -330,7 +333,7 @@ class CollectionDeserializer(object):
         field = self.field
         if value in (None, ''):
             return []
-        if isinstance(value, basestring):
+        if isinstance(value, six.string_types):
             value = [v for v in (v.strip() for v in value.split(';')) if v]
         if field.value_type is not None:
             deserializer = IDeserializer(self.field.value_type)
@@ -365,7 +368,7 @@ class DateDeserializer(object):
 
     def __call__(self, value, filestore, item,
                  disable_constraints=False, logger=None):
-        if isinstance(value, basestring):
+        if isinstance(value, six.string_types):
             if value in ('', 'None'):
                 value = None
             else:
@@ -397,7 +400,7 @@ class DatetimeDeserializer(object):
 
     def __call__(self, value, filestore, item,
                  disable_constraints=False, logger=None):
-        if isinstance(value, basestring):
+        if isinstance(value, six.string_types):
             if value in ('', 'None'):
                 value = None
             else:
@@ -426,7 +429,7 @@ class DefaultSerializer(object):
         self.field = field
 
     def __call__(self, value, filestore, extra=None):
-        BASIC_TYPES = (unicode, int, long, float, bool, type(None))
+        BASIC_TYPES = (six.text_type, int, int, float, bool, type(None))
         if type(value) in BASIC_TYPES:
             pass
         elif self.field is not None:
@@ -448,10 +451,14 @@ class DefaultDeserializer(object):
         field = self.field
         if field is not None:
             try:
-                if isinstance(value, str):
-                    value = value.decode('utf-8')
-                if isinstance(value, unicode):
-                    value = IFromUnicode(field).fromUnicode(value)
+                if six.PY2:
+                    if isinstance(value, str):
+                        value = value.decode('utf-8')
+                    if isinstance(value, unicode):
+                        value = IFromUnicode(field).fromUnicode(value)
+                else:
+                    if isinstance(value, str):
+                        value = IFromUnicode(field).fromUnicode(value)
                 self.field.validate(value)
             except Exception as e:
                 if not disable_constraints:

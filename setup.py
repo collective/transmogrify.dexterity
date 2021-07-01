@@ -54,6 +54,7 @@ setup(
         'plone.supermodel',
         'plone.uuid',
         'setuptools',
+        'six',
         'z3c.form',
     ],
     extras_require={
