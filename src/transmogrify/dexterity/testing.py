@@ -21,7 +21,7 @@ from plone.namedfile.field import NamedFile
 from zope import schema
 from zope.component import provideUtility
 from zope.configuration import xmlconfig
-from zope.interface import provider
+from zope.interface import classProvides
 from zope.interface import implementer
 
 
@@ -114,7 +114,7 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
         # create test schema source and provide it
         @implementer(ISection)
         class SchemaSource(SampleSource):
-            provider(ISectionBlueprint)
+            classProvides(ISectionBlueprint)
 
             def __init__(self, transmogrifier, name, options, previous):
                 super(

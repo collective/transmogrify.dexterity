@@ -2,7 +2,7 @@ from collective.transmogrifier.interfaces import ISection
 from collective.transmogrifier.interfaces import ISectionBlueprint
 from collective.transmogrifier.utils import defaultMatcher
 from plone.dexterity.interfaces import IDexterityContent
-from zope.interface import provider
+from zope.interface import classProvides
 from zope.interface import implementer
 try:
     from plone.app.multilingual.interfaces import ILanguage
@@ -13,8 +13,8 @@ except ImportError:
 
 
 @implementer(ISection)
-@provider(ISectionBlueprint)
 class DexterityTranslationSection(object):
+    classProvides(ISectionBlueprint)
 
     def __init__(self, transmogrifier, name, options, previous):
         if not PAM_AVAILABLE:
