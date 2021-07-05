@@ -5,7 +5,11 @@ Changelog
 1.6.5 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add suport to Python 3.7 and 3.8
+  [wesleybl]
+
+- Add suport to Plone 4.3, 5.0, 5.1 and 5.2
+  [wesleybl]
 
 
 1.6.4 (2018-12-14)
