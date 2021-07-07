@@ -59,6 +59,7 @@ setup(
         'plone.namedfile',
         'plone.supermodel',
         'plone.uuid',
+        'Products.CMFPlone',
         'setuptools',
         'six',
         'z3c.form',

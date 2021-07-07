@@ -18,6 +18,7 @@ from plone.dexterity.fti import DexterityFTI
 from plone.dexterity.fti import register
 from plone.namedfile.field import NamedFile
 from plone.supermodel import model
+from Products.CMFPlone.utils import getFSVersionTuple
 from zope import schema
 from zope.component import provideUtility
 from zope.configuration import xmlconfig
@@ -50,6 +51,9 @@ if six.PY2:
     zptlogo_converted = zptlogo
 else:
     zptlogo_converted = bytes(zptlogo, 'utf-8')
+
+version_tuple = getFSVersionTuple()
+PLONE_VERSION = float('{0}.{1}'.format(version_tuple[0], version_tuple[1]))
 
 
 class FakeImportContext(object):
@@ -103,6 +107,10 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
         )
 
     def setUpPloneSite(self, portal):
+        # BBB: In tests of Plone 5.0 and 5.1, the plone.app.contenttypes
+        # profile is not applied by default
+        if PLONE_VERSION in (5.0, 5.1):
+            applyProfile(portal, 'plone.app.contenttypes:default')
         applyProfile(portal, 'plone.app.intid:default')
         # Install into Plone site using portal_setup
         setRoles(portal, TEST_USER_ID, ['Member', 'Contributor', 'Manager'])
