@@ -14,6 +14,7 @@ Do some imports
     >>> from collective.transmogrifier.transmogrifier import Transmogrifier
     >>> from plone.app.dexterity.behaviors.metadata import IBasic
     >>> from transmogrify.dexterity.testing import zptlogo
+    >>> from transmogrify.dexterity.testing import zptlogo_converted
 
 Run transmogrifier pipeline with default settings (pipeline in tests.cfg)
 
@@ -30,14 +31,14 @@ check the generated and updated objects
 Standard schema field values:
 
     >>> spam.foo
-    u'one value'
+    'one value'
 
 Fields from a behavior:
 
     >>> IBasic(spam).title
-    u'Spam'
+    'Spam'
     >>> IBasic(spam).description
-    u'Lorem Ipsum bla bla!'
+    'Lorem Ipsum bla bla!'
 
 NameFileFields:
 
@@ -45,22 +46,22 @@ Values from a dict:
     >>> spam.test_file
     <plone.namedfile.file.NamedFile object at ...>
     >>> spam.test_file.filename
-    u'zptlogo.gif'
-    >>> spam.test_file.data == zptlogo
+    'zptlogo.gif'
+    >>> spam.test_file.data == zptlogo_converted
     True
 
 get the filename in a seperated value from the pipeline:
     >>> two.test_file
     <plone.namedfile.file.NamedFile object at ...>
     >>> two.test_file.filename
-    u'testlogo.gif'
-    >>> two.test_file.data == zptlogo
+    'testlogo.gif'
+    >>> two.test_file.data == zptlogo_converted
     True
 
 empty default value is of type unicode:
 
     >>> two.description
-    u''
+    ''
 
 DateFields:
 
@@ -88,6 +89,6 @@ Won't touch already existing values
     ... })
     >>> spam = portal.get('spam')
     >>> IBasic(spam).title
-    u'Spammety spam'
+    'Spammety spam'
     >>> spam.foo
-    u'one value'
+    'one value'

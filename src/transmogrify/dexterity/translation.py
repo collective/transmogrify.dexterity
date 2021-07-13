@@ -2,8 +2,8 @@ from collective.transmogrifier.interfaces import ISection
 from collective.transmogrifier.interfaces import ISectionBlueprint
 from collective.transmogrifier.utils import defaultMatcher
 from plone.dexterity.interfaces import IDexterityContent
-from zope.interface import classProvides
 from zope.interface import implementer
+from zope.interface import provider
 try:
     from plone.app.multilingual.interfaces import ILanguage
     from plone.app.multilingual.interfaces import IMutableTG
@@ -12,9 +12,9 @@ except ImportError:
     PAM_AVAILABLE = False
 
 
+@provider(ISectionBlueprint)
 @implementer(ISection)
 class DexterityTranslationSection(object):
-    classProvides(ISectionBlueprint)
 
     def __init__(self, transmogrifier, name, options, previous):
         if not PAM_AVAILABLE:
@@ -28,7 +28,7 @@ class DexterityTranslationSection(object):
 
     def __iter__(self):
         for item in self.previous:
-            pathkey = self.pathkey(*item.keys())[0]
+            pathkey = self.pathkey(*list(item.keys()))[0]
             # not enough info
             if not pathkey:
                 yield item

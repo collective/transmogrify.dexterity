@@ -16,13 +16,16 @@ from plone.app.testing import TEST_USER_ID
 from plone.app.textfield import RichText
 from plone.dexterity.fti import DexterityFTI
 from plone.dexterity.fti import register
-from plone.directives import form
 from plone.namedfile.field import NamedFile
+from plone.supermodel import model
+from Products.CMFPlone.utils import getFSVersionTuple
 from zope import schema
 from zope.component import provideUtility
 from zope.configuration import xmlconfig
-from zope.interface import classProvides
 from zope.interface import implementer
+from zope.interface import provider
+
+import six
 
 
 zptlogo = (
@@ -44,6 +47,14 @@ zptlogo = (
     '\x866#\'+.\x8ca`\x1c`(,/1\x94B5\x19\x1e"&*-024\xacNq\xba\xbb\xb8h\xbeb'
     '\x00A\x00;')
 
+if six.PY2:
+    zptlogo_converted = zptlogo
+else:
+    zptlogo_converted = bytes(zptlogo, 'utf-8')
+
+version_tuple = getFSVersionTuple()
+PLONE_VERSION = float('{0}.{1}'.format(version_tuple[0], version_tuple[1]))
+
 
 class FakeImportContext(object):
 
@@ -59,7 +70,7 @@ class FakeImportContext(object):
         return self.contents
 
 
-class ITestSchema(form.Schema):
+class ITestSchema(model.Schema):
 
     foo = schema.TextLine(
         title=u'Foo',
@@ -96,6 +107,10 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
         )
 
     def setUpPloneSite(self, portal):
+        # BBB: In tests of Plone 5.0 and 5.1, the plone.app.contenttypes
+        # profile is not applied by default
+        if PLONE_VERSION in (5.0, 5.1):
+            applyProfile(portal, 'plone.app.contenttypes:default')
         applyProfile(portal, 'plone.app.intid:default')
         # Install into Plone site using portal_setup
         setRoles(portal, TEST_USER_ID, ['Member', 'Contributor', 'Manager'])
@@ -112,9 +127,9 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
         register(fti)
 
         # create test schema source and provide it
+        @provider(ISectionBlueprint)
         @implementer(ISection)
         class SchemaSource(SampleSource):
-            classProvides(ISectionBlueprint)
 
             def __init__(self, transmogrifier, name, options, previous):
                 super(

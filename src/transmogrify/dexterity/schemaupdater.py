@@ -12,19 +12,21 @@ from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
 from zope.event import notify
-from zope.interface import classProvides
 from zope.interface import implementer
+from zope.interface import provider
 from zope.lifecycleevent import ObjectModifiedEvent
 from zope.schema import getFieldsInOrder
+
 import logging
+import six
 
 
 _marker = object()
 
 
+@provider(ISectionBlueprint)
 @implementer(ISection)
 class DexterityUpdateSection(object):
-    classProvides(ISectionBlueprint)
 
     def __init__(self, transmogrifier, name, options, previous):
         self.previous = previous
@@ -136,7 +138,7 @@ class DexterityUpdateSection(object):
 
     def __iter__(self):
         for item in self.previous:
-            pathkey = self.pathkey(*item.keys())[0]
+            pathkey = self.pathkey(*list(item.keys()))[0]
             # not enough info
             if not pathkey:
                 yield item
@@ -148,8 +150,10 @@ class DexterityUpdateSection(object):
                 yield item
                 continue
 
-            obj = self.context.unrestrictedTraverse(
-                path.encode().lstrip('/'), None)
+            if six.PY2:
+                path = path.encode()
+
+            obj = self.context.unrestrictedTraverse(path.lstrip('/'), None)
 
             if not IDexterityContent.providedBy(obj):
                 # Path doesn't exist
