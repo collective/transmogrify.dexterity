@@ -122,7 +122,10 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
         fti = DexterityFTI('TransmogrifyDexterityFTI')
         fti.schema = 'transmogrify.dexterity.testing.ITestSchema'
         fti.klass = 'plone.dexterity.content.Container'
-        fti.behaviors = ('plone.app.dexterity.behaviors.metadata.IBasic',)
+        fti.behaviors = (
+            'plone.app.dexterity.behaviors.metadata.IBasic',
+            'plone.app.dexterity.behaviors.id.IShortName',
+        )
         self.portal.portal_types._setObject('TransmogrifyDexterityFTI', fti)
         register(fti)
 
@@ -153,7 +156,7 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
                              test_date='2010-10-12',
                              test_datetime='2010-10-12 17:59:59',
                              fieldnotchanged='nochange',
-                             ),
+                        ),
                         dict(_path='/two',
                              foo='Bla',
                              _type='TransmogrifyDexterityFTI',
@@ -165,7 +168,13 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
                              test_date=date(2010, 0o1, 0o1, ),
                              test_datetime=datetime(2010, 0o1, 0o1, 17, 59, 59),
                              fieldnotchanged='nochange',
-                             ),
+                        ),
+                        dict(_path='/existent',
+                             foo='Existent',
+                             id='existent',
+                             _type='Folder',
+                             title='Existent',
+                        ),
                     )
                 elif sourcecontent == 'onlytitle':
                     self.sample = (
