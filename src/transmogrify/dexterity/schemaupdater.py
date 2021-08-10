@@ -114,7 +114,14 @@ class DexterityUpdateSection(object):
         name = field.getName()
         value = self.get_value_from_pipeline(field, item)
         if value is not _marker:
-            field.set(field.interface(obj), value)
+            # In Plone 5+ if we try to update to the same id, Plone will
+            # try to put a different id from the folder object ids.
+            # As the object is also in the folder, it will receive a different
+            # id. For example, if we try to update the id to new-id, the id
+            # the object will get is new-id-1. So we can't update to the same
+            # id.
+            if name != "id" or value != obj.id:
+                field.set(field.interface(obj), value)
             return
 
         # Get the field's current value, if it has one then leave it alone

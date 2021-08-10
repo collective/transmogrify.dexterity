@@ -10,11 +10,17 @@ Globals:
 
 Do some imports
 
+    >>> from plone import api
     >>> from collective.transmogrifier.meta import registerConfig
     >>> from collective.transmogrifier.transmogrifier import Transmogrifier
     >>> from plone.app.dexterity.behaviors.metadata import IBasic
     >>> from transmogrify.dexterity.testing import zptlogo
     >>> from transmogrify.dexterity.testing import zptlogo_converted
+
+Create object
+
+    >>> api.content.create(portal, 'TransmogrifyDexterityFTI', 'existent')
+    <Container at /plone/existent>
 
 Run transmogrifier pipeline with default settings (pipeline in tests.cfg)
 
@@ -27,6 +33,11 @@ check the generated and updated objects
     >>> spam
     <Container at ...>
     >>> two = portal.get('two')
+
+check already existing id
+
+    >>> portal.get('existent')
+    <Container at /plone/existent>
 
 Standard schema field values:
 

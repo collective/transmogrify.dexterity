@@ -68,6 +68,7 @@ setup(
     extras_require={
         'test': [
             'ftw.builder',
+            'plone.api',
             'plone.app.dexterity',
             'plone.app.intid',
             'plone.app.testing',
