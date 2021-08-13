@@ -5,6 +5,10 @@ Changelog
 1.6.5 (unreleased)
 ------------------
 
+- Update plone.dublincore behavior fields, even if the object doesn't have
+  this behavior.
+  [wesleybl]
+
 - Add suport to Python 3.7 and 3.8
   [wesleybl]
 

@@ -18,7 +18,7 @@ from plone.dexterity.fti import DexterityFTI
 from plone.dexterity.fti import register
 from plone.namedfile.field import NamedFile
 from plone.supermodel import model
-from Products.CMFPlone.utils import getFSVersionTuple
+from transmogrify.dexterity import PLONE_VERSION
 from zope import schema
 from zope.component import provideUtility
 from zope.configuration import xmlconfig
@@ -51,9 +51,6 @@ if six.PY2:
     zptlogo_converted = zptlogo
 else:
     zptlogo_converted = bytes(zptlogo, 'utf-8')
-
-version_tuple = getFSVersionTuple()
-PLONE_VERSION = float('{0}.{1}'.format(version_tuple[0], version_tuple[1]))
 
 
 class FakeImportContext(object):
@@ -156,6 +153,11 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
                              test_date='2010-10-12',
                              test_datetime='2010-10-12 17:59:59',
                              fieldnotchanged='nochange',
+                             creators=["user1"],
+                             contributors=["user2"],
+                             language="en",
+                             effective="2020-07-10 10:24:00.000000 UTC",
+                             subjects=["subject1", "subject2"],
                         ),
                         dict(_path='/two',
                              foo='Bla',
