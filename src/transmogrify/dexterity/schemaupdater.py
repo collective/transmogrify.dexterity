@@ -1,11 +1,14 @@
 from collective.transmogrifier.interfaces import ISection
 from collective.transmogrifier.interfaces import ISectionBlueprint
-from collective.transmogrifier.utils import Expression
 from collective.transmogrifier.utils import defaultMatcher
+from collective.transmogrifier.utils import Expression
+from plone.app.dexterity.behaviors.metadata import DublinCore
+from plone.app.dexterity.behaviors.metadata import IDublinCore
 from plone.app.textfield.interfaces import IRichText
 from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.utils import iterSchemata
 from plone.uuid.interfaces import IMutableUUID
+from transmogrify.dexterity import PLONE_VERSION
 from transmogrify.dexterity.interfaces import IDeserializer
 from z3c.form import interfaces
 from zope.component import getMultiAdapter
@@ -22,6 +25,15 @@ import six
 
 
 _marker = object()
+
+
+PLONE_43 = PLONE_VERSION == 4.3
+
+
+dublin_core_fields = [
+    (name, field, )
+    for name, field in getFieldsInOrder(IDublinCore)
+]
 
 
 @provider(ISectionBlueprint)
@@ -107,7 +119,7 @@ class DexterityUpdateSection(object):
                 pass
         return default
 
-    def update_field(self, obj, field, item):
+    def update_field(self, obj, field, item, extra_dublin_core=False):
         if field.readonly:
             return
 
@@ -121,7 +133,17 @@ class DexterityUpdateSection(object):
             # the object will get is new-id-1. So we can't update to the same
             # id.
             if name != "id" or value != obj.id:
-                field.set(field.interface(obj), value)
+                if extra_dublin_core:
+                    dublin_core = DublinCore(obj)
+                    field.set(dublin_core, value)
+                else:
+                    field.set(field.interface(obj), value)
+            return
+
+        if extra_dublin_core:
+            # The object doesn't have the DublinCore behavior and DublinCore
+            # field didn't come in json. In this situation we don't try to set
+            # a default value.
             return
 
         # Get the field's current value, if it has one then leave it alone
@@ -142,6 +164,20 @@ class DexterityUpdateSection(object):
         # Finally, set a default value if nothing is set so far
         default = self.determine_default_value(obj, field)
         field.set(field.interface(obj), default)
+
+    def get_fields(self, obj):
+        for schemata in iterSchemata(obj):
+            for name, field in getFieldsInOrder(schemata):
+                yield name, field
+
+    def get_extras_dublin_core_fields(self, obj):
+        """Returns fields of IDublinCore interface, which are not in the
+        object's behaviors.
+        """
+        fields = list(self.get_fields(obj))
+        for name_field in dublin_core_fields:
+            if name_field not in fields:
+                yield name_field
 
     def __iter__(self):
         for item in self.previous:
@@ -173,11 +209,39 @@ class DexterityUpdateSection(object):
             if uuid is not None:
                 IMutableUUID(obj).set(str(uuid))
 
+            creators = None
+
             # For all fields in the schema, update in roughly the same way
             # z3c.form.widget.py would
-            for schemata in iterSchemata(obj):
-                for name, field in getFieldsInOrder(schemata):
-                    self.update_field(obj, field, item)
+            for name, field in self.get_fields(obj):
+                if PLONE_43 and name == "creators":
+                    creators = field
+                    continue
+                self.update_field(obj, field, item)
+
+            extra_creators = None
+
+            # Updates fields of IDublinCore interface, which are not in the
+            # object's behaviors.
+            for name, field in self.get_extras_dublin_core_fields(obj):
+                if PLONE_43 and name == "creators":
+                    extra_creators = field
+                    continue
+                self.update_field(obj, field, item, extra_dublin_core=True)
 
             notify(ObjectModifiedEvent(obj))
+
+            # BBB:In Plone 4.3 the notify(ObjectModifiedEvent(obj)) causes the
+            # user runing the migration to be added to the creators. So we need
+            # to set the creators after the event call, so the creators only
+            # have the values that are in json.
+            if creators:
+                self.update_field(obj, creators, item)
+            if extra_creators:
+                self.update_field(
+                    obj,
+                    extra_creators,
+                    item,
+                    extra_dublin_core=True,
+                )
             yield item

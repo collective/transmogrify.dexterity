@@ -40,3 +40,5 @@ docs/make.bat
 docs/doctrees
 docs/html
 /pyvenv.cfg
+/share/
+local

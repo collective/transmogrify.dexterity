@@ -13,6 +13,7 @@ Do some imports
     >>> from plone import api
     >>> from collective.transmogrifier.meta import registerConfig
     >>> from collective.transmogrifier.transmogrifier import Transmogrifier
+    >>> from DateTime import DateTime
     >>> from plone.app.dexterity.behaviors.metadata import IBasic
     >>> from transmogrify.dexterity.testing import zptlogo
     >>> from transmogrify.dexterity.testing import zptlogo_converted
@@ -89,6 +90,24 @@ DatetimeFields:
 
     >>> two.test_datetime
     datetime.datetime(2010, 1, 1, 17, 59, 59)
+
+Even types that does not have the plone.dublincore behavior must have the
+DublinCore fields populated:
+
+    >>> behaviors = portal.portal_types['TransmogrifyDexterityFTI'].behaviors
+    >>> not any(x in behaviors for x in ['plone.app.dexterity.behaviors.metadata.IDublinCore', 'plone.dublincore'])
+    True
+    >>> spam.creators
+    ('user1',)
+    >>> spam.effective_date
+    DateTime('2020/07/10 10:24:00 UTC')
+    >>> spam.language
+    'en'
+    >>> spam.contributors
+    ('user2',)
+    >>> spam.subject
+    ('subject1', 'subject2')
+
 
 Won't touch already existing values
 
