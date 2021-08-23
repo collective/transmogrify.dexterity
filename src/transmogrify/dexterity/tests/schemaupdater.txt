@@ -26,7 +26,7 @@ Create object
 Run transmogrifier pipeline with default settings (pipeline in tests.cfg)
 
     >>> transmogrifier = Transmogrifier(portal)
-    >>> output = transmogrifier(u'transmogrify.dexterity.testconfiguration')
+    >>> output = transmogrifier('transmogrify.dexterity.testconfiguration')
 
 check the generated and updated objects
 
@@ -70,6 +70,11 @@ get the filename in a seperated value from the pipeline:
     >>> two.test_file.data == zptlogo_converted
     True
 
+get file set whit _datafield_file
+    >>> file_object = portal.get('file_object')
+    >>> file_object.test_file2.data
+    b'data'
+
 empty default value is of type unicode:
 
     >>> two.description
@@ -112,9 +117,9 @@ DublinCore fields populated:
 Won't touch already existing values
 
     >>> transmogrifier = Transmogrifier(portal)
-    >>> output = transmogrifier(u'transmogrify.dexterity.testconfiguration')
+    >>> output = transmogrifier('transmogrify.dexterity.testconfiguration')
     >>> transmogrifier = Transmogrifier(portal)
-    >>> output = transmogrifier(u'transmogrify.dexterity.testconfiguration', definitions={
+    >>> output = transmogrifier('transmogrify.dexterity.testconfiguration', definitions={
     ...     'source-content': 'onlytitle',
     ... })
     >>> spam = portal.get('spam')
@@ -122,3 +127,15 @@ Won't touch already existing values
     'Spammety spam'
     >>> spam.foo
     'one value'
+
+
+When the configuration skip_datafields = True is set, schemaupdater will skip
+all fields that have the corresponding _datafield_fieldname key.
+This is useful when the _datafield_fieldname contains the file path and not the
+base64 of the file.
+
+    >>> transmogrifier = Transmogrifier(portal)
+    >>> output = transmogrifier('transmogrify.dexterity.testskipdatafieds')
+    >>> file_skip_object = portal.get('file_skip_object')
+    >>> file_skip_object.test_file2
+    >>> None

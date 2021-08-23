@@ -14,4 +14,10 @@
       description="This is an example pipeline configuration"
       configuration="tests.cfg" />
 
+  <transmogrifier:registerConfig
+      name="transmogrify.dexterity.testskipdatafieds"
+      title="Pipeline configuration to skip datafieds"
+      description="This is an example pipeline configuration to skip datafieds"
+      configuration="skip_datafieds.cfg" />
+
 </configure>

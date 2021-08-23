@@ -77,6 +77,10 @@ class ITestSchema(model.Schema):
         title=u'File',
     )
 
+    test_file2 = NamedFile(
+        title=u'File 2',
+    )
+
     test_date = schema.Date(
         title=u'test_date',
     )
@@ -177,6 +181,11 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
                              _type='Folder',
                              title='Existent',
                         ),
+                        dict(_path='/file_object',
+                             _type='TransmogrifyDexterityFTI',
+                             title='File',
+                             _datafield_test_file2="data",
+                        ),
                     )
                 elif sourcecontent == 'onlytitle':
                     self.sample = (
@@ -186,6 +195,15 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
                         dict(_path='/two',
                              _type='TransmogrifyDexterityFTI',
                              title='My Awesome Second Object'),
+                    )
+                elif sourcecontent == 'skip_datafields':
+                    self.sample = (
+                        dict(
+                            _path="/file_skip_object",
+                            _type="TransmogrifyDexterityFTI",
+                            title="Skip File",
+                            _datafield_test_file2="0/1.json-file-1",
+                        ),
                     )
         provideUtility(SchemaSource,
                        name=u'transmogrify.dexterity.testsource')

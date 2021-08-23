@@ -5,6 +5,11 @@ Changelog
 1.6.5 (unreleased)
 ------------------
 
+- Add option skip_datafields. When the configuration skip_datafields = True
+  is set, schemaupdater will skip all fields that have the corresponding
+  _datafield_fieldname key.
+  [wesleybl]
+
 - Update plone.dublincore behavior fields, even if the object doesn't have
   this behavior.
   [wesleybl]

@@ -58,6 +58,8 @@ class DexterityUpdateSection(object):
         # configured.
         self.datafield_prefix = options.get('datafield-prefix', '_datafield_')
 
+        self.skip_datafields = options.get('skip_datafields', False)
+
         # create logger
         if options.get('logger'):
             self.logger = logging.getLogger(options['logger'])
@@ -124,6 +126,9 @@ class DexterityUpdateSection(object):
             return
 
         name = field.getName()
+        if self.skip_datafields:
+            if "{0}{1}".format(self.datafield_prefix, name) in item:
+                return
         value = self.get_value_from_pipeline(field, item)
         if value is not _marker:
             # In Plone 5+ if we try to update to the same id, Plone will

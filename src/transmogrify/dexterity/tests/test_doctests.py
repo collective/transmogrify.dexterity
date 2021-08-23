@@ -30,6 +30,8 @@ class Py23DocChecker(doctest.OutputChecker):
             got = re.sub("u'", "'", got)
             got = re.sub('u"', '"', got)
 
+            got = re.sub("'data'", "b'data'", got)
+
         return got
 
     def check_output(self, want, got, optionflags):
