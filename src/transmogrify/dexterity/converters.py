@@ -3,6 +3,7 @@ from DateTime import DateTime
 from datetime import datetime
 from plone.app.textfield.interfaces import IRichText
 from plone.app.textfield.value import RichTextValue
+from plone.app.uuid.utils import uuidToObject
 from plone.namedfile.interfaces import INamedField
 from plone.supermodel.interfaces import IToUnicode
 from transmogrify.dexterity.interfaces import IDeserializer
@@ -500,6 +501,12 @@ if INTID_AVAILABLE and RELATIONFIELD_AVAILABLE:
             return self.deserialize(value)
 
         def deserialize(self, value):
+            if isinstance(value, str):
+                content = uuidToObject(value)
+                if content:
+                    return RelationValue(self.intids.getId(content))
+                else:
+                    return
             int_id = self.intids.queryId(value)
             if int_id is None:
                 return value
