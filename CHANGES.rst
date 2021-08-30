@@ -5,6 +5,9 @@ Changelog
 1.6.5 (unreleased)
 ------------------
 
+- Import relations fields that were exported as UID.
+  [wesleybl]
+
 - Update plone.dublincore behavior fields, even if the object doesn't have
   this behavior.
   [wesleybl]

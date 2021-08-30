@@ -55,6 +55,7 @@ setup(
         'collective.transmogrifier',
         'plone.app.textfield',
         'plone.app.transmogrifier',
+        'plone.app.uuid',
         'plone.dexterity',
         'plone.namedfile',
         'plone.supermodel',

@@ -55,7 +55,7 @@ class TestRelationDeserializer(unittest.TestCase):
         deserializer = IDeserializer(self.relation)
         value = deserializer("bar", None, None)
 
-        self.assertEqual("bar", value)
+        self.assertIsNone(value)
 
     def test_deserialize_relation_list(self):
         folder = create(Builder('folder'))
@@ -85,7 +85,29 @@ class TestRelationDeserializer(unittest.TestCase):
         value = deserializer(["foo"], None, None)
 
         self.assertEqual(1, len(value))
-        self.assertEqual(["foo"], value)
+        self.assertEqual([None], value)
+
+    def test_deserialize_uid_relation(self):
+        folder = create(Builder('folder'))
+        deserializer = IDeserializer(self.relation)
+        value = deserializer(folder.UID(), None, None)
+        self.assertEqual(folder, value.to_object)
+
+    def test_deserialize_uid_relation_list(self):
+        folder = create(Builder('folder'))
+        deserializer = IDeserializer(self.relation_list)
+        value = deserializer([folder.UID()], None, None)
+        self.assertEqual(folder, value[0].to_object)
+
+    def test_deserialize_non_uid_relation(self):
+        deserializer = IDeserializer(self.relation)
+        value = deserializer('09ca9f4fe9304123b05656d9c449b1ad', None, None)
+        self.assertIsNone(value)
+
+    def test_deserialize_non_uid_relation_list(self):
+        deserializer = IDeserializer(self.relation_list)
+        value = deserializer(['f3d11fdbf5a9471796290df759adaab8'], None, None)
+        self.assertEquals([None], value)
 
 
 class TestRichTextDeserializer(unittest.TestCase):
