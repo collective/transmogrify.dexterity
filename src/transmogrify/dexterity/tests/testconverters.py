@@ -10,8 +10,8 @@ from transmogrify.dexterity.testing import TRANSMOGRIFY_DEXTERITY_FUNCTIONAL_TES
 from z3c.relationfield.relation import RelationValue
 from z3c.relationfield.schema import RelationChoice
 from z3c.relationfield.schema import RelationList
-from zope.schema import Datetime
 from zope.schema import Date
+from zope.schema import Datetime
 
 import pprint
 import six

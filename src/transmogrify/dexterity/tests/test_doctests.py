@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from plone.testing import layered
-from transmogrify.dexterity.testing import (
-    TRANSMOGRIFY_DEXTERITY_INTEGRATION_TESTING,
-)  # noqa
+from transmogrify.dexterity.testing import TRANSMOGRIFY_DEXTERITY_INTEGRATION_TESTING
 
 import doctest
 import re

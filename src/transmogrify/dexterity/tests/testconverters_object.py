@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
-from plone.app.textfield import RichText, RichTextValue
+from plone.app.textfield import RichText
+from plone.app.textfield import RichTextValue
 from plone.supermodel import model
-from transmogrify.dexterity.interfaces import ISerializer, IDeserializer
+from transmogrify.dexterity.interfaces import IDeserializer
+from transmogrify.dexterity.interfaces import ISerializer
 from z3c.form.object import registerFactoryAdapter
-from zope import schema, interface
+from zope import interface
+from zope import schema
+
 import unittest
 import zope.component
 

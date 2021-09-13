@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from DateTime import DateTime
 from datetime import datetime
+from DateTime import DateTime
 from plone.app.textfield.interfaces import IRichText
 from plone.app.textfield.value import RichTextValue
 from plone.app.uuid.utils import uuidToObject
@@ -18,6 +18,7 @@ from zope.schema.interfaces import IDatetime
 from zope.schema.interfaces import IField
 from zope.schema.interfaces import IFromUnicode
 from zope.schema.interfaces import IObject
+
 import base64
 import mimetypes
 import pkg_resources
