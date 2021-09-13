@@ -34,7 +34,7 @@ else:
 
 try:
     pkg_resources.get_distribution("z3c.relationfield")
-except:
+except pkg_resources.DistributionNotFound:
     RELATIONFIELD_AVAILABLE = False
 else:
     RELATIONFIELD_AVAILABLE = True

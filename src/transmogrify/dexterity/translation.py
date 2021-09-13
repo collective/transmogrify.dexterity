@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
 from collective.transmogrifier.interfaces import ISection
 from collective.transmogrifier.interfaces import ISectionBlueprint
 from collective.transmogrifier.utils import defaultMatcher
 from plone.dexterity.interfaces import IDexterityContent
+from zope.component.hooks import getSite
 from zope.interface import implementer
 from zope.interface import provider
 

@@ -110,8 +110,8 @@ class TestRelationDeserializer(unittest.TestCase):
 
 
 class TestRichTextDeserializer(unittest.TestCase):
-    def setUp(test):
-        test.pp = pprint.PrettyPrinter(indent=4)
+    def setUp(self):
+        self.pp = pprint.PrettyPrinter(indent=4)
         # TODO: This should read the zcml instead
         zope.component.provideAdapter(converters.RichTextDeserializer)
 
@@ -266,8 +266,8 @@ class TestDateDeserializer(unittest.TestCase):
 
     layer = TRANSMOGRIFY_DEXTERITY_FUNCTIONAL_TESTING
 
-    def setUp(test):
-        test.pp = pprint.PrettyPrinter(indent=4)
+    def setUp(self):  # noqa
+        self.pp = pprint.PrettyPrinter(indent=4)
         # TODO: This should read the zcml instead
         zope.component.provideAdapter(converters.DateDeserializer)
 
@@ -291,8 +291,8 @@ class TestDatetimeDeserializer(unittest.TestCase):
 
     layer = TRANSMOGRIFY_DEXTERITY_FUNCTIONAL_TESTING
 
-    def setUp(test):
-        test.pp = pprint.PrettyPrinter(indent=4)
+    def setUp(self):
+        self.pp = pprint.PrettyPrinter(indent=4)
         # TODO: This should read the zcml instead
         zope.component.provideAdapter(converters.DatetimeDeserializer)
 

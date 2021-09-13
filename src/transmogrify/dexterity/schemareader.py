@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from collective.transmogrifier.interfaces import ISection
 from collective.transmogrifier.interfaces import ISectionBlueprint
 from collective.transmogrifier.utils import defaultMatcher
@@ -5,6 +6,7 @@ from transmogrify.dexterity.interfaces import ISerializer
 from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.utils import iterSchemata
 from plone.uuid.interfaces import IUUID
+from zope.component.hooks import getSite
 from zope.interface import implementer
 from zope.interface import provider
 from zope.schema import getFieldsInOrder

@@ -5,7 +5,7 @@ from transmogrify.dexterity.interfaces import ISerializer, IDeserializer
 from z3c.form.object import registerFactoryAdapter
 from zope import schema, interface
 import unittest
-import zope.testing
+import zope.component
 
 
 class ITestObjectA(model.Schema):
@@ -42,7 +42,7 @@ registerFactoryAdapter(ITestObjectB, TestObjectB)
 
 
 class TestObjectDeserializer(unittest.TestCase):
-    def setUp(test):
+    def setUp(self):
         # TODO: Should be importing ZCML
         from transmogrify.dexterity import converters
 
@@ -50,16 +50,16 @@ class TestObjectDeserializer(unittest.TestCase):
         zope.component.provideAdapter(converters.RichTextDeserializer)
         zope.component.provideAdapter(converters.DefaultDeserializer)
 
-    def deserialize(self, des, input):
+    def deserialize(self, des, _input):
         if des.field.schema == ITestObjectA:
-            input[
+            _input[
                 "_class"
             ] = "transmogrify.dexterity.tests.testconverters_object.TestObjectA"  # noqa
         elif des.field.schema == ITestObjectB:
-            input[
+            _input[
                 "_class"
             ] = "transmogrify.dexterity.tests.testconverters_object.TestObjectB"  # noqa
-        return des(input, None, None)
+        return des(_input, None, None)
 
     def test_failures(self):
         desA = IDeserializer(schema.Object(schema=ITestObjectA))
@@ -123,7 +123,7 @@ class TestObjectDeserializer(unittest.TestCase):
 
 
 class TestObjectSerializer(unittest.TestCase):
-    def setUp(test):
+    def setUp(self):
         # TODO: Should be importing ZCML
         from transmogrify.dexterity import converters
 
