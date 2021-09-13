@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from collective.transmogrifier.interfaces import ISection
 from collective.transmogrifier.interfaces import ISectionBlueprint
 from collective.transmogrifier.utils import defaultMatcher
@@ -31,7 +32,10 @@ PLONE_43 = PLONE_VERSION == 4.3
 
 
 dublin_core_fields = [
-    (name, field, )
+    (
+        name,
+        field,
+    )
     for name, field in getFieldsInOrder(IDublinCore)
 ]
 
@@ -39,15 +43,16 @@ dublin_core_fields = [
 @provider(ISectionBlueprint)
 @implementer(ISection)
 class DexterityUpdateSection(object):
-
     def __init__(self, transmogrifier, name, options, previous):
         self.previous = previous
-        self.context = transmogrifier.context if transmogrifier.context else getSite()  # noqa
+        self.context = (
+            transmogrifier.context if transmogrifier.context else getSite()
+        )  # noqa
         self.name = name
-        self.pathkey = defaultMatcher(options, 'path-key', name, 'path')
-        self.fileskey = options.get('files-key', '_files').strip()
+        self.pathkey = defaultMatcher(options, "path-key", name, "path")
+        self.fileskey = options.get("files-key", "_files").strip()
         self.disable_constraints = Expression(
-            options.get('disable-constraints', 'python: False'),
+            options.get("disable-constraints", "python: False"),
             transmogrifier,
             name,
             options,
@@ -56,15 +61,15 @@ class DexterityUpdateSection(object):
         # if importing from collective.jsonify exported json structures, there
         # is an datafield entry for binary data, which' prefix can be
         # configured.
-        self.datafield_prefix = options.get('datafield-prefix', '_datafield_')
+        self.datafield_prefix = options.get("datafield-prefix", "_datafield_")
 
         # create logger
-        if options.get('logger'):
-            self.logger = logging.getLogger(options['logger'])
-            self.loglevel = getattr(logging, options['loglevel'], None)
+        if options.get("logger"):
+            self.logger = logging.getLogger(options["logger"])
+            self.loglevel = getattr(logging, options["loglevel"], None)
             if self.loglevel is None:
                 # Assume it's an integer:
-                self.loglevel = int(options['loglevel'])
+                self.loglevel = int(options["loglevel"])
             self.logger.setLevel(self.loglevel)
             self.log = lambda s: self.logger.log(self.loglevel, s)
         else:
@@ -76,24 +81,16 @@ class DexterityUpdateSection(object):
         value = item.get(name, _marker)
         if value is _marker:
             # Also try _datafield_FIELDNAME structure from jsonify
-            value = item.get('_datafield_%s' % name, _marker)
+            value = item.get("_datafield_%s" % name, _marker)
         if value is not _marker:
             # Value was given in pipeline, so set it
             deserializer = IDeserializer(field)
-            if IRichText.providedBy(field)\
-                    and '_content_type_%s' % name in item:
+            if IRichText.providedBy(field) and "_content_type_%s" % name in item:
                 # change jsonify structure to one we understand
-                value = {
-                    'contenttype': item['_content_type_%s' % name],
-                    'data': value
-                }
+                value = {"contenttype": item["_content_type_%s" % name], "data": value}
             files = item.setdefault(self.fileskey, {})
             value = deserializer(
-                value,
-                files,
-                item,
-                self.disable_constraints,
-                logger=self.log
+                value, files, item, self.disable_constraints, logger=self.log
             )
         return value
 
@@ -101,17 +98,21 @@ class DexterityUpdateSection(object):
         """Determine the default to be set for a field that didn't receive
         a value from the pipeline.
         """
-        default = queryMultiAdapter((
-            obj,
-            obj.REQUEST,  # request
-            None,  # form
-            field,
-            None,  # Widget
-        ), interfaces.IValue, name='default')
+        default = queryMultiAdapter(
+            (
+                obj,
+                obj.REQUEST,  # request
+                None,  # form
+                field,
+                None,  # Widget
+            ),
+            interfaces.IValue,
+            name="default",
+        )
         if default is not None:
             default = default.get()
         if default is None:
-            default = getattr(field, 'default', None)
+            default = getattr(field, "default", None)
         if default is None:
             try:
                 default = field.missing_value
@@ -147,18 +148,16 @@ class DexterityUpdateSection(object):
             return
 
         # Get the field's current value, if it has one then leave it alone
-        value = getMultiAdapter(
-            (obj, field),
-            interfaces.IDataManager).query()
+        value = getMultiAdapter((obj, field), interfaces.IDataManager).query()
 
         # Fix default description to be an empty unicode instead of
         # an empty bytestring because of this bug:
         # https://github.com/plone/plone.dexterity/pull/33
-        if name == 'description' and value == '':
-            field.set(field.interface(obj), u'')
+        if name == "description" and value == "":
+            field.set(field.interface(obj), u"")
             return
 
-        if not(value is field.missing_value or value is interfaces.NO_VALUE):
+        if not (value is field.missing_value or value is interfaces.NO_VALUE):
             return
 
         # Finally, set a default value if nothing is set so far
@@ -196,7 +195,7 @@ class DexterityUpdateSection(object):
             if six.PY2:
                 path = path.encode()
 
-            obj = self.context.unrestrictedTraverse(path.lstrip('/'), None)
+            obj = self.context.unrestrictedTraverse(path.lstrip("/"), None)
 
             if not IDexterityContent.providedBy(obj):
                 # Path doesn't exist
@@ -205,7 +204,7 @@ class DexterityUpdateSection(object):
                 yield item
                 continue
 
-            uuid = item.get('plone.uuid')
+            uuid = item.get("plone.uuid")
             if uuid is not None:
                 IMutableUUID(obj).set(str(uuid))
 

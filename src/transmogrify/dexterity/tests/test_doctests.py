@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from plone.testing import layered
-from transmogrify.dexterity.testing import TRANSMOGRIFY_DEXTERITY_INTEGRATION_TESTING  # noqa
+from transmogrify.dexterity.testing import TRANSMOGRIFY_DEXTERITY_INTEGRATION_TESTING
 
 import doctest
 import re
@@ -8,19 +8,16 @@ import six
 import unittest2 as unittest
 
 
-OPTIONFLAGS = (doctest.NORMALIZE_WHITESPACE |
-               doctest.ELLIPSIS |
-               doctest.REPORT_NDIFF)
+OPTIONFLAGS = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS | doctest.REPORT_NDIFF
 
 
 TESTFILES = (
-    'schemaupdater.txt',
-    'pipelinescsvsource.txt',
+    "schemaupdater.txt",
+    "pipelinescsvsource.txt",
 )
 
 
 class Py23DocChecker(doctest.OutputChecker):
-
     def __init__(self):
         """Constructor"""
 
@@ -43,15 +40,17 @@ class Py23DocChecker(doctest.OutputChecker):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTests([
-        layered(
-            doctest.DocFileSuite(
-                filename,
-                optionflags=OPTIONFLAGS,
-                checker=Py23DocChecker(),
-            ),
-            layer=TRANSMOGRIFY_DEXTERITY_INTEGRATION_TESTING
-        )
-        for filename in TESTFILES
-    ])
+    suite.addTests(
+        [
+            layered(
+                doctest.DocFileSuite(
+                    filename,
+                    optionflags=OPTIONFLAGS,
+                    checker=Py23DocChecker(),
+                ),
+                layer=TRANSMOGRIFY_DEXTERITY_INTEGRATION_TESTING,
+            )
+            for filename in TESTFILES
+        ]
+    )
     return suite

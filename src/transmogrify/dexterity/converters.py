@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from DateTime import DateTime
 from datetime import datetime
+from DateTime import DateTime
 from plone.app.textfield.interfaces import IRichText
 from plone.app.textfield.value import RichTextValue
 from plone.app.uuid.utils import uuidToObject
@@ -18,6 +18,7 @@ from zope.schema.interfaces import IDatetime
 from zope.schema.interfaces import IField
 from zope.schema.interfaces import IFromUnicode
 from zope.schema.interfaces import IObject
+
 import base64
 import mimetypes
 import pkg_resources
@@ -25,7 +26,7 @@ import six
 
 
 try:
-    pkg_resources.get_distribution('plone.app.intid')
+    pkg_resources.get_distribution("plone.app.intid")
 except pkg_resources.DistributionNotFound:
     INTID_AVAILABLE = False
 else:
@@ -33,8 +34,8 @@ else:
     from zope.intid.interfaces import IIntIds
 
 try:
-    pkg_resources.get_distribution('z3c.relationfield')
-except:
+    pkg_resources.get_distribution("z3c.relationfield")
+except pkg_resources.DistributionNotFound:
     RELATIONFIELD_AVAILABLE = False
 else:
     RELATIONFIELD_AVAILABLE = True
@@ -48,72 +49,61 @@ def get_site_encoding():
     # ``Products.CMFPlone.browser.ploneview``, it always returned 'utf-8',
     # something we can do ourselves here.
     # TODO: use some sane getSiteEncoding from CMFPlone, once there is one.
-    return 'utf-8'
+    return "utf-8"
 
 
 @implementer(ISerializer)
 @adapter(INamedField)
 class NamedFileSerializer(object):
-
     def __init__(self, field):
         self.field = field
 
     def __call__(self, value, filestore, extra=None):
         if extra is None:
-            extra = ''
+            extra = ""
         else:
-            extra = '_%s' % extra
+            extra = "_%s" % extra
         fieldname = self.field.__name__
-        if hasattr(value, 'open'):
+        if hasattr(value, "open"):
             data = value.open().read()
         else:
             data = value.data
-        name = '_field_%s%s_%s' % (fieldname, extra, value.filename)
-        filestore[name] = dict(
-            data=data,
-            name=name,
-            contenttype=value.contentType
-        )
-        return dict(
-            file=name,
-            filename=value.filename,
-            contenttype=value.contentType
-        )
+        name = "_field_%s%s_%s" % (fieldname, extra, value.filename)
+        filestore[name] = dict(data=data, name=name, contenttype=value.contentType)
+        return dict(file=name, filename=value.filename, contenttype=value.contentType)
 
 
 @implementer(IDeserializer)
 @adapter(INamedField)
 class NamedFileDeserializer(object):
-
     def __init__(self, field):
         self.field = field
 
-    def __call__(self, value, filestore, item,
-                 disable_constraints=False, logger=None):
+    def __call__(self, value, filestore, item, disable_constraints=False, logger=None):
         if isinstance(value, dict):
-            filename = value.get('filename', None)
-            contenttype = str(value.get('contenttype', ''))
+            filename = value.get("filename", None)
+            contenttype = str(value.get("contenttype", ""))
             if not contenttype:
                 # like in jsonify
-                contenttype = str(value.get('content_type', ''))
-            file = value.get('file', None)
+                contenttype = str(value.get("content_type", ""))
+            file = value.get("file", None)
             if file is not None:
-                data = filestore[file]['data']
+                data = filestore[file]["data"]
             else:
-                if value.get('encoding', None) == 'base64':
+                if value.get("encoding", None) == "base64":
                     # collective.jsonify encodes base64
-                    data = base64.b64decode(value['data'])
+                    data = base64.b64decode(value["data"])
                 else:
-                    data = value['data']
+                    data = value["data"]
 
         elif isinstance(value, str):
             data = value
-            filename = item.get('_filename', None)
-            contenttype = ''
+            filename = item.get("_filename", None)
+            contenttype = ""
         else:
-            raise ValueError('Unable to convert to named file')
+            raise ValueError("Unable to convert to named file")
         if six.PY2 and isinstance(filename, str):
-            filename = filename.decode('utf-8')
+            filename = filename.decode("utf-8")
         instance = self.field._type(
             data=data,
             filename=filename,
@@ -127,10 +117,8 @@ class NamedFileDeserializer(object):
             else:
                 if logger:
                     logger(
-                        "NamedFileDeserializer: %s is invalid in %s: %s" % (
-                            self.field.__name__,
-                            item['_path'],
-                            e)
+                        "NamedFileDeserializer: %s is invalid in %s: %s"
+                        % (self.field.__name__, item["_path"], e)
                     )
         return instance
 
@@ -138,28 +126,21 @@ class NamedFileDeserializer(object):
 @implementer(ISerializer)
 @adapter(IRichText)
 class RichTextSerializer(object):
-
     def __init__(self, field):
         self.field = field
 
     def __call__(self, value, filestore, extra=None):
         if extra is None:
-            extra = ''
+            extra = ""
         else:
-            extra = '_%s' % extra
-        extension = mimetypes.guess_extension(value.mimeType) or ''
+            extra = "_%s" % extra
+        extension = mimetypes.guess_extension(value.mimeType) or ""
         fieldname = self.field.__name__
-        name = '_field_%s%s%s' % (fieldname, extra, extension)
+        name = "_field_%s%s%s" % (fieldname, extra, extension)
         filestore[name] = dict(
-            data=value.raw_encoded,
-            name=name,
-            contenttype=value.mimeType
+            data=value.raw_encoded, name=name, contenttype=value.mimeType
         )
-        return dict(
-            file=name,
-            contenttype=value.mimeType,
-            encoding=value.encoding
-        )
+        return dict(file=name, contenttype=value.mimeType, encoding=value.encoding)
 
 
 @implementer(IDeserializer)
@@ -171,28 +152,26 @@ class RichTextDeserializer(object):
         self.field = field
 
     def _convert_object(self, obj, encoding):
-        """Decode binary strings into unicode objects
-        """
+        """Decode binary strings into unicode objects"""
         if not six.PY2 and isinstance(obj, str):
             return obj
         if isinstance(obj, str):
             return obj.decode(encoding)
         if isinstance(obj, unicode):
             return obj
-        raise ValueError('Unable to convert value to unicode string')
+        raise ValueError("Unable to convert value to unicode string")
 
-    def __call__(self, value, filestore, item,
-                 disable_constraints=False, logger=None):
+    def __call__(self, value, filestore, item, disable_constraints=False, logger=None):
         if isinstance(value, dict):
-            encoding = value.get('encoding', get_site_encoding())
-            contenttype = value.get('contenttype', None)
+            encoding = value.get("encoding", get_site_encoding())
+            contenttype = value.get("contenttype", None)
             if contenttype is not None:
                 contenttype = str(contenttype)
-            file = value.get('file', None)
+            file = value.get("file", None)
             if file is not None:
-                data = self._convert_object(filestore[file]['data'], encoding)
+                data = self._convert_object(filestore[file]["data"], encoding)
             else:
-                data = self._convert_object(value['data'], encoding)
+                data = self._convert_object(value["data"], encoding)
         else:
             encoding = get_site_encoding()
             data = self._convert_object(value, encoding)
@@ -213,10 +192,8 @@ class RichTextDeserializer(object):
             else:
                 if logger:
                     logger(
-                        "RichTextDeserializer: %s is invalid in %s: %s" % (
-                            self.field.__name__,
-                            item['_path'],
-                            e)
+                        "RichTextDeserializer: %s is invalid in %s: %s"
+                        % (self.field.__name__, item["_path"], e)
                     )
         return instance
 
@@ -224,15 +201,17 @@ class RichTextDeserializer(object):
 @implementer(ISerializer)
 @adapter(IObject)
 class ObjectSerializer(object):
-
     def __init__(self, field):
         self.field = field
 
-    def __call__(self, value, filestore, extra=''):
-        out = {"_class": "%s.%s" % (
-            value.__class__.__module__,
-            value.__class__.__name__,
-        )}
+    def __call__(self, value, filestore, extra=""):
+        out = {
+            "_class": "%s.%s"
+            % (
+                value.__class__.__module__,
+                value.__class__.__name__,
+            )
+        }
         for k in self.field.schema:
             serializer = ISerializer(self.field.schema[k])
             out[k] = serializer(getattr(value, k), filestore, extra + k)
@@ -242,20 +221,19 @@ class ObjectSerializer(object):
 @implementer(IDeserializer)
 @adapter(IObject)
 class ObjectDeserializer(object):
-
     def __init__(self, field):
         self.field = field
 
-    def __call__(self, value, filestore, item,
-                 disable_constraints=False, logger=None):
+    def __call__(self, value, filestore, item, disable_constraints=False, logger=None):
         if not isinstance(value, dict):
-            raise ValueError('Need a dict to convert')
-        if not value.get('_class', None):
+            raise ValueError("Need a dict to convert")
+        if not value.get("_class", None):
             try:
                 # NB: datagridfield creates it's own Serializer, but falls
                 # back to this Deserializer. _class will be missing in this
                 # case.
                 from collective.z3cform.datagridfield.row import DictRow
+
                 if isinstance(self.field, DictRow):
                     # NB: Should be recursing into the dict and deserializing,
                     # but that can be fixed within datagridfield
@@ -271,17 +249,20 @@ class ObjectDeserializer(object):
             raise ValueError("_class is missing")
 
         # Import _class and create instance, if it implments what we need
-        klass = resolve(value['_class'])
+        klass = resolve(value["_class"])
         if not self.field.schema.implementedBy(klass):
-            raise ValueError('%s does not implemement %s' % (
-                value['_class'],
-                self.field.schema,
-            ))
+            raise ValueError(
+                "%s does not implemement %s"
+                % (
+                    value["_class"],
+                    self.field.schema,
+                )
+            )
         instance = klass()
 
         # Add each key from value to instance
         for (k, v) in value.items():
-            if k == '_class':
+            if k == "_class":
                 continue
             if not hasattr(instance, k):
                 raise ValueError("%s is not an object attribute" % k)
@@ -293,13 +274,17 @@ class ObjectDeserializer(object):
                 deserializer = IDeserializer(self.field.schema[k])
             else:
                 deserializer = DefaultDeserializer(None)
-            setattr(instance, k, deserializer(
-                v,
-                filestore,
-                item,
-                disable_constraints=disable_constraints,
-                logger=logger,
-            ))
+            setattr(
+                instance,
+                k,
+                deserializer(
+                    v,
+                    filestore,
+                    item,
+                    disable_constraints=disable_constraints,
+                    logger=logger,
+                ),
+            )
 
         if not disable_constraints:
             self.field.validate(instance)
@@ -309,7 +294,6 @@ class ObjectDeserializer(object):
 @implementer(ISerializer)
 @adapter(ICollection)
 class CollectionSerializer(object):
-
     def __init__(self, field):
         self.field = field
 
@@ -325,24 +309,23 @@ class CollectionSerializer(object):
 @implementer(IDeserializer)
 @adapter(ICollection)
 class CollectionDeserializer(object):
-
     def __init__(self, field):
         self.field = field
 
-    def __call__(self, value, filestore, item,
-                 disable_constraints=False, logger=None):
+    def __call__(self, value, filestore, item, disable_constraints=False, logger=None):
         field = self.field
-        if value in (None, ''):
+        if value in (None, ""):
             return []
         if isinstance(value, six.string_types):
-            value = [v for v in (v.strip() for v in value.split(';')) if v]
+            value = [v for v in (v.strip() for v in value.split(";")) if v]
         if field.value_type is not None:
             deserializer = IDeserializer(self.field.value_type)
         else:
             deserializer = DefaultDeserializer(None)
-        value = [deserializer(
-            v, filestore, item, disable_constraints, logger=logger)
-            for v in value]
+        value = [
+            deserializer(v, filestore, item, disable_constraints, logger=logger)
+            for v in value
+        ]
         value = field._type(value)
         try:
             self.field.validate(value)
@@ -352,10 +335,8 @@ class CollectionDeserializer(object):
             else:
                 if logger:
                     logger(
-                        "CollectionDeserializer: %s is invalid in %s: %s" % (
-                            self.field.__name__,
-                            item['_path'],
-                            e)
+                        "CollectionDeserializer: %s is invalid in %s: %s"
+                        % (self.field.__name__, item["_path"], e)
                     )
         return value
 
@@ -363,14 +344,12 @@ class CollectionDeserializer(object):
 @implementer(IDeserializer)
 @adapter(IDate)
 class DateDeserializer(object):
-
     def __init__(self, field):
         self.field = field
 
-    def __call__(self, value, filestore, item,
-                 disable_constraints=False, logger=None):
+    def __call__(self, value, filestore, item, disable_constraints=False, logger=None):
         if isinstance(value, six.string_types):
-            if value in ('', 'None'):
+            if value in ("", "None"):
                 value = None
             else:
                 value = DateTime(value).asdatetime().date()
@@ -384,10 +363,8 @@ class DateDeserializer(object):
             else:
                 if logger:
                     logger(
-                        "DateDeserializer: %s is invalid in %s: %s" % (
-                            self.field.__name__,
-                            item['_path'],
-                            e)
+                        "DateDeserializer: %s is invalid in %s: %s"
+                        % (self.field.__name__, item["_path"], e)
                     )
         return value
 
@@ -395,14 +372,12 @@ class DateDeserializer(object):
 @implementer(IDeserializer)
 @adapter(IDatetime)
 class DatetimeDeserializer(object):
-
     def __init__(self, field):
         self.field = field
 
-    def __call__(self, value, filestore, item,
-                 disable_constraints=False, logger=None):
+    def __call__(self, value, filestore, item, disable_constraints=False, logger=None):
         if isinstance(value, six.string_types):
-            if value in ('', 'None'):
+            if value in ("", "None"):
                 value = None
             else:
                 value = DateTime(value).asdatetime()
@@ -414,10 +389,8 @@ class DatetimeDeserializer(object):
             else:
                 if logger:
                     logger(
-                        "DatetimeDeserializer: %s is invalid in %s: %s" % (
-                            self.field.__name__,
-                            item['_path'],
-                            e)
+                        "DatetimeDeserializer: %s is invalid in %s: %s"
+                        % (self.field.__name__, item["_path"], e)
                     )
         return value
 
@@ -425,7 +398,6 @@ class DatetimeDeserializer(object):
 @implementer(ISerializer)
 @adapter(IField)
 class DefaultSerializer(object):
-
     def __init__(self, field=None):
         self.field = field
 
@@ -436,25 +408,23 @@ class DefaultSerializer(object):
         elif self.field is not None:
             value = IToUnicode(self.field).toUnicode(value)
         else:
-            raise ValueError('Unable to serialize field value')
+            raise ValueError("Unable to serialize field value")
         return value
 
 
 @implementer(IDeserializer)
 @adapter(IField)
 class DefaultDeserializer(object):
-
     def __init__(self, field):
         self.field = field
 
-    def __call__(self, value, filestore, item,
-                 disable_constraints=False, logger=None):
+    def __call__(self, value, filestore, item, disable_constraints=False, logger=None):
         field = self.field
         if field is not None:
             try:
                 if six.PY2:
                     if isinstance(value, str):
-                        value = value.decode('utf-8')
+                        value = value.decode("utf-8")
                     if isinstance(value, unicode):
                         value = IFromUnicode(field).fromUnicode(value)
                 else:
@@ -467,15 +437,14 @@ class DefaultDeserializer(object):
                 else:
                     if logger:
                         logger(
-                            "DefaultDeserializer: %s is invalid in %s: %s" % (
-                                self.field.__name__,
-                                item['_path'],
-                                e.__repr__())
+                            "DefaultDeserializer: %s is invalid in %s: %s"
+                            % (self.field.__name__, item["_path"], e.__repr__())
                         )
         return value
 
 
 if INTID_AVAILABLE and RELATIONFIELD_AVAILABLE:
+
     @implementer(IDeserializer)
     @adapter(IRelation)
     class RelationDeserializer(object):
@@ -485,8 +454,9 @@ if INTID_AVAILABLE and RELATIONFIELD_AVAILABLE:
         def __init__(self, field):
             self.field = field
 
-        def __call__(self, value, filestore, item,
-                     disable_constraints=False, logger=None):
+        def __call__(
+            self, value, filestore, item, disable_constraints=False, logger=None
+        ):
             field = self.field
             if field is None:
                 return None
@@ -513,7 +483,6 @@ if INTID_AVAILABLE and RELATIONFIELD_AVAILABLE:
 
             return RelationValue(int_id)
 
-
     @implementer(IDeserializer)
     @adapter(IRelationList)
     class RelationListDeserializer(RelationDeserializer):
@@ -523,6 +492,5 @@ if INTID_AVAILABLE and RELATIONFIELD_AVAILABLE:
         def deserialize(self, value):
             result = []
             for obj in value:
-                result.append(
-                    super(RelationListDeserializer, self).deserialize(obj))
+                result.append(super(RelationListDeserializer, self).deserialize(obj))
             return result
