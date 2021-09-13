@@ -9,18 +9,19 @@ import json
 @provider(ISectionBlueprint)
 @implementer(ISection)
 class SerializerSection(object):
-
     def __init__(self, transmogrifier, name, options, previous):
         self.previous = previous
-        self.context = transmogrifier.context if transmogrifier.context else getSite()  # noqa
+        self.context = (
+            transmogrifier.context if transmogrifier.context else getSite()
+        )  # noqa
 
-        self.pathkey = defaultMatcher(options, 'path-key', name, 'path')
-        self.fileskey = options.get('files-key', '_files').strip()
-        self.key = options.get('key', 'content').strip()
-        indent = options.get('indent', '4').strip() or None
+        self.pathkey = defaultMatcher(options, "path-key", name, "path")
+        self.fileskey = options.get("files-key", "_files").strip()
+        self.key = options.get("key", "content").strip()
+        indent = options.get("indent", "4").strip() or None
         if indent is not None:
             indent = int(indent)
-        sort_keys = options.get('sort-keys', 'true').strip().lower() == 'true'
+        sort_keys = options.get("sort-keys", "true").strip().lower() == "true"
         self.encoder = json.JSONEncoder(indent=indent, sort_keys=sort_keys)
 
     def __iter__(self):
@@ -35,19 +36,20 @@ class SerializerSection(object):
                 continue
 
             data = dict(
-                (key,
-                 value) for key,
-                value in list(item.items()) if not key.startswith('_'))
+                (key, value)
+                for key, value in list(item.items())
+                if not key.startswith("_")
+            )
             if not data:
                 yield item
                 continue
 
             files = item.setdefault(fileskey, {})
-            files[
-                self.key] = dict(
-                name='_content.json',
+            files[self.key] = dict(
+                name="_content.json",
                 data=self.encoder.encode(data),
-                contenttype='application/json')
+                contenttype="application/json",
+            )
 
             yield item
 
@@ -55,13 +57,14 @@ class SerializerSection(object):
 @provider(ISectionBlueprint)
 @implementer(ISection)
 class DeserializerSection(object):
-
     def __init__(self, transmogrifier, name, options, previous):
         self.previous = previous
-        self.context = transmogrifier.context if transmogrifier.context else getSite()  # noqa
+        self.context = (
+            transmogrifier.context if transmogrifier.context else getSite()
+        )  # noqa
 
-        self.fileskey = defaultMatcher(options, 'files-key', name, 'files')
-        self.key = options.get('key', 'content').strip()
+        self.fileskey = defaultMatcher(options, "files-key", name, "files")
+        self.key = options.get("key", "content").strip()
 
     def __iter__(self):
         for item in self.previous:
@@ -77,7 +80,7 @@ class DeserializerSection(object):
                 yield item
                 continue
 
-            data = json.loads(content['data'])
+            data = json.loads(content["data"])
             item.update(data)
 
             yield item

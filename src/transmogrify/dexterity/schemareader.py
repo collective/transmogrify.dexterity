@@ -13,13 +13,14 @@ from zope.schema import getFieldsInOrder
 @provider(ISectionBlueprint)
 @implementer(ISection)
 class DexterityReaderSection(object):
-
     def __init__(self, transmogrifier, name, options, previous):
         self.previous = previous
-        self.context = transmogrifier.context if transmogrifier.context else getSite()  # noqa
+        self.context = (
+            transmogrifier.context if transmogrifier.context else getSite()
+        )  # noqa
         self.name = name
-        self.pathkey = defaultMatcher(options, 'path-key', name, 'path')
-        self.fileskey = options.get('files-key', '_files').strip()
+        self.pathkey = defaultMatcher(options, "path-key", name, "path")
+        self.fileskey = options.get("files-key", "_files").strip()
 
     def __iter__(self):
         for item in self.previous:
@@ -35,8 +36,7 @@ class DexterityReaderSection(object):
                 yield item
                 continue
 
-            obj = self.context.unrestrictedTraverse(
-                path.encode().lstrip('/'), None)
+            obj = self.context.unrestrictedTraverse(path.encode().lstrip("/"), None)
 
             if not IDexterityContent.providedBy(obj):
                 # Path doesn't exist
@@ -47,7 +47,7 @@ class DexterityReaderSection(object):
 
             uuid = IUUID(obj, None)
             if uuid is not None:
-                item['plone.uuid'] = uuid
+                item["plone.uuid"] = uuid
 
             files = item.setdefault(self.fileskey, {})
 

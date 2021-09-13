@@ -4,9 +4,11 @@ from collective.transmogrifier.utils import defaultMatcher
 from plone.dexterity.interfaces import IDexterityContent
 from zope.interface import implementer
 from zope.interface import provider
+
 try:
     from plone.app.multilingual.interfaces import ILanguage
     from plone.app.multilingual.interfaces import IMutableTG
+
     PAM_AVAILABLE = True
 except ImportError:
     PAM_AVAILABLE = False
@@ -15,16 +17,17 @@ except ImportError:
 @provider(ISectionBlueprint)
 @implementer(ISection)
 class DexterityTranslationSection(object):
-
     def __init__(self, transmogrifier, name, options, previous):
         if not PAM_AVAILABLE:
-            raise RuntimeError('``plone.app.multilingual`` not installed')
+            raise RuntimeError("``plone.app.multilingual`` not installed")
         self.previous = previous
-        self.context = transmogrifier.context if transmogrifier.context else getSite()  # noqa
+        self.context = (
+            transmogrifier.context if transmogrifier.context else getSite()
+        )  # noqa
         self.name = name
-        self.pathkey = defaultMatcher(options, 'path-key', name, 'path')
-        self.langkey = options.get('lang-key', '_lang').strip()
-        self.tgkey = options.get('tg-key', '_tg').strip()
+        self.pathkey = defaultMatcher(options, "path-key", name, "path")
+        self.langkey = options.get("lang-key", "_lang").strip()
+        self.tgkey = options.get("tg-key", "_tg").strip()
 
     def __iter__(self):
         for item in self.previous:
@@ -40,8 +43,7 @@ class DexterityTranslationSection(object):
                 yield item
                 continue
 
-            obj = self.context.unrestrictedTraverse(
-                path.encode().lstrip('/'), None)
+            obj = self.context.unrestrictedTraverse(path.encode().lstrip("/"), None)
 
             if not IDexterityContent.providedBy(obj):
                 # Path doesn't exist

@@ -32,13 +32,12 @@ class TestRelationDeserializer(unittest.TestCase):
     relation_list = RelationList(
         title=u"Relation List",
         default=[],
-        value_type=RelationChoice(title=u"Relation",
-                                  source=ObjPathSourceBinder()),
+        value_type=RelationChoice(title=u"Relation", source=ObjPathSourceBinder()),
         required=False,
     )
 
     def test_deserialize_relation(self):
-        folder = create(Builder('folder'))
+        folder = create(Builder("folder"))
         deserializer = IDeserializer(self.relation)
         value = deserializer(folder, None, None)
 
@@ -58,7 +57,7 @@ class TestRelationDeserializer(unittest.TestCase):
         self.assertIsNone(value)
 
     def test_deserialize_relation_list(self):
-        folder = create(Builder('folder'))
+        folder = create(Builder("folder"))
         deserializer = IDeserializer(self.relation_list)
         value = deserializer([folder], None, None)
 
@@ -88,30 +87,29 @@ class TestRelationDeserializer(unittest.TestCase):
         self.assertEqual([None], value)
 
     def test_deserialize_uid_relation(self):
-        folder = create(Builder('folder'))
+        folder = create(Builder("folder"))
         deserializer = IDeserializer(self.relation)
         value = deserializer(folder.UID(), None, None)
         self.assertEqual(folder, value.to_object)
 
     def test_deserialize_uid_relation_list(self):
-        folder = create(Builder('folder'))
+        folder = create(Builder("folder"))
         deserializer = IDeserializer(self.relation_list)
         value = deserializer([folder.UID()], None, None)
         self.assertEqual(folder, value[0].to_object)
 
     def test_deserialize_non_uid_relation(self):
         deserializer = IDeserializer(self.relation)
-        value = deserializer('09ca9f4fe9304123b05656d9c449b1ad', None, None)
+        value = deserializer("09ca9f4fe9304123b05656d9c449b1ad", None, None)
         self.assertIsNone(value)
 
     def test_deserialize_non_uid_relation_list(self):
         deserializer = IDeserializer(self.relation_list)
-        value = deserializer(['f3d11fdbf5a9471796290df759adaab8'], None, None)
+        value = deserializer(["f3d11fdbf5a9471796290df759adaab8"], None, None)
         self.assertEquals([None], value)
 
 
 class TestRichTextDeserializer(unittest.TestCase):
-
     def setUp(test):
         test.pp = pprint.PrettyPrinter(indent=4)
         # TODO: This should read the zcml instead
@@ -151,8 +149,9 @@ class TestRichTextDeserializer(unittest.TestCase):
         """Test that RichText mime type options affect the RichTextValue"""
         rtd = IDeserializer(
             RichText(
-                default_mime_type='text/xml',
-                output_mime_type='x-application/pony'))
+                default_mime_type="text/xml", output_mime_type="x-application/pony"
+            )
+        )
         rtv = rtd("café culture", None, None)
 
         self.assertEqual(rtv.raw, u"café culture")
@@ -167,11 +166,15 @@ class TestRichTextDeserializer(unittest.TestCase):
     def test_dict_overrides(self):
         """Try using a dict value, ensure that we can override the MIME type,
         and that the MIME type is converted to a string"""
-        rtd = IDeserializer(RichText(default_mime_type='text/csv'))
-        rtv = rtd({
-            'contenttype': u"x-application/pony",
-            'data': "café culture",
-        }, None, None)
+        rtd = IDeserializer(RichText(default_mime_type="text/csv"))
+        rtv = rtd(
+            {
+                "contenttype": u"x-application/pony",
+                "data": "café culture",
+            },
+            None,
+            None,
+        )
 
         self.assertEqual(rtv.raw, u"café culture")
         if six.PY2:
@@ -182,16 +185,21 @@ class TestRichTextDeserializer(unittest.TestCase):
         self.assertEqual(
             rtv.mimeType,
             "x-application/pony",
-            "Content type from dict should override default")
+            "Content type from dict should override default",
+        )
         self.assertEqual(rtv.encoding, "utf-8")
 
     def test_dict_encoding(self):
         """Try using a dict value, ensure that we can override the MIME type"""
-        rtd = IDeserializer(RichText(default_mime_type='text/csv'))
-        rtv = rtd({
-            'data': "caf\xe9 culture",
-            'encoding': "latin-1",
-        }, None, None)
+        rtd = IDeserializer(RichText(default_mime_type="text/csv"))
+        rtv = rtd(
+            {
+                "data": "caf\xe9 culture",
+                "encoding": "latin-1",
+            },
+            None,
+            None,
+        )
 
         self.assertEqual(rtv.raw, u"café culture")
         if six.PY2:
@@ -205,11 +213,15 @@ class TestRichTextDeserializer(unittest.TestCase):
     def test_dict_unicode(self):
         """Try using a dict value, ensure that a unicode string passed through
         and can be decoded properly"""
-        rtd = IDeserializer(RichText(default_mime_type='text/csv'))
-        rtv = rtd({
-            'data': u"café culture",
-            'encoding': "latin-1",
-        }, None, None)
+        rtd = IDeserializer(RichText(default_mime_type="text/csv"))
+        rtv = rtd(
+            {
+                "data": u"café culture",
+                "encoding": "latin-1",
+            },
+            None,
+            None,
+        )
 
         self.assertEqual(rtv.raw, u"café culture")
         if six.PY2:
@@ -222,15 +234,19 @@ class TestRichTextDeserializer(unittest.TestCase):
 
     def test_filestore(self):
         """Try using a dict with a filestore"""
-        rtd = IDeserializer(RichText(default_mime_type='text/csv'))
-        rtv = rtd({
-            'contenttype': "x-application/cow",
-            'data': "caf\xe9 culture",
-            'file': 'my-lovely-file',
-            'encoding': "latin-1",
-        }, {
-            'my-lovely-file': {'data': "greasy spoon"},
-        }, None)
+        rtd = IDeserializer(RichText(default_mime_type="text/csv"))
+        rtv = rtd(
+            {
+                "contenttype": "x-application/cow",
+                "data": "caf\xe9 culture",
+                "file": "my-lovely-file",
+                "encoding": "latin-1",
+            },
+            {
+                "my-lovely-file": {"data": "greasy spoon"},
+            },
+            None,
+        )
 
         self.assertEqual(rtv.raw, u"greasy spoon")
         if six.PY2:
@@ -241,7 +257,8 @@ class TestRichTextDeserializer(unittest.TestCase):
         self.assertEqual(
             rtv.mimeType,
             "x-application/cow",
-            "Content type from dict should override default")
+            "Content type from dict should override default",
+        )
         self.assertEqual(rtv.encoding, "latin-1")
 
 
@@ -256,22 +273,16 @@ class TestDateDeserializer(unittest.TestCase):
 
     def test_date_deserializer(self):
         deserializer = IDeserializer(Date())
-        value = deserializer('2015-12-31', None, None)
-        self.assertEqual(
-            datetime.date(datetime(2015, 12, 31)),
-            value
-        )
-        value = deserializer('2015/12/31', None, None)
-        self.assertEqual(
-            datetime.date(datetime(2015, 12, 31)),
-            value
-        )
+        value = deserializer("2015-12-31", None, None)
+        self.assertEqual(datetime.date(datetime(2015, 12, 31)), value)
+        value = deserializer("2015/12/31", None, None)
+        self.assertEqual(datetime.date(datetime(2015, 12, 31)), value)
 
     def test_date_deserializer_for_not_required_date(self):
         field = Date()
         field.required = False
         deserializer = IDeserializer(field)
-        value = deserializer('None', None, None)
+        value = deserializer("None", None, None)
 
         self.assertEqual(None, value)
 
@@ -287,16 +298,13 @@ class TestDatetimeDeserializer(unittest.TestCase):
 
     def test_datetime_deserializer(self):
         deserializer = IDeserializer(Datetime())
-        value = deserializer('2015-12-31 17:59:59', None, None)
-        self.assertEqual(
-            datetime(2015, 12, 31, 17, 59, 59),
-            value
-        )
+        value = deserializer("2015-12-31 17:59:59", None, None)
+        self.assertEqual(datetime(2015, 12, 31, 17, 59, 59), value)
 
     def test_datetime_deserializer_for_not_required_datetime(self):
         field = Datetime()
         field.required = False
         deserializer = IDeserializer(field)
-        value = deserializer('None', None, None)
+        value = deserializer("None", None, None)
 
         self.assertEqual(None, value)
