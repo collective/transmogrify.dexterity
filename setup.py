@@ -16,7 +16,7 @@ long_description = "\n\n".join(
 
 setup(
     name="transmogrify.dexterity",
-    version="1.6.5.dev0",
+    version="2.0.0",
     description="A transmogrifier blueprint for updating dexterity objects",
     long_description=long_description,
     # Get more from https://pypi.org/classifiers/

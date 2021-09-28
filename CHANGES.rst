@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.6.5 (unreleased)
+2.0.0 (2021-09-28)
 ------------------
 
 - Import relations fields that were exported as UID.
