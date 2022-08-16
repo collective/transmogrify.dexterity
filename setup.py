@@ -1,15 +1,14 @@
 """Installer for the transmogrify.dexterity package."""
+from pathlib import Path
 from setuptools import find_packages
 from setuptools import setup
 
 
-long_description = "\n\n".join(
-    [
-        open("README.rst").read(),
-        open("CONTRIBUTORS.rst").read(),
-        open("CHANGES.rst").read(),
-    ]
-)
+long_description = f"""
+{Path("README.md").read_text()}\n
+{Path("CONTRIBUTORS.md").read_text()}\n
+{Path("CHANGES.md").read_text()}\n
+"""
 
 
 setup(
@@ -17,7 +16,7 @@ setup(
     version="3.0.0.dev0",
     description="A transmogrifier blueprint for updating dexterity objects",
     long_description=long_description,
-    # Get more from https://pypi.org/classifiers/
+    long_description_content_type="text/markdown",
     classifiers=[
         "Development Status :: 6 - Mature",
         "Environment :: Web Environment",
