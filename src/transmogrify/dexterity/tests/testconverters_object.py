@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.textfield import RichText
 from plone.app.textfield import RichTextValue
 from plone.supermodel import model
@@ -13,11 +12,11 @@ import zope.component
 
 
 class ITestObjectA(model.Schema):
-    fish = schema.TextLine(title=u"Fish", default=u"", required=False)
+    fish = schema.TextLine(title="Fish", default="", required=False)
 
 
 @interface.implementer(ITestObjectA)
-class TestObjectA(object):
+class TestObjectA:
     fish = schema.fieldproperty.FieldProperty(ITestObjectA["fish"])
 
 
@@ -25,19 +24,19 @@ registerFactoryAdapter(ITestObjectA, TestObjectA)
 
 
 class ITestObjectB(model.Schema):
-    title = schema.TextLine(title=u"Title", default=u"", required=False)
+    title = schema.TextLine(title="Title", default="", required=False)
     cowtent = RichText(
-        title=u"Text",
+        title="Text",
         default_mime_type="text/html",
         output_mime_type="text/html",
         allowed_mime_types=("text/html", "scroll/dead-sea"),
-        default=u"",
+        default="",
         required=False,
     )
 
 
 @interface.implementer(ITestObjectB)
-class TestObjectB(object):
+class TestObjectB:
     title = schema.fieldproperty.FieldProperty(ITestObjectB["title"])
     cowtent = schema.fieldproperty.FieldProperty(ITestObjectB["cowtent"])
 
@@ -69,15 +68,15 @@ class TestObjectDeserializer(unittest.TestCase):
         desA = IDeserializer(schema.Object(schema=ITestObjectA))
 
         # Have to provide something
-        with self.assertRaisesRegexp(ValueError, "dict"):
+        with self.assertRaisesRegex(ValueError, "dict"):
             desA(None, None, None)
 
         # Dict needs to provide class
-        with self.assertRaisesRegexp(ValueError, "_class"):
+        with self.assertRaisesRegex(ValueError, "_class"):
             desA(dict(), None, None)
 
         # _class needs to implement ITestObjectA
-        with self.assertRaisesRegexp(ValueError, "TestObjectDeserializer"):
+        with self.assertRaisesRegex(ValueError, "TestObjectDeserializer"):
             desA(
                 dict(
                     _class="transmogrify.dexterity.tests.testconverters_object.TestObjectDeserializer"
@@ -87,42 +86,42 @@ class TestObjectDeserializer(unittest.TestCase):
             )  # noqa
 
         # Extra values not allowed
-        with self.assertRaisesRegexp(ValueError, "fart"):
-            self.deserialize(desA, dict(fish=u"moo", fart="yes"))
+        with self.assertRaisesRegex(ValueError, "fart"):
+            self.deserialize(desA, dict(fish="moo", fart="yes"))
 
     def test_deserialise(self):
         desA = IDeserializer(schema.Object(schema=ITestObjectA))
         desB = IDeserializer(schema.Object(schema=ITestObjectB))
 
-        obj = self.deserialize(desA, dict(fish=u"moo"))
+        obj = self.deserialize(desA, dict(fish="moo"))
         self.assertEqual(obj.__class__, TestObjectA)
-        self.assertEqual(obj.fish, u"moo")
+        self.assertEqual(obj.fish, "moo")
 
         # We recurseivly deserialize
         obj = self.deserialize(
             desB,
             dict(
-                title=u"A nice section",
-                cowtent=dict(data=u"Some nice text", contenttype="scroll/dead-sea"),
+                title="A nice section",
+                cowtent=dict(data="Some nice text", contenttype="scroll/dead-sea"),
             ),
         )
         self.assertEqual(obj.__class__, TestObjectB)
-        self.assertEqual(obj.title, u"A nice section")
+        self.assertEqual(obj.title, "A nice section")
         self.assertEqual(obj.cowtent.__class__, RichTextValue)
-        self.assertEqual(obj.cowtent.raw, u"Some nice text")
+        self.assertEqual(obj.cowtent.raw, "Some nice text")
         self.assertEqual(obj.cowtent.mimeType, "scroll/dead-sea")
 
         # Missing values are okay
         obj = self.deserialize(
             desB,
             dict(
-                title=u"Another section",
+                title="Another section",
             ),
         )
         self.assertEqual(obj.__class__, TestObjectB)
-        self.assertEqual(obj.title, u"Another section")
+        self.assertEqual(obj.title, "Another section")
         self.assertEqual(obj.cowtent.__class__, RichTextValue)
-        self.assertEqual(obj.cowtent.raw, u"")
+        self.assertEqual(obj.cowtent.raw, "")
         self.assertEqual(obj.cowtent.mimeType, "text/html")
 
 
@@ -144,12 +143,12 @@ class TestObjectSerializer(unittest.TestCase):
         serB = ISerializer(schema.Object(schema=ITestObjectB))
 
         obj = TestObjectA()
-        obj.fish = u"haddock"
+        obj.fish = "haddock"
         self.assertEqual(
             serA(obj, None),
             dict(
                 _class="transmogrify.dexterity.tests.testconverters_object.TestObjectA",  # noqa
-                fish=u"haddock",
+                fish="haddock",
             ),
         )
 
@@ -157,8 +156,8 @@ class TestObjectSerializer(unittest.TestCase):
         filestore = {}
         obj = desB(
             dict(
-                title=u"A hairy section",
-                cowtent=dict(data=u"Some nice text", contenttype="scroll/dead-sea"),
+                title="A hairy section",
+                cowtent=dict(data="Some nice text", contenttype="scroll/dead-sea"),
                 _class="transmogrify.dexterity.tests.testconverters_object.TestObjectB",  # noqa
             ),
             filestore,
@@ -168,7 +167,7 @@ class TestObjectSerializer(unittest.TestCase):
             serB(obj, filestore),
             dict(
                 _class="transmogrify.dexterity.tests.testconverters_object.TestObjectB",  # noqa
-                title=u"A hairy section",
+                title="A hairy section",
                 cowtent=dict(
                     file="_field_cowtent_cowtent",
                     encoding="utf-8",

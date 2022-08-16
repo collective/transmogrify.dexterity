@@ -1,28 +1,18 @@
-# -*- coding: utf-8 -*-
 from collective.transmogrifier.interfaces import ISection
 from collective.transmogrifier.interfaces import ISectionBlueprint
 from collective.transmogrifier.utils import defaultMatcher
+from plone.app.multilingual.interfaces import IMutableTG
 from plone.dexterity.interfaces import IDexterityContent
+from Products.CMFPlone.interfaces import ILanguage
 from zope.component.hooks import getSite
 from zope.interface import implementer
 from zope.interface import provider
 
 
-try:
-    from plone.app.multilingual.interfaces import ILanguage
-    from plone.app.multilingual.interfaces import IMutableTG
-
-    PAM_AVAILABLE = True
-except ImportError:
-    PAM_AVAILABLE = False
-
-
 @provider(ISectionBlueprint)
 @implementer(ISection)
-class DexterityTranslationSection(object):
+class DexterityTranslationSection:
     def __init__(self, transmogrifier, name, options, previous):
-        if not PAM_AVAILABLE:
-            raise RuntimeError("``plone.app.multilingual`` not installed")
         self.previous = previous
         self.context = (
             transmogrifier.context if transmogrifier.context else getSite()

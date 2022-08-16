@@ -1,32 +1,41 @@
 <configure
-  xmlns="http://namespaces.zope.org/zope"
-  xmlns:zcml="http://namespaces.zope.org/zcml"
-  i18n_domain="transmogrify.dexterity">
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="transmogrify.dexterity"
+    >
 
-  <include package="collective.transmogrifier" file="meta.zcml" />
+  <include
+      package="collective.transmogrifier"
+      file="meta.zcml"
+      />
   <include package="collective.transmogrifier" />
 
   <include file="converters.zcml" />
   <include package=".pipelines" />
 
   <utility
+      name="transmogrify.dexterity.schemaupdater"
       component=".schemaupdater.DexterityUpdateSection"
-      name="transmogrify.dexterity.schemaupdater" />
+      />
 
   <utility
+      name="transmogrify.dexterity.schemareader"
       component=".schemareader.DexterityReaderSection"
-      name="transmogrify.dexterity.schemareader" />
+      />
 
   <utility
+      name="transmogrify.dexterity.translation"
       component=".translation.DexterityTranslationSection"
-      name="transmogrify.dexterity.translation" />
+      />
 
   <utility
+      name="transmogrify.dexterity.serializer"
       component=".serializer.SerializerSection"
-      name="transmogrify.dexterity.serializer" />
+      />
 
   <utility
+      name="transmogrify.dexterity.deserializer"
       component=".serializer.DeserializerSection"
-      name="transmogrify.dexterity.deserializer" />
+      />
 
 </configure>

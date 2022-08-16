@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from collective.transmogrifier.interfaces import ISection
 from collective.transmogrifier.interfaces import ISectionBlueprint
 from collective.transmogrifier.utils import defaultMatcher
@@ -11,7 +10,7 @@ import json
 
 @provider(ISectionBlueprint)
 @implementer(ISection)
-class SerializerSection(object):
+class SerializerSection:
     def __init__(self, transmogrifier, name, options, previous):
         self.previous = previous
         self.context = (
@@ -38,11 +37,11 @@ class SerializerSection(object):
                 yield item
                 continue
 
-            data = dict(
-                (key, value)
+            data = {
+                key: value
                 for key, value in list(item.items())
                 if not key.startswith("_")
-            )
+            }
             if not data:
                 yield item
                 continue
@@ -59,7 +58,7 @@ class SerializerSection(object):
 
 @provider(ISectionBlueprint)
 @implementer(ISection)
-class DeserializerSection(object):
+class DeserializerSection:
     def __init__(self, transmogrifier, name, options, previous):
         self.previous = previous
         self.context = (

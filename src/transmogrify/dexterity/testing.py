@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from collective.transmogrifier.interfaces import ISection
 from collective.transmogrifier.interfaces import ISectionBlueprint
 from collective.transmogrifier.sections.tests import SampleSource
@@ -19,14 +18,11 @@ from plone.dexterity.fti import DexterityFTI
 from plone.dexterity.fti import register
 from plone.namedfile.field import NamedFile
 from plone.supermodel import model
-from transmogrify.dexterity import PLONE_VERSION
 from zope import schema
 from zope.component import provideUtility
 from zope.configuration import xmlconfig
 from zope.interface import implementer
 from zope.interface import provider
-
-import six
 
 
 zptlogo = (
@@ -49,13 +45,10 @@ zptlogo = (
     "\x00A\x00;"
 )
 
-if six.PY2:
-    zptlogo_converted = zptlogo
-else:
-    zptlogo_converted = bytes(zptlogo, "utf-8")
+zptlogo_converted = bytes(zptlogo, "utf-8")
 
 
-class FakeImportContext(object):
+class FakeImportContext:
     def __init__(self, filename, contents):
         self.filename = filename
         self.contents = contents
@@ -71,23 +64,23 @@ class FakeImportContext(object):
 class ITestSchema(model.Schema):
 
     foo = schema.TextLine(
-        title=u"Foo",
+        title="Foo",
     )
 
     test_file = NamedFile(
-        title=u"File",
+        title="File",
     )
 
     test_date = schema.Date(
-        title=u"test_date",
+        title="test_date",
     )
 
     test_datetime = schema.Datetime(
-        title=u"test_datetime",
+        title="test_datetime",
     )
 
     fancy_text = RichText(
-        title=u"Fancy text",
+        title="Fancy text",
     )
 
 
@@ -104,10 +97,6 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
         )
 
     def setUpPloneSite(self, portal):
-        # BBB: In tests of Plone 5.0 and 5.1, the plone.app.contenttypes
-        # profile is not applied by default
-        if PLONE_VERSION in (5.0, 5.1):
-            applyProfile(portal, "plone.app.contenttypes:default")
         applyProfile(portal, "plone.app.intid:default")
         # Install into Plone site using portal_setup
         setRoles(portal, TEST_USER_ID, ["Member", "Contributor", "Manager"])
@@ -131,9 +120,7 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
         @implementer(ISection)
         class SchemaSource(SampleSource):
             def __init__(self, transmogrifier, name, options, previous):
-                super(SchemaSource, self).__init__(
-                    transmogrifier, name, options, previous
-                )
+                super().__init__(transmogrifier, name, options, previous)
                 sourcecontent = options.get("source-content", "full")
                 if sourcecontent == "full":
                     self.sample = (
@@ -150,7 +137,7 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
                             creators=["user1"],
                             contributors=["user2"],
                             language="en",
-                            effective="2020-07-10 10:24:00.000000 UTC",
+                            effective="2020-07-10 10:24:00 UTC",
                             subjects=["subject1", "subject2"],
                         ),
                         dict(
@@ -192,7 +179,7 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
                         ),
                     )
 
-        provideUtility(SchemaSource, name=u"transmogrify.dexterity.testsource")
+        provideUtility(SchemaSource, name="transmogrify.dexterity.testsource")
 
 
 TRANSMOGRIFY_DEXTERITY_FIXTURE = TransmogrifyDexterityLayer()

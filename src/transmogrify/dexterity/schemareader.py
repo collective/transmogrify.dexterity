@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from collective.transmogrifier.interfaces import ISection
 from collective.transmogrifier.interfaces import ISectionBlueprint
 from collective.transmogrifier.utils import defaultMatcher
@@ -14,7 +13,7 @@ from zope.schema import getFieldsInOrder
 
 @provider(ISectionBlueprint)
 @implementer(ISection)
-class DexterityReaderSection(object):
+class DexterityReaderSection:
     def __init__(self, transmogrifier, name, options, previous):
         self.previous = previous
         self.context = (

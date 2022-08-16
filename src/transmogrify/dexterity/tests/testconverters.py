@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from datetime import datetime
 from ftw.builder import Builder
 from ftw.builder import create
@@ -14,7 +13,6 @@ from zope.schema import Date
 from zope.schema import Datetime
 
 import pprint
-import six
 import unittest
 import zope.component
 
@@ -24,15 +22,15 @@ class TestRelationDeserializer(unittest.TestCase):
     layer = TRANSMOGRIFY_DEXTERITY_FUNCTIONAL_TESTING
 
     relation = RelationChoice(
-        title=u"Relation",
+        title="Relation",
         source=ObjPathSourceBinder(),
         required=False,
     )
 
     relation_list = RelationList(
-        title=u"Relation List",
+        title="Relation List",
         default=[],
-        value_type=RelationChoice(title=u"Relation", source=ObjPathSourceBinder()),
+        value_type=RelationChoice(title="Relation", source=ObjPathSourceBinder()),
         required=False,
     )
 
@@ -106,7 +104,7 @@ class TestRelationDeserializer(unittest.TestCase):
     def test_deserialize_non_uid_relation_list(self):
         deserializer = IDeserializer(self.relation_list)
         value = deserializer(["f3d11fdbf5a9471796290df759adaab8"], None, None)
-        self.assertEquals([None], value)
+        self.assertEqual([None], value)
 
 
 class TestRichTextDeserializer(unittest.TestCase):
@@ -121,11 +119,8 @@ class TestRichTextDeserializer(unittest.TestCase):
         rtd = IDeserializer(RichText())
         rtv = rtd("café culture", None, None)
 
-        self.assertEqual(rtv.raw, u"café culture")
-        if six.PY2:
-            self.assertEqual(rtv.raw_encoded, "caf\xc3\xa9 culture")
-        else:
-            self.assertEqual(rtv.raw_encoded, b"caf\xc3\xa9 culture")
+        self.assertEqual(rtv.raw, "café culture")
+        self.assertEqual(rtv.raw_encoded, b"caf\xc3\xa9 culture")
         self.assertEqual(rtv.outputMimeType, "text/x-html-safe")
         self.assertEqual(rtv.mimeType, "text/html")
         self.assertEqual(rtv.encoding, "utf-8")
@@ -134,13 +129,10 @@ class TestRichTextDeserializer(unittest.TestCase):
         """Test that a unicode value gets passed through without
         additional decoding"""
         rtd = IDeserializer(RichText())
-        rtv = rtd(u"café culture", None, None)
+        rtv = rtd("café culture", None, None)
 
-        self.assertEqual(rtv.raw, u"café culture")
-        if six.PY2:
-            self.assertEqual(rtv.raw_encoded, "caf\xc3\xa9 culture")
-        else:
-            self.assertEqual(rtv.raw_encoded, b"caf\xc3\xa9 culture")
+        self.assertEqual(rtv.raw, "café culture")
+        self.assertEqual(rtv.raw_encoded, b"caf\xc3\xa9 culture")
         self.assertEqual(rtv.outputMimeType, "text/x-html-safe")
         self.assertEqual(rtv.mimeType, "text/html")
         self.assertEqual(rtv.encoding, "utf-8")
@@ -154,11 +146,8 @@ class TestRichTextDeserializer(unittest.TestCase):
         )
         rtv = rtd("café culture", None, None)
 
-        self.assertEqual(rtv.raw, u"café culture")
-        if six.PY2:
-            self.assertEqual(rtv.raw_encoded, "caf\xc3\xa9 culture")
-        else:
-            self.assertEqual(rtv.raw_encoded, b"caf\xc3\xa9 culture")
+        self.assertEqual(rtv.raw, "café culture")
+        self.assertEqual(rtv.raw_encoded, b"caf\xc3\xa9 culture")
         self.assertEqual(rtv.outputMimeType, "x-application/pony")
         self.assertEqual(rtv.mimeType, "text/xml")
         self.assertEqual(rtv.encoding, "utf-8")
@@ -169,18 +158,15 @@ class TestRichTextDeserializer(unittest.TestCase):
         rtd = IDeserializer(RichText(default_mime_type="text/csv"))
         rtv = rtd(
             {
-                "contenttype": u"x-application/pony",
+                "contenttype": "x-application/pony",
                 "data": "café culture",
             },
             None,
             None,
         )
 
-        self.assertEqual(rtv.raw, u"café culture")
-        if six.PY2:
-            self.assertEqual(rtv.raw_encoded, "caf\xc3\xa9 culture")
-        else:
-            self.assertEqual(rtv.raw_encoded, b"caf\xc3\xa9 culture")
+        self.assertEqual(rtv.raw, "café culture")
+        self.assertEqual(rtv.raw_encoded, b"caf\xc3\xa9 culture")
         self.assertEqual(rtv.outputMimeType, "text/x-html-safe")
         self.assertEqual(
             rtv.mimeType,
@@ -201,11 +187,8 @@ class TestRichTextDeserializer(unittest.TestCase):
             None,
         )
 
-        self.assertEqual(rtv.raw, u"café culture")
-        if six.PY2:
-            self.assertEqual(rtv.raw_encoded, "caf\xe9 culture")
-        else:
-            self.assertEqual(rtv.raw_encoded, b"caf\xe9 culture")
+        self.assertEqual(rtv.raw, "café culture")
+        self.assertEqual(rtv.raw_encoded, b"caf\xe9 culture")
         self.assertEqual(rtv.outputMimeType, "text/x-html-safe")
         self.assertEqual(rtv.mimeType, "text/csv")
         self.assertEqual(rtv.encoding, "latin-1")
@@ -216,18 +199,15 @@ class TestRichTextDeserializer(unittest.TestCase):
         rtd = IDeserializer(RichText(default_mime_type="text/csv"))
         rtv = rtd(
             {
-                "data": u"café culture",
+                "data": "café culture",
                 "encoding": "latin-1",
             },
             None,
             None,
         )
 
-        self.assertEqual(rtv.raw, u"café culture")
-        if six.PY2:
-            self.assertEqual(rtv.raw_encoded, "caf\xe9 culture")
-        else:
-            self.assertEqual(rtv.raw_encoded, b"caf\xe9 culture")
+        self.assertEqual(rtv.raw, "café culture")
+        self.assertEqual(rtv.raw_encoded, b"caf\xe9 culture")
         self.assertEqual(rtv.outputMimeType, "text/x-html-safe")
         self.assertEqual(rtv.mimeType, "text/csv")
         self.assertEqual(rtv.encoding, "latin-1")
@@ -248,11 +228,8 @@ class TestRichTextDeserializer(unittest.TestCase):
             None,
         )
 
-        self.assertEqual(rtv.raw, u"greasy spoon")
-        if six.PY2:
-            self.assertEqual(rtv.raw_encoded, "greasy spoon")
-        else:
-            self.assertEqual(rtv.raw_encoded, b"greasy spoon")
+        self.assertEqual(rtv.raw, "greasy spoon")
+        self.assertEqual(rtv.raw_encoded, b"greasy spoon")
         self.assertEqual(rtv.outputMimeType, "text/x-html-safe")
         self.assertEqual(
             rtv.mimeType,
