@@ -4,6 +4,8 @@
 
 - Implement plone/code-analysis-action @ericof
 
+- Add support to Plone 6.0 @ericof
+
 - Drop support to Plone versions 4.3, 5.0 and 5.1 @ericof
 
 - Drop support to Python 2.7 @ericof
