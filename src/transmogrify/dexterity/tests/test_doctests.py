@@ -22,7 +22,6 @@ def test_suite():
                 doctest.DocFileSuite(
                     filename,
                     optionflags=OPTIONFLAGS,
-                    checker=doctest.OutputChecker(),
                 ),
                 layer=TRANSMOGRIFY_DEXTERITY_INTEGRATION_TESTING,
             )
