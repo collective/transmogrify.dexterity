@@ -198,14 +198,10 @@ class DexterityUpdateSection:
             if uuid is not None:
                 IMutableUUID(obj).set(str(uuid))
 
-            creators = None
-
             # For all fields in the schema, update in roughly the same way
             # z3c.form.widget.py would
             for name, field in self.get_fields(obj):
                 self.update_field(obj, field, item)
-
-            extra_creators = None
 
             # Updates fields of IDublinCore interface, which are not in the
             # object's behaviors.
@@ -214,17 +210,4 @@ class DexterityUpdateSection:
 
             notify(ObjectModifiedEvent(obj))
 
-            # BBB:In Plone 4.3 the notify(ObjectModifiedEvent(obj)) causes the
-            # user runing the migration to be added to the creators. So we need
-            # to set the creators after the event call, so the creators only
-            # have the values that are in json.
-            if creators:
-                self.update_field(obj, creators, item)
-            if extra_creators:
-                self.update_field(
-                    obj,
-                    extra_creators,
-                    item,
-                    extra_dublin_core=True,
-                )
             yield item
