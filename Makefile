@@ -73,7 +73,8 @@ format-zpretty:  ## Format the codebase with zpretty
 	$(FORMAT) zpretty ${CODEPATH}
 
 .PHONY: lint
-lint: lint-isort lint-black lint-flake8 lint-pyroma lint-zpretty ## check code style
+lint: ## check code style
+	$(LINT)
 
 .PHONY: lint-black
 lint-black: ## validate black formating
