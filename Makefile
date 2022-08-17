@@ -46,6 +46,7 @@ bin/pip:
 build: bin/pip ## Build Plone 6.0
 	@echo "$(GREEN)==> Build with Plone 6.0$(RESET)"
 	bin/pip install Plone -c https://dist.plone.org/release/$(PLONE6)/constraints.txt
+	bin/pip install "zest.releaser[recommended]"
 	bin/pip install -e ".[test]"
 	bin/mkwsgiinstance -d . -u admin:admin
 
@@ -55,7 +56,9 @@ clean: ## Remove old virtualenv and creates a new one
 	rm -rf bin lib lib64 include share etc var inituser pyvenv.cfg .installed.cfg
 
 .PHONY: format
-format: format-black format-isort format-zpretty## Format the codebase according to our standards
+format: ## Format the codebase according to our standards
+	@echo "$(GREEN)==> Format codebase$(RESET)"
+	$(FORMAT)
 
 .PHONY: format-black
 format-black:  ## Format the codebase with black

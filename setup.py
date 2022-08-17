@@ -61,7 +61,6 @@ setup(
     ],
     extras_require={
         "test": [
-            "zest.releaser[recommended]",
             "zope.testrunner",
             "plone.app.testing>=7.0.0a3",
             "plone.formwidget.contenttree",
