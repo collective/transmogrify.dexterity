@@ -45,8 +45,6 @@ zptlogo = (
     "\x00A\x00;"
 )
 
-zptlogo_converted = bytes(zptlogo, "utf-8")
-
 
 class FakeImportContext:
     def __init__(self, filename, contents):

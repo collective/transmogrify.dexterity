@@ -16,7 +16,6 @@ Do some imports
     >>> from DateTime import DateTime
     >>> from plone.app.dexterity.behaviors.metadata import IBasic
     >>> from transmogrify.dexterity.testing import zptlogo
-    >>> from transmogrify.dexterity.testing import zptlogo_converted
 
 Create object
 
@@ -59,7 +58,7 @@ Values from a dict:
     <plone.namedfile.file.NamedFile object at ...>
     >>> spam.test_file.filename
     'zptlogo.gif'
-    >>> spam.test_file.data == zptlogo_converted
+    >>> spam.test_file.data == bytes(zptlogo, "utf-8")
     True
 
 get the filename in a seperated value from the pipeline:
@@ -67,7 +66,7 @@ get the filename in a seperated value from the pipeline:
     <plone.namedfile.file.NamedFile object at ...>
     >>> two.test_file.filename
     'testlogo.gif'
-    >>> two.test_file.data == zptlogo_converted
+    >>> two.test_file.data == bytes(zptlogo, "utf-8")
     True
 
 empty default value is of type unicode:
