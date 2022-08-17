@@ -98,8 +98,8 @@ DublinCore fields populated:
     True
     >>> spam.creators
     ('user1',)
-    >>> isinstance(spam.effective_date, DateTime)
-    True
+    >>> spam.effective_date.year(), spam.effective_date.month(), spam.effective_date.day()
+    (2020, 7, 10)
     >>> spam.language
     'en'
     >>> spam.contributors
