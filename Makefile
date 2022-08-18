@@ -101,7 +101,7 @@ lint-zpretty: ## validate ZCML/XML using zpretty
 
 .PHONY: test
 test: ## run tests
-	PYTHONWARNINGS=ignore ./bin/zope-testrunner --auto-color --auto-progress --test-path src/
+	PYTHONWARNINGS=ignore TZ=UTC ./bin/zope-testrunner --auto-color --auto-progress --test-path src/
 
 .PHONY: start
 start: ## Start a Plone instance on localhost:8080

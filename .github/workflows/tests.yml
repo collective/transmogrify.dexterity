@@ -1,5 +1,9 @@
 name: Tests
 on: [push]
+
+env:
+  TZ: UTC
+
 jobs:
   build:
     runs-on: ubuntu-latest
