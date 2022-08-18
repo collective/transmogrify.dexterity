@@ -58,7 +58,7 @@ Values from a dict:
     <plone.namedfile.file.NamedFile object at ...>
     >>> spam.test_file.filename
     'zptlogo.gif'
-    >>> spam.test_file.data == bytes(zptlogo, "utf-8")
+    >>> spam.test_file.data == zptlogo
     True
 
 get the filename in a seperated value from the pipeline:
@@ -66,7 +66,7 @@ get the filename in a seperated value from the pipeline:
     <plone.namedfile.file.NamedFile object at ...>
     >>> two.test_file.filename
     'testlogo.gif'
-    >>> two.test_file.data == bytes(zptlogo, "utf-8")
+    >>> two.test_file.data == zptlogo
     True
 
 empty default value is of type unicode:

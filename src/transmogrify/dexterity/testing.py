@@ -43,7 +43,7 @@ zptlogo = (
     "\x006}m\x13\x16\x1a\x1f\x83\x85}6\x17\x1b $\x83\x00\x86\x19\x1d!%)\x8c"
     "\x866#'+.\x8ca`\x1c`(,/1\x94B5\x19\x1e\"&*-024\xacNq\xba\xbb\xb8h\xbeb"
     "\x00A\x00;"
-)
+).encode("utf-8")
 
 
 class FakeImportContext:
@@ -128,7 +128,7 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
                             _type="TransmogrifyDexterityFTI",
                             title="Spam",
                             description="Lorem Ipsum bla bla!",
-                            test_file={"data": zptlogo, "filename": "zptlogo.gif"},
+                            test_file={"data": zptlogo.decode(), "filename": "zptlogo.gif"},
                             test_date="2010-10-12",
                             test_datetime="2010-10-12 17:59:59",
                             fieldnotchanged="nochange",
@@ -145,7 +145,7 @@ class TransmogrifyDexterityLayer(PloneSandboxLayer):
                             title="My Second Object",
                             # description=None, # None is not valid for this
                             # field.
-                            test_file=zptlogo,
+                            test_file=zptlogo.decode(),
                             _filename="testlogo.gif",
                             test_date=date(
                                 2010,
