@@ -374,7 +374,7 @@ class DefaultSerializer:
         self.field = field
 
     def __call__(self, value, filestore, extra=None):
-        BASIC_TYPES = (str, int, int, float, bool, type(None))
+        BASIC_TYPES = (str, int, float, bool, type(None))
         if type(value) in BASIC_TYPES:
             pass
         elif self.field is not None:
