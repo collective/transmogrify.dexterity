@@ -6,10 +6,10 @@
 *.swp
 .*project
 .coverage.*
+/pyvenv.cfg
+/local.cfg
 # dirs
-/src/plone*
-/src/collective*
-.settings
+/.settings
 bin/
 buildout-cache/
 develop-eggs/
@@ -23,11 +23,11 @@ parts/
 dist/*
 test.plone_addon/
 var/
+/src/collective*
 # files
 .installed.cfg
 .mr.developer.cfg
 lib64
-local.cfg
 log.html
 output.xml
 pip-selfcheck.json
@@ -35,10 +35,7 @@ report.html
 .vscode/
 .tox/
 reports/
-docs/Makefile
-docs/make.bat
-docs/doctrees
-docs/html
-/pyvenv.cfg
-/share/
-local
+venv/
+/compiled-doc.rst
+inituser
+etc

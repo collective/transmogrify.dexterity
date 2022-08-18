@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from collective.transmogrifier.interfaces import ISection
 from collective.transmogrifier.interfaces import ISectionBlueprint
 from collective.transmogrifier.utils import defaultMatcher
@@ -9,7 +8,6 @@ from plone.app.textfield.interfaces import IRichText
 from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.utils import iterSchemata
 from plone.uuid.interfaces import IMutableUUID
-from transmogrify.dexterity import PLONE_VERSION
 from transmogrify.dexterity.interfaces import IDeserializer
 from z3c.form import interfaces
 from zope.component import getMultiAdapter
@@ -22,13 +20,9 @@ from zope.lifecycleevent import ObjectModifiedEvent
 from zope.schema import getFieldsInOrder
 
 import logging
-import six
 
 
 _marker = object()
-
-
-PLONE_43 = PLONE_VERSION == 4.3
 
 
 dublin_core_fields = [
@@ -42,7 +36,7 @@ dublin_core_fields = [
 
 @provider(ISectionBlueprint)
 @implementer(ISection)
-class DexterityUpdateSection(object):
+class DexterityUpdateSection:
     def __init__(self, transmogrifier, name, options, previous):
         self.previous = previous
         self.context = (
@@ -154,7 +148,7 @@ class DexterityUpdateSection(object):
         # an empty bytestring because of this bug:
         # https://github.com/plone/plone.dexterity/pull/33
         if name == "description" and value == "":
-            field.set(field.interface(obj), u"")
+            field.set(field.interface(obj), "")
             return
 
         if not (value is field.missing_value or value is interfaces.NO_VALUE):
@@ -166,8 +160,7 @@ class DexterityUpdateSection(object):
 
     def get_fields(self, obj):
         for schemata in iterSchemata(obj):
-            for name, field in getFieldsInOrder(schemata):
-                yield name, field
+            yield from getFieldsInOrder(schemata)
 
     def get_extras_dublin_core_fields(self, obj):
         """Returns fields of IDublinCore interface, which are not in the
@@ -192,9 +185,6 @@ class DexterityUpdateSection(object):
                 yield item
                 continue
 
-            if six.PY2:
-                path = path.encode()
-
             obj = self.context.unrestrictedTraverse(path.lstrip("/"), None)
 
             if not IDexterityContent.providedBy(obj):
@@ -208,39 +198,16 @@ class DexterityUpdateSection(object):
             if uuid is not None:
                 IMutableUUID(obj).set(str(uuid))
 
-            creators = None
-
             # For all fields in the schema, update in roughly the same way
             # z3c.form.widget.py would
             for name, field in self.get_fields(obj):
-                if PLONE_43 and name == "creators":
-                    creators = field
-                    continue
                 self.update_field(obj, field, item)
-
-            extra_creators = None
 
             # Updates fields of IDublinCore interface, which are not in the
             # object's behaviors.
             for name, field in self.get_extras_dublin_core_fields(obj):
-                if PLONE_43 and name == "creators":
-                    extra_creators = field
-                    continue
                 self.update_field(obj, field, item, extra_dublin_core=True)
 
             notify(ObjectModifiedEvent(obj))
 
-            # BBB:In Plone 4.3 the notify(ObjectModifiedEvent(obj)) causes the
-            # user runing the migration to be added to the creators. So we need
-            # to set the creators after the event call, so the creators only
-            # have the values that are in json.
-            if creators:
-                self.update_field(obj, creators, item)
-            if extra_creators:
-                self.update_field(
-                    obj,
-                    extra_creators,
-                    item,
-                    extra_dublin_core=True,
-                )
             yield item

@@ -88,7 +88,7 @@ Update first items with some fancy rich text:
     ... TransmogrifyDexterityFTI,content-2,"<em>Amazing</em>"
     ... """)
     >>> output = transmogrifier(u'transmogrify.dexterity.csvimport')
-    >>> portal['content-1'].fancy_text.output
+    >>> portal['content-1'].fancy_text.raw
     '<b>Ooo</b>, la la!'
-    >>> portal['content-2'].fancy_text.output
+    >>> portal['content-2'].fancy_text.raw
     '<em>Amazing</em>'
