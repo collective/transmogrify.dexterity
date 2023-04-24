@@ -2,6 +2,8 @@
 
 ### 3.0.0 (unreleased)
 
+- Add Python 3.10 and 3.11 support @wesleybl
+
 - Implement plone/code-analysis-action @ericof
 
 - Add support to Plone 6.0 @ericof

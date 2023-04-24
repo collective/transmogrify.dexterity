@@ -22,7 +22,7 @@ ifndef LOG_LEVEL
 	LOG_LEVEL=INFO
 endif
 
-CODE_QUALITY_VERSION=2.0.0
+CODE_QUALITY_VERSION=2.1.0
 CURRENT_USER=$$(whoami)
 USER_INFO=$$(id -u ${CURRENT_USER}):$$(getent group ${CURRENT_USER}|cut -d: -f3)
 BASE_FOLDER=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
@@ -39,7 +39,7 @@ help: ## This help message
 
 bin/pip:
 	@echo "$(GREEN)==> Setup Virtual Env$(RESET)"
-	python3 -m venv .
+	python3.11 -m venv .
 	bin/pip install -U pip wheel
 
 .PHONY: build
