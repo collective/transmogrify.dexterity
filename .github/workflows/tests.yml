@@ -34,7 +34,12 @@ jobs:
           plone-version: ${{ matrix.plone }}
 
       - name: Install package
+        # FIXE: plone.app.transmogrifier 3.0.0 has an error in Plone 6. See:
+        # https://github.com/collective/plone.app.transmogrifier/pull/32
+        # This bug has been fixed. So, as soon as a new version is released,
+        # we must remove this installation through github.
         run: |
+          pip install git+https://github.com/collective/plone.app.transmogrifier.git
           pip install -e ".[test]"
 
       # test
