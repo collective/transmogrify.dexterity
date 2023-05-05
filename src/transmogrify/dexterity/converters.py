@@ -26,12 +26,7 @@ import base64
 import mimetypes
 
 
-def get_site_encoding():
-    # getSiteEncoding was in plone.app.textfield.utils but is not gone. Like
-    # ``Products.CMFPlone.browser.ploneview``, it always returned 'utf-8',
-    # something we can do ourselves here.
-    # TODO: use some sane getSiteEncoding from CMFPlone, once there is one.
-    return "utf-8"
+ENCODING = "utf-8"
 
 
 @implementer(ISerializer)
@@ -129,28 +124,20 @@ class RichTextDeserializer:
     def __init__(self, field):
         self.field = field
 
-    def _convert_object(self, obj, encoding):
-        """Decode binary strings into unicode objects"""
-        if isinstance(obj, str):
-            return obj
-        elif isinstance(obj, bytes):
-            return obj.decode(encoding)
-        raise ValueError("Unable to convert value to unicode string")
-
     def __call__(self, value, filestore, item, disable_constraints=False, logger=None):
         if isinstance(value, dict):
-            encoding = value.get("encoding", get_site_encoding())
+            encoding = value.get("encoding", ENCODING)
             contenttype = value.get("contenttype", None)
             if contenttype is not None:
                 contenttype = str(contenttype)
             file = value.get("file", None)
             if file is not None:
-                data = self._convert_object(filestore[file]["data"], encoding)
+                data = filestore[file]["data"]
             else:
-                data = self._convert_object(value["data"], encoding)
+                data = value["data"]
         else:
-            encoding = get_site_encoding()
-            data = self._convert_object(value, encoding)
+            encoding = ENCODING
+            data = value
             contenttype = None
         if contenttype is None:
             contenttype = self.field.default_mime_type

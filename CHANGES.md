@@ -2,6 +2,8 @@
 
 ### 3.0.0 (unreleased)
 
+- Doesn't try to convert byte to string. Python converts to string when json is loaded. @wesleybl
+
 - Add Python 3.10 and 3.11 support @wesleybl
 
 - Implement plone/code-analysis-action @ericof
