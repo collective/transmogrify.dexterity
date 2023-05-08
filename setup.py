@@ -13,7 +13,7 @@ long_description = f"""
 
 setup(
     name="transmogrify.dexterity",
-    version="3.0.0",
+    version="3.0.1.dev0",
     description="A transmogrifier blueprint for updating dexterity objects",
     long_description=long_description,
     long_description_content_type="text/markdown",
