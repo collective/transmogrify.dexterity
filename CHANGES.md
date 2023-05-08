@@ -1,6 +1,6 @@
 ## Changelog
 
-### 3.0.0 (unreleased)
+## 3.0.0 (2023-05-08)
 
 - Doesn't try to convert byte to string. Python converts to string when json is loaded. @wesleybl
 
