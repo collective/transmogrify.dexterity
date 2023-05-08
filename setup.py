@@ -64,7 +64,7 @@ setup(
     extras_require={
         "test": [
             "zope.testrunner",
-            "plone.app.testing>=7.0.0a3",
+            "plone.app.testing",
             "plone.formwidget.contenttree",
             "ftw.builder",
         ],
