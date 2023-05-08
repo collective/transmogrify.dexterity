@@ -1,4 +1,6 @@
 graft src/transmogrify
 graft docs
-include *.rst
+include *.md
+recursive-include examples *.cfg
 global-exclude *.pyc
+exclude Makefile .coveragerc .editorconfig
